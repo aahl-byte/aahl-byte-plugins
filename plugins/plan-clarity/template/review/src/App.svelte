@@ -20,7 +20,7 @@
 </script>
 
 {#if types.length > 1}
-  <Tabs {tabs} bind:activeId={activeType} variant="light" onselect={(id) => activeType = id} />
+  <Tabs {tabs} bind:activeId={activeType} variant="dark" onselect={(id) => activeType = id} />
 {/if}
 
 {#if ReviewApp && activeConfig}

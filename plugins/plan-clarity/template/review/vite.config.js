@@ -4,6 +4,9 @@ import { viteSingleFile } from 'vite-plugin-singlefile';
 
 export default defineConfig({
   plugins: [svelte(), viteSingleFile()],
+  resolve: {
+    conditions: ['browser', 'import'],
+  },
   build: {
     outDir: 'dist',
     emptyOutDir: true,

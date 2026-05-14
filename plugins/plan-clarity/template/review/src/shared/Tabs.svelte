@@ -43,7 +43,7 @@
   .tabs-light {
     background: white;
     border-bottom: 2px solid var(--gray-200);
-    justify-content: center;
+    justify-content: flex-start;
   }
   .tabs-light .tab {
     padding: 8px 20px;
