@@ -3,9 +3,11 @@
    * Q&A Panel — displays categorized questions with expandable answers.
    * Categories: execution (gray), error (red), lifecycle/state (blue), permissions/auth (purple).
    */
+  import { md } from '../shared/md.js';
   const { items = [], ontraceselect } = $props();
 
   // Track open/closed state per item index — all default open
+  // svelte-ignore state_referenced_locally
   let openStates = $state(items.map(() => true));
 
   function toggleItem(index) {
@@ -41,7 +43,7 @@
   }
 
   // Group items by category preserving order of first appearance
-  const grouped = $derived(() => {
+  const grouped = $derived.by(() => {
     const groups = [];
     const seen = new Set();
     items.forEach((item, idx) => {
@@ -58,7 +60,7 @@
 
 <div class="col-qa">
   <div class="col-header">Q & A</div>
-  {#each grouped() as group}
+  {#each grouped as group}
     <div class="qa-category {categoryClass(group.category)}">{categoryLabel(group.category)}</div>
     {#each group.items as item}
       <div class="qa-item" class:open={openStates[item._idx]}>
@@ -73,7 +75,7 @@
           {item.question}
         </div>
         <div class="qa-a">
-          {@html item.answer}
+          {@html md(item.answer)}
           {#if item.traceLink}
             <div
               class="qa-link-trace"
@@ -164,6 +166,25 @@
   }
   .qa-item.open .qa-a { display: block; }
 
+  .qa-a :global(pre) {
+    background: var(--gray-900);
+    color: var(--gray-300);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1.6;
+    padding: 8px 10px;
+    border-radius: 5px;
+    margin: 6px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .qa-a :global(pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+  }
   .qa-a :global(code) {
     font-family: var(--font-mono);
     background: var(--gray-100);

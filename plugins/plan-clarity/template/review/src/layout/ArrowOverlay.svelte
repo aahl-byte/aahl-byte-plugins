@@ -28,6 +28,18 @@
     });
   }
 
+  function findElementForSide(id, side) {
+    if (!containerRef) return null;
+    const attrs = side === 'proposed'
+      ? ['data-new-field', 'data-arrow-point']
+      : ['data-cur-field', 'data-arrow-point-cur'];
+    for (const attr of attrs) {
+      const el = containerRef.querySelector(`[${attr}="${id}"]`);
+      if (el) return { el, attr };
+    }
+    return null;
+  }
+
   function findElement(id) {
     if (!containerRef) return null;
     for (const attr of attrNames) {
@@ -49,8 +61,8 @@
     const visible = arrows.filter(a => a.tab === activeTab);
 
     visible.forEach(conn => {
-      const fromResult = findElement(conn.from);
-      const toResult = findElement(conn.to);
+      const fromResult = conn.side ? findElementForSide(conn.from, conn.side) : findElement(conn.from);
+      const toResult = conn.side ? findElementForSide(conn.to, conn.side) : findElement(conn.to);
       if (!fromResult || !toResult) return;
       if (fromResult.el.offsetParent === null || toResult.el.offsetParent === null) return;
 
@@ -64,7 +76,10 @@
       const ty = tRect.top - cRect.top + tRect.height / 2;
       let x1, y1, x2, y2;
 
-      if (conn.side === 'proposed') {
+      const fCenterX = (fRect.left + fRect.right) / 2;
+      const tCenterX = (tRect.left + tRect.right) / 2;
+
+      if (fCenterX < tCenterX) {
         x1 = fRect.right - cRect.left;
         y1 = fy;
         x2 = tRect.left - cRect.left - 4;

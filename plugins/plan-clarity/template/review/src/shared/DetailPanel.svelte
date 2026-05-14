@@ -86,6 +86,29 @@
   :global(.detail-text strong) {
     color: var(--gray-800);
   }
+  :global(.detail-summary pre),
+  :global(.detail-text pre),
+  :global(.callout pre) {
+    background: var(--gray-900);
+    color: var(--gray-300);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.6;
+    padding: 10px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  :global(.detail-summary pre code),
+  :global(.detail-text pre code),
+  :global(.callout pre code) {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+  }
   :global(.detail-summary code),
   :global(.detail-text code),
   :global(.callout code) {

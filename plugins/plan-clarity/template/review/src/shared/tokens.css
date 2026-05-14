@@ -35,3 +35,10 @@ body {
   display: flex;
   flex-direction: column;
 }
+#app {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}

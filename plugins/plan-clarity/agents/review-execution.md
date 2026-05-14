@@ -60,6 +60,8 @@ phases:
 
 **Which steps get detail panels**: steps with migration concerns, compat concerns, 3+ deps, cross-phase deps, or non-obvious ordering. Simple low-risk steps don't need detail.
 
+**All detail text fields** (`description`, `migration.body`, `compat.body`) render markdown: `**bold**`, `` `code` ``, fenced code blocks, `- list items`.
+
 **Detail section order**: `description` → `migration` → `compat` → `codeRefs`. Dependencies are rendered automatically from `deps`.
 
 **Cross-phase dependencies**: allowed and encouraged when they exist.

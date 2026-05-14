@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, readdirSync } from 'fs';
-import { join } from 'path';
+import { join, relative, sep } from 'path';
 import yaml from 'js-yaml';
 import { compile } from 'svelte/compiler';
 
@@ -38,6 +38,20 @@ function findSvelteFiles(dir) {
     }
   }
   return results;
+}
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+const dynamicDir = join(cwd, 'dynamic');
+const allDynamicFiles = findSvelteFiles(dynamicDir);
+let allDynamicContent = null;
+function getDynamicContent() {
+  if (allDynamicContent === null) {
+    allDynamicContent = allDynamicFiles.map(f => readFileSync(f, 'utf-8')).join('\n');
+  }
+  return allDynamicContent;
 }
 
 for (const file of configFiles) {
@@ -79,27 +93,12 @@ for (const file of configFiles) {
   }
 
   function checkFile(name) {
-    const dynamicDir = join(cwd, 'dynamic');
-    const allFiles = findSvelteFiles(dynamicDir);
-    const match = allFiles.find(f => f.endsWith(`${name}.svelte`));
+    const suffix = `${sep}${name}.svelte`;
+    const match = allDynamicFiles.find(f => f.endsWith(suffix));
     if (match) {
       referencedDynamicFiles.add(match);
     } else {
       errors.push(`Dynamic file not found: ${name}.svelte (searched dynamic/**/)`);
-    }
-  }
-
-  function checkArrowTarget(id) {
-    const dynamicDir = join(cwd, 'dynamic');
-    const allFiles = findSvelteFiles(dynamicDir);
-    if (allFiles.length === 0) {
-      errors.push(`Arrow target "${id}" not found: no .svelte files in dynamic/`);
-      return;
-    }
-    const allContent = allFiles.map(f => readFileSync(f, 'utf-8')).join('\n');
-    const pattern = `data-arrow-point(?:-cur)?=["']${id}["']`;
-    if (!new RegExp(pattern).test(allContent)) {
-      errors.push(`Arrow target "${id}" not found in any dynamic/**/*.svelte file`);
     }
   }
 
@@ -230,19 +229,14 @@ for (const file of configFiles) {
         errors.push(`Arrow (from: ${arrow.from}): missing or invalid side (expected "current" or "proposed")`);
       }
 
-      // Each endpoint can be a store field OR a UI arrow target
       function checkEndpoint(id, label) {
         if (!fieldIds.has(id)) {
-          // Not a store field — check if it's a UI arrow target
-          const dynamicDir = join(cwd, 'dynamic');
-          const allFiles = findSvelteFiles(dynamicDir);
-          if (allFiles.length === 0) {
+          if (allDynamicFiles.length === 0) {
             errors.push(`Arrow ${label} "${id}": not a store field and no .svelte files in dynamic/`);
             return;
           }
-          const allContent = allFiles.map(f => readFileSync(f, 'utf-8')).join('\n');
-          const pattern = `data-arrow-point(?:-cur)?=["']${id}["']`;
-          if (!new RegExp(pattern).test(allContent)) {
+          const pattern = `data-arrow-point(?:-cur)?=["']${escapeRegex(id)}["']`;
+          if (!new RegExp(pattern).test(getDynamicContent())) {
             errors.push(`Arrow ${label} "${id}": not a store field and not found as arrow target in dynamic/**/*.svelte`);
           }
         }
@@ -284,23 +278,67 @@ for (const type of scopedDirs) {
 
 // Lint referenced files
 let lintErrors = 0;
+const svelteKeywords = new Set(['if', 'else', 'each', 'await', 'then', 'catch', 'key', 'html', 'render', 'snippet', 'const', 'debug']);
+
 for (const filePath of referencedDynamicFiles) {
-  const rel = filePath.replace(cwd + '/', '').replace(cwd + '\\', '');
+  const rel = relative(cwd, filePath);
   const source = readFileSync(filePath, 'utf-8');
   try {
-    compile(source, { generate: false });
+    const result = compile(source, { generate: 'client' });
+    for (const w of (result.warnings || [])) {
+      console.warn(`lint [${rel}]: warning: ${w.message}`);
+    }
   } catch (e) {
     const msg = e.message?.split('\n')[0] || e.code || 'unknown error';
     console.error(`lint [${rel}]: ${msg}`);
     lintErrors++;
+  }
+
+  const scriptMatch = source.match(/<script[^>]*>([\s\S]*?)<\/script>/);
+  const scriptBody = scriptMatch?.[1] ?? '';
+  const declared = new Set(scriptBody.match(/\b\w+\b/g) || []);
+  const template = source
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/g, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/g, '');
+  let depth = 0;
+  let inTag = false;
+  let inAttrQuote = null;
+  for (let i = 0; i < template.length; i++) {
+    const ch = template[i];
+    if (inTag) {
+      if (inAttrQuote) {
+        if (ch === inAttrQuote) inAttrQuote = null;
+        continue;
+      }
+      if (ch === '"' || ch === "'") { inAttrQuote = ch; continue; }
+      if (ch === '>') { inTag = false; continue; }
+      continue;
+    }
+    if (ch === '<') { inTag = true; continue; }
+    if (ch === '{') {
+      if (depth === 0) {
+        const rest = template.slice(i + 1);
+        const identMatch = rest.match(/^\s*([a-zA-Z_]\w*)/);
+        if (identMatch) {
+          const ident = identMatch[1];
+          if (!svelteKeywords.has(ident) && !declared.has(ident)) {
+            const lineNum = template.slice(0, i).split('\n').length;
+            console.error(`lint [${rel}]: line ~${lineNum}: probable unescaped brace — expression starts with undeclared identifier "${ident}"`);
+            lintErrors++;
+          }
+        }
+      }
+      depth++;
+    } else if (ch === '}') {
+      depth = Math.max(0, depth - 1);
+    }
   }
 }
 
 // Check for orphaned files (in scope but not referenced by any config)
 const orphanedFiles = [...scopedFiles].filter(f => !referencedDynamicFiles.has(f));
 for (const filePath of orphanedFiles) {
-  const rel = filePath.replace(cwd + '/', '').replace(cwd + '\\', '');
-  console.error(`orphan [${rel}]: not referenced by any validated config`);
+  console.error(`orphan [${relative(cwd, filePath)}]: not referenced by any validated config`);
 }
 
 totalErrors += lintErrors + orphanedFiles.length;

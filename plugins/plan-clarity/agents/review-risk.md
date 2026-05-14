@@ -81,6 +81,8 @@ findings:
 
 **Card summary**: 1 sentence, scannable in the swim lane.
 
+**All detail text fields** (`summary`, `context`, `impact.body`, `mitigation.body`, `options.body`) render markdown: `**bold**`, `` `code` ``, fenced code blocks, `- list items`.
+
 **Detail summary**: full explanation with **bold** for key terms, `code` for identifiers, bulleted lists for structured information.
 
 **Detail sections** in order: `context` → `impact` → `mitigation` → `codeRef`.

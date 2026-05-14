@@ -18,6 +18,7 @@
   }
 
   // State
+  // svelte-ignore state_referenced_locally
   let activeViewId = $state(config.routes?.[0]?.id ?? '');
   let activeTraceId = $state('');
 
@@ -51,7 +52,7 @@
   }
 
   // TOC sections
-  const tocSections = $derived(() => {
+  const tocSections = $derived.by(() => {
     const sections = [
       {
         heading: 'Routes',
@@ -113,6 +114,11 @@
     return qaWidths[viewId] ?? 340;
   }
 
+  function handleResizeKeydown(e, viewId) {
+    const delta = e.key === 'ArrowRight' ? 20 : e.key === 'ArrowLeft' ? -20 : 0;
+    if (delta) qaWidths[viewId] = Math.min(600, Math.max(180, getQaWidth(viewId) + delta));
+  }
+
   function handleResizeStart(e, viewId) {
     e.preventDefault();
     const tocEl = document.querySelector('.toc');
@@ -146,7 +152,7 @@
 
   <div class="main-layout">
     <TOC
-      sections={tocSections()}
+      sections={tocSections}
       activeId={activeViewId}
       onselect={(id) => { activeViewId = id; activeTraceId = ''; }}
     />
@@ -167,7 +173,9 @@
           class="resize-handle"
           role="separator"
           aria-orientation="vertical"
+          tabindex="0"
           onmousedown={(e) => handleResizeStart(e, route.id)}
+          onkeydown={(e) => handleResizeKeydown(e, route.id)}
         ></div>
 
         <!-- Trace Column -->
@@ -232,7 +240,9 @@
           class="resize-handle"
           role="separator"
           aria-orientation="vertical"
+          tabindex="0"
           onmousedown={(e) => handleResizeStart(e, lc.id)}
+          onkeydown={(e) => handleResizeKeydown(e, lc.id)}
         ></div>
 
         <!-- Trace Column (with timeline/route group toggle) -->
@@ -337,7 +347,8 @@
   .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
   .main-layout {

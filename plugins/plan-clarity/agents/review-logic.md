@@ -89,6 +89,8 @@ See `${CLAUDE_PLUGIN_ROOT}/references/review/COMPONENTS.md` for:
 
 ## Content Guidelines
 
+**Q&A answers** render markdown: `**bold**`, `` `code` ``, fenced code blocks, `- list items`. Write thorough markdown in `answer` fields.
+
 **Q&A categories**: `execution` (what triggers, what changes), `error` (invalid input, DB failures, edge cases), `lifecycle` (state transitions, constraints), `permissions` (who can call, audit trail).
 
 **Trace node status**: `unchanged` (context), `new` (added code), `changed` (modified code), `deleted` (removed code).

@@ -48,7 +48,7 @@
 <style>
   .toc {
     width: fit-content;
-    max-width: 200px;
+    max-width: 320px;
     min-width: 140px;
     background: var(--gray-100);
     border-right: 1px solid var(--gray-200);

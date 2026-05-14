@@ -12,6 +12,7 @@
   const labels = { execution: 'Execution', risk: 'Risk', logic: 'Logic', data: 'Data', layout: 'Layout' };
 
   const types = $derived(Object.keys(configs));
+  // svelte-ignore state_referenced_locally
   let activeType = $state(initialType);
 
   const tabs = $derived(types.map(t => ({ id: t, label: labels[t] || t })));

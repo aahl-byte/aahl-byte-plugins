@@ -23,7 +23,7 @@
   const newSchemas = $derived((config.schemas ?? []).filter(s => s.status === 'new').length);
   const newEndpoints = $derived((config.endpoints ?? []).filter(e => e.status === 'new').length);
 
-  const summaryParts = $derived(() => {
+  const summaryParts = $derived.by(() => {
     const parts = [];
     if (schemaCount) parts.push(`${schemaCount} ${schemaCount === 1 ? 'Table' : 'Tables'}`);
     if (endpointCount) parts.push(`${endpointCount} ${endpointCount === 1 ? 'Endpoint' : 'Endpoints'}`);
@@ -31,7 +31,7 @@
   });
 
   // TOC sections
-  const tocSections = $derived(() => {
+  const tocSections = $derived.by(() => {
     const sections = [];
 
     if (config.schemas?.length) {
@@ -62,6 +62,7 @@
   });
 
   // Scroll-spy state
+  // svelte-ignore state_referenced_locally
   let activeId = $state(
     config.schemas?.[0]?.id ?? config.endpoints?.[0]?.id ?? ''
   );
@@ -115,14 +116,14 @@
   <TopBar
     title={config.title}
     tags={[{
-      label: summaryParts(),
+      label: summaryParts,
       variant: 'new'
     }]}
   />
 
   <div class="main-layout">
     <TOC
-      sections={tocSections()}
+      sections={tocSections}
       activeId={activeId}
       marginTop="8px"
       onselect={handleTOCSelect}
@@ -168,7 +169,8 @@
   .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
 

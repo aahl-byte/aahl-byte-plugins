@@ -52,10 +52,13 @@
       {#each store.sections as section}
         <div class="sf-divider label-sm">{section.heading}</div>
         {#each section.fields as field}
-          <!-- svelte-ignore a11y_no_static_element_interactions -->
-          <div class={fieldClasses(field)} {...{[fieldAttr]: field.id}}>
-            <span class="su-name">{field.name}</span>
-            <span class="su-type">{field.type}</span>
+          <div class="su-wrapper">
+            <!-- svelte-ignore a11y_no_static_element_interactions -->
+            <div class={fieldClasses(field)} {...{[fieldAttr]: field.id}}>
+              <div class="su-name">{field.name}</div>
+              <div class="su-type">{field.type?.slice(0, 30)}{(field.type?.length || 0) > 30 ? '...' : ''}</div>
+            </div>
+            <div class="{(field.type?.length || 0) > 30 ? 'su-tool absolute' : 'hidden'}">{field.type}</div>
           </div>
         {/each}
       {/each}
@@ -67,9 +70,10 @@
   .col-store {
     display: flex;
     flex-direction: column;
-    width: 220px;
+    width: 300px;
     flex-shrink: 0;
     overflow-y: auto;
+    flex-wrap: wrap;
   }
 
   .col-header {
@@ -164,6 +168,27 @@
     font-size: 9px;
     color: var(--gray-400);
     margin-left: auto;
+    text-overflow: clip;
+    flex-shrink: 1;
+  }
+  
+  .su-wrapper:hover {
+    cursor: default;
+    position: relative;
+  }
+  .su-tool {
+    display: none;
+    font-size: 10px;
+    background-color: rgb(49, 49, 49);
+    color: white;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: right;
+  }
+  .su-wrapper:hover .su-tool {
+    display: block;
   }
 
   .su-row.su-new {
@@ -203,5 +228,9 @@
   }
   .su-row.tab-dim {
     opacity: .35;
+  }
+  
+  .hidden {
+    display: none;
   }
 </style>

@@ -3,27 +3,27 @@
 
   const { phase, phaseNum, selectedStepId, filter, globalStepOffset, onStepSelect } = $props();
 
-  const visibleSteps = $derived(() => {
+  const visibleSteps = $derived.by(() => {
     if (filter === 'all' || filter === phase.id) return phase.steps;
     if (filter === 'migration' || filter === 'compat') return phase.steps.filter(s => s.risks?.includes(filter));
     return [];
   });
 
-  const showColumn = $derived(() => {
+  const showColumn = $derived.by(() => {
     if (filter === 'all' || filter === phase.id) return true;
     if (filter === 'migration' || filter === 'compat') return phase.steps.some(s => s.risks?.includes(filter));
     return false;
   });
 </script>
 
-{#if showColumn()}
+{#if showColumn}
   <div class="phase">
     <div class="phase-header">
       <div class="phase-name">{phaseNum} · {phase.name}</div>
-      <div class="phase-count">{visibleSteps().length} step{visibleSteps().length === 1 ? '' : 's'}</div>
+      <div class="phase-count">{visibleSteps.length} step{visibleSteps.length === 1 ? '' : 's'}</div>
     </div>
     <div class="phase-body">
-      {#each visibleSteps() as step, i}
+      {#each visibleSteps as step, i}
         <StepCard
           {step}
           num={globalStepOffset + phase.steps.indexOf(step) + 1}

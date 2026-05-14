@@ -8,6 +8,7 @@
   import NoteFooter from './NoteFooter.svelte';
   import ExportModal from './ExportModal.svelte';
   import { generateYAML } from './YAMLExport.js';
+  import { md } from '../shared/md.js';
 
   const { config } = $props();
 
@@ -62,13 +63,13 @@
   // ── Derived Data ───────────────────────────────────────────────────────
   const findings = $derived(config.findings ?? []);
 
-  const categoriesWithFindings = $derived(() => {
+  const categoriesWithFindings = $derived.by(() => {
     const cats = new Set();
     for (const f of findings) cats.add(f.category);
     return [...cats];
   });
 
-  const hasCriticalByCategory = $derived(() => {
+  const hasCriticalByCategory = $derived.by(() => {
     const map = {};
     for (const f of findings) {
       if (f.severity === 'critical') map[f.category] = true;
@@ -93,12 +94,12 @@
       heading: 'Categories',
       items: [
         { id: 'all', label: 'All', badge: { label: String(total), variant: 'count' } },
-        ...categoriesWithFindings().map(cat => ({
+        ...categoriesWithFindings.map(cat => ({
           id:    cat,
           label: cat,
           badge: {
             label:   String(findings.filter(f => f.category === cat).length),
-            variant: hasCriticalByCategory()[cat] ? 'crit' : 'count',
+            variant: hasCriticalByCategory[cat] ? 'crit' : 'count',
           },
         })),
       ],
@@ -280,13 +281,13 @@
         </div>
 
         {#if selectedFinding.detail?.summary}
-          <div class="detail-summary">{@html selectedFinding.detail.summary}</div>
+          <div class="detail-summary">{@html md(selectedFinding.detail.summary)}</div>
         {/if}
 
         {#if selectedFinding.detail?.context}
           <div class="detail-section">
             <div class="detail-section-title dst-context">Context</div>
-            <div class="detail-text">{selectedFinding.detail.context}</div>
+            <div class="detail-text">{@html md(selectedFinding.detail.context)}</div>
           </div>
         {/if}
 
@@ -295,7 +296,7 @@
             <div class="detail-section">
               <div class="detail-section-title dst-impact">Impact</div>
               <Callout variant="impact" label={selectedFinding.detail.impact.label}>
-                <div class="detail-text">{selectedFinding.detail.impact.body}</div>
+                <div class="detail-text">{@html md(selectedFinding.detail.impact.body)}</div>
               </Callout>
             </div>
           {/if}
@@ -304,7 +305,7 @@
             <div class="detail-section">
               <div class="detail-section-title dst-mitigation">Mitigation</div>
               <Callout variant="mitigation" label={selectedFinding.detail.mitigation.label}>
-                <div class="detail-text">{selectedFinding.detail.mitigation.body}</div>
+                <div class="detail-text">{@html md(selectedFinding.detail.mitigation.body)}</div>
               </Callout>
             </div>
           {/if}
@@ -345,7 +346,8 @@
   .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
   .body {

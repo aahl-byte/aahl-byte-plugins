@@ -8,7 +8,7 @@ Used by **logic** and **data** facets for annotated code diffs.
 
 ### CodePanel
 
-Container with tabbed file switching. Wraps all CodeSections for a route or endpoint.
+Pass-through wrapper for code diff content. File tab switching is handled by the parent app component (LogicApp/DataApp), so CodePanel simply renders its children.
 
 ```svelte
 <script>
@@ -22,8 +22,8 @@ Container with tabbed file switching. Wraps all CodeSections for a route or endp
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `files` | `{id: string, label: string}[]` | Tab entries — one per file shown |
-| `activeTraceId` | `string` | Currently selected trace node ID (controls glow) |
+| `files` | `{id: string, label: string}[]` | Accepted for compatibility but not rendered — tabs are managed by the parent app |
+| `activeTraceId` | `string` | Currently selected trace node ID (passed through to children) |
 
 ### CodeSection
 
@@ -53,6 +53,8 @@ Single code line. The `type` controls background color and left border.
 | `edit` | Amber left border, amber tint — modified code |
 | `del` | Red left border, red tint, strikethrough — removed code |
 | `dim` | Darker gray — less important context |
+
+Use leading spaces for indentation inside `<Line>` tags. The build system preserves them automatically for all files under `dynamic/`.
 
 ```svelte
 <Line type="new">  <Kw>const</Kw> <Op>x</Op> = <Fn>parse</Fn>(<Op>body</Op>);</Line>
@@ -172,6 +174,18 @@ Validation scans all `dynamic/**/*.svelte` files to verify every arrow target ex
 5. **Granular sections**: Split large blocks into granular CodeSections so edge cases highlight only their relevant lines.
 6. **Tabbed panels**: Use the `files` prop on CodePanel when changes touch multiple files. Tab labels should be short file paths.
 7. **Escape curly braces**: Svelte treats `{` as expression start. Literal curly braces in displayed code MUST be escaped as `{'{'}`  and `{'}'}`. Example: `<Line type="existing">  {'{'} <Cm>// block</Cm></Line>`. This applies to JS object literals, function bodies, destructuring, etc. Forgetting this causes a Svelte parse error at build time.
+
+## Markdown in Config Text Fields
+
+All text fields in YAML configs (`summary`, `context`, `description`, `body`, `answer`, etc.) are rendered through a lightweight markdown parser. Supported syntax:
+
+- `**bold**` → **bold**
+- `` `inline code` `` → `code`
+- Fenced code blocks (triple backtick with optional language)
+- `- list items` (unordered lists)
+- Paragraphs separated by blank lines
+
+Write config text using markdown formatting. Do not embed raw HTML.
 
 ## File Organization
 

@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node scripts/validate.js && vite",
+    "dev": "node scripts/validate.js && bash -c \"netstat -ano | grep LISTENING | grep :5173 > /dev/null 2>&1 && echo 'Server already running on port 5173' || vite\"",
     "build": "node scripts/validate.js && vite build",
-    "preview": "node scripts/validate.js && vite preview"
+    "preview": "node scripts/validate.js && bash -c \"netstat -ano | grep LISTENING | grep :5173 > /dev/null 2>&1 && echo 'Server already running on port 5173' || preview\""
   },
   "devDependencies": {
     "svelte": "^5.0.0",

@@ -4,6 +4,7 @@
   import DetailPanel from '../shared/DetailPanel.svelte';
   import Callout from '../shared/Callout.svelte';
   import PhaseColumn from './PhaseColumn.svelte';
+  import { md } from '../shared/md.js';
 
   const { config } = $props();
 
@@ -115,7 +116,7 @@
         {#if selectedStep.detail?.description}
           <div class="detail-section">
             <div class="detail-section-title dst-desc">Description</div>
-            <div class="detail-text">{@html selectedStep.detail.description}</div>
+            <div class="detail-text">{@html md(selectedStep.detail.description)}</div>
           </div>
         {/if}
 
@@ -147,7 +148,7 @@
           <div class="detail-section">
             <div class="detail-section-title dst-migration">Migration</div>
             <Callout variant="migration" label={selectedStep.detail.migration.label}>
-              <div class="detail-text">{@html selectedStep.detail.migration.body}</div>
+              <div class="detail-text">{@html md(selectedStep.detail.migration.body)}</div>
             </Callout>
           </div>
         {/if}
@@ -156,7 +157,7 @@
           <div class="detail-section">
             <div class="detail-section-title dst-danger">Compat</div>
             <Callout variant="compat" label={selectedStep.detail.compat.label}>
-              <div class="detail-text">{@html selectedStep.detail.compat.body}</div>
+              <div class="detail-text">{@html md(selectedStep.detail.compat.body)}</div>
             </Callout>
           </div>
         {/if}
@@ -180,7 +181,8 @@
   .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
   .body {

@@ -19,6 +19,7 @@
   }
 
   // State
+  // svelte-ignore state_referenced_locally
   let activeTab = $state(config.tabs?.[0]?.id ?? '');
   let containerRef = $state(null);
 
@@ -35,7 +36,7 @@
   );
 
   // Build tabHighlights: for each tab, which store is primary, which fields are relevant
-  const tabHighlights = $derived(() => {
+  const tabHighlights = $derived.by(() => {
     const result = {};
     for (const tab of config.tabs ?? []) {
       const fields = (config.arrows ?? [])
@@ -50,7 +51,7 @@
   });
 
   // Build per-side arrow field sets for the active tab
-  const curArrowFields = $derived(() => {
+  const curArrowFields = $derived.by(() => {
     const set = new Set();
     const attrNames = ['data-cur-field', 'data-new-field', 'data-arrow-point-cur', 'data-arrow-point'];
 
@@ -70,9 +71,8 @@
     return set;
   });
 
-  const newArrowFields = $derived(() => {
-    // Same as curArrowFields — store fields appear on both sides
-    return curArrowFields();
+  const newArrowFields = $derived.by(() => {
+    return curArrowFields;
   });
 
   // Actually, we need per-side logic. The key distinction is:
@@ -130,8 +130,8 @@
       stores={config.stores ?? []}
       side="current"
       {activeTab}
-      tabHighlights={tabHighlights()}
-      arrowFields={curArrowFields()}
+      tabHighlights={tabHighlights}
+      arrowFields={curArrowFields}
     />
 
     <!-- Gap 1 -->
@@ -169,8 +169,8 @@
       stores={config.stores ?? []}
       side="proposed"
       {activeTab}
-      tabHighlights={tabHighlights()}
-      arrowFields={newArrowFields()}
+      tabHighlights={tabHighlights}
+      arrowFields={newArrowFields}
     />
   </div>
 </div>
@@ -179,7 +179,8 @@
   .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    flex: 1;
+    min-height: 0;
     overflow: hidden;
   }
 
