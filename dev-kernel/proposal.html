@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>dev-kernel + spec-management — Plugin Structure Proposal</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #242836;
+    --border: #2e3345;
+    --text: #e2e4eb;
+    --muted: #8b8fa4;
+    --accent: #67e8f9;
+    --accent2: #c084fc;
+    --green: #86efac;
+    --amber: #fbbf24;
+    --red: #f87171;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+  }
+  h2 {
+    font-size: 1.1rem;
+    color: var(--accent2);
+    margin: 2rem 0 0.75rem;
+  }
+  h3 {
+    font-size: 0.95rem;
+    color: var(--green);
+    margin: 1.25rem 0 0.5rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+  .badge {
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .badge-skill { background: #1e3a5f; color: var(--accent); }
+  .badge-agent { background: #3b1f5e; color: var(--accent2); }
+  .badge-script { background: #2d3a1f; color: var(--green); }
+  .badge-spec { background: #3a2a1f; color: var(--amber); }
+  .badge-ref { background: #3a1f2a; color: var(--red); }
+  .badge-dep { background: #1f3a3a; color: #5eead4; }
+
+  .tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 0.82rem;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .tree .dir { color: var(--accent); }
+  .tree .file { color: var(--text); }
+  .tree .comment { color: var(--muted); font-style: italic; }
+  .tree .new { color: var(--green); }
+  .tree .kept { color: var(--muted); }
+  .tree .plugin-name { color: var(--accent2); font-weight: bold; }
+
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1rem 0;
+  }
+  @media (max-width: 768px) {
+    .comparison { grid-template-columns: 1fr; }
+  }
+  .comparison .card { margin-bottom: 0; }
+  .comparison .card-title {
+    font-size: 0.85rem;
+    color: var(--amber);
+    margin-bottom: 0.5rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 0.5rem 0;
+  }
+  th, td {
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th {
+    color: var(--muted);
+    font-weight: normal;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.5px;
+  }
+  td { color: var(--text); }
+  td code {
+    background: var(--surface2);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    color: var(--accent);
+  }
+
+  .flow {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-size: 0.82rem;
+  }
+  .flow-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+  }
+  .flow-step:last-child { margin-bottom: 0; }
+  .flow-num {
+    color: var(--accent);
+    font-weight: bold;
+    min-width: 2rem;
+  }
+  .flow-arrow {
+    color: var(--muted);
+    margin: 0 0.5rem;
+  }
+  .flow-desc { color: var(--text); }
+  .flow-desc .highlight { color: var(--accent2); }
+
+  .note {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .note strong { color: var(--accent); }
+
+  .note-warn {
+    background: var(--surface2);
+    border-left: 3px solid var(--red);
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .note-warn strong { color: var(--red); }
+
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2.5rem 0;
+  }
+
+  ul {
+    list-style: none;
+    padding-left: 1rem;
+  }
+  ul li {
+    position: relative;
+    padding-left: 1rem;
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+  }
+  ul li::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .dep-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .dep-diagram .box {
+    display: inline-block;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 1.25rem;
+    margin: 0.25rem;
+  }
+  .dep-diagram .box-primary {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .dep-diagram .box-secondary {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .dep-diagram .arrow {
+    color: var(--muted);
+    font-size: 1.25rem;
+    margin: 0 0.75rem;
+    vertical-align: middle;
+  }
+  .dep-diagram .label {
+    display: block;
+    color: var(--muted);
+    font-size: 0.72rem;
+    margin-top: 0.5rem;
+  }
+
+  .terminal-block {
+    background: #0a0c10;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin: 1rem 0;
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+  .terminal-block .prompt { color: var(--green); }
+  .terminal-block .output { color: var(--muted); }
+  .terminal-block .error { color: var(--red); }
+  .terminal-block .success { color: var(--green); }
+</style>
+</head>
+<body>
+
+<h1>dev-kernel + spec-management</h1>
+<p class="subtitle">
+  Two-plugin architecture: <code>spec-management</code> (standalone) and <code>dev-kernel</code> (depends on spec-management).
+  Restructured from the standalone <code>ai-dev-kernel</code> repo, following patterns from <code>plan-clarity</code>.
+</p>
+
+<!-- ===== TWO PLUGINS ===== -->
+<h2>Architecture: Two Plugins, One Dependency</h2>
+
+<div class="dep-diagram">
+  <span class="box box-primary">dev-kernel</span>
+  <span class="arrow">--depends-on--></span>
+  <span class="box box-secondary">spec-management</span>
+  <span class="label">init.sh checks for spec-management; prints error and exits non-zero if missing</span>
+</div>
+
+<div class="comparison">
+  <div class="card">
+    <div class="card-title">spec-management (standalone)</div>
+    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">
+      Any project can use this independently. Owns all spec scaffolding, maintenance, and tooling.
+    </p>
+    <ul>
+      <li><code>/manage-specs</code> skill</li>
+      <li><code>spec-tree.py</code> viewer</li>
+      <li>Scaffold templates (ARCHITECTURE.md, INTENT.md)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <div class="card-title">dev-kernel (pipeline)</div>
+    <p style="font-size:0.8rem; color:var(--muted); margin-bottom:0.5rem;">
+      Full AI dev pipeline. Reads <code>specs/</code> at runtime but never writes to it.
+      Requires spec-management at install time.
+    </p>
+    <ul>
+      <li><code>/dk</code> router + 5 phase skills</li>
+      <li>7 sub-agents (plan + batch)</li>
+      <li>Comms, launcher, validator scripts</li>
+    </ul>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== SPEC-MANAGEMENT TREE ===== -->
+<h2>Plugin 1: spec-management</h2>
+
+<div class="tree"><span class="plugin-name">plugins/spec-management/</span>
+├── <span class="dir">.claude-plugin/</span>
+│   └── <span class="file">plugin.json</span>              <span class="comment"># name, description, version</span>
+│
+├── <span class="dir">skills/</span>
+│   └── <span class="dir">manage-specs/</span>
+│       └── <span class="file">SKILL.md</span>              <span class="comment"># audit, create, update specs</span>
+│
+├── <span class="dir">scripts/</span>
+│   └── <span class="file">spec-tree.py</span>              <span class="comment"># spec tree viewer</span>
+│
+└── <span class="dir">templates/</span>
+    ├── <span class="file">ARCHITECTURE.md</span>           <span class="comment"># scaffolded into project specs/</span>
+    └── <span class="file">INTENT.md</span>                 <span class="comment"># scaffolded into project specs/</span>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <div class="card-header">
+    <code>.claude-plugin/plugin.json</code>
+    <span class="badge badge-spec">config</span>
+  </div>
+  <pre style="font-size:0.8rem; color:var(--text);">
+{
+  "name": "spec-management",
+  "description": "Living architecture documentation — audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection.",
+  "version": "1.0.0"
+}</pre>
+</div>
+
+<div class="note">
+  <strong>Flat structure</strong> — spec-management is small enough that namespace subdirectories
+  (scripts/specs/, etc.) would just add noise. Reserve that convention for larger plugins.
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== DEV-KERNEL TREE ===== -->
+<h2>Plugin 2: dev-kernel</h2>
+
+<div class="tree"><span class="plugin-name">plugins/dev-kernel/</span>
+├── <span class="dir">.claude-plugin/</span>
+│   └── <span class="file">plugin.json</span>              <span class="comment"># name, description, version</span>
+│
+├── <span class="dir">agents/</span>                        <span class="comment"># flat — filenames carry their prefix</span>
+│   ├── <span class="new">plan-classify.md</span>          <span class="comment"># domain classification agent</span>
+│   ├── <span class="new">plan-architect.md</span>         <span class="comment"># per-domain architecture agent</span>
+│   ├── <span class="new">plan-review.md</span>            <span class="comment"># cross-domain review agent</span>
+│   ├── <span class="new">plan-revise.md</span>            <span class="comment"># revision agent (post-review)</span>
+│   ├── <span class="new">plan-assemble.md</span>          <span class="comment"># status.yaml assembly agent</span>
+│   ├── <span class="new">batch-orchestrator.md</span>     <span class="comment"># per-stage ticket execution</span>
+│   └── <span class="new">batch-validate.md</span>         <span class="comment"># post-stage validation agent</span>
+│
+├── <span class="dir">skills/</span>                        <span class="comment"># user-invocable skills</span>
+│   ├── <span class="dir">dk/</span>
+│   │   └── <span class="file">SKILL.md</span>              <span class="comment"># router — /dk entry point</span>
+│   ├── <span class="dir">dk-vision/</span>
+│   │   └── <span class="file">SKILL.md</span>              <span class="comment"># conversational vision exploration</span>
+│   ├── <span class="dir">dk-design/</span>
+│   │   └── <span class="file">SKILL.md</span>              <span class="comment"># conversational deep-dive sessions</span>
+│   ├── <span class="dir">dk-plan/</span>
+│   │   └── <span class="file">SKILL.md</span>              <span class="comment"># automated planning orchestrator</span>
+│   ├── <span class="dir">dk-review/</span>
+│   │   └── <span class="file">SKILL.md</span>              <span class="comment"># conversational plan review</span>
+│   └── <span class="dir">dk-batch/</span>
+│       └── <span class="file">SKILL.md</span>              <span class="comment"># automated stage executor</span>
+│
+├── <span class="dir">scripts/</span>                       <span class="comment"># namespaced by concern</span>
+│   ├── <span class="dir">dk/</span>                        <span class="comment"># pipeline utilities</span>
+│   │   ├── <span class="file">launch.ts</span>             <span class="comment"># fresh terminal launcher</span>
+│   │   └── <span class="file">validate.py</span>           <span class="comment"># status.yaml schema validator</span>
+│   ├── <span class="dir">comms/</span>                     <span class="comment"># notifications &amp; integrations</span>
+│   │   └── <span class="file">ntfy.js</span>               <span class="comment"># push notifications (ntfy.sh)</span>
+│   └── <span class="file">init.sh</span>                   <span class="comment"># project bootstrapper</span>
+│
+└── <span class="dir">references/</span>
+    └── <span class="dir">dk/</span>                        <span class="comment"># runtime docs for agents/skills</span>
+        ├── <span class="file">PIPELINE.md</span>           <span class="comment"># pipeline architecture spec</span>
+        └── <span class="file">TEMPLATE.md</span>           <span class="comment"># status.yaml schema/template</span>
+</div>
+
+<div class="card" style="margin-top:1rem;">
+  <div class="card-header">
+    <code>.claude-plugin/plugin.json</code>
+    <span class="badge badge-spec">config</span>
+  </div>
+  <pre style="font-size:0.8rem; color:var(--text);">
+{
+  "name": "dev-kernel",
+  "description": "End-to-end AI dev pipeline — vision, design, plan, review, execute. Orchestrates context-isolated skills to take a vague idea through to implemented code.",
+  "version": "1.0.0"
+}</pre>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== INIT BEHAVIOR ===== -->
+<h2>Init &amp; Dependency Behavior</h2>
+
+<h3>Step 1: Check for spec-management</h3>
+
+<div class="terminal-block">
+<span class="prompt">$ bash plugins/dev-kernel/scripts/init.sh /path/to/project</span>
+
+<span class="output">ai-dev-kernel — installing into: /path/to/project</span>
+<span class="output">Checking dependencies...</span>
+
+<span class="error">  ✗ Required companion plugin not found: aahl-byte-plugins/spec-management</span>
+<span class="error">    Install it first:</span>
+<span class="error">      claude plugin install aahl-byte-plugins/spec-management</span>
+
+<span class="error">Aborted (exit 1)</span>
+</div>
+
+<h3>Step 2: Bootstrap (only if spec-management passes)</h3>
+
+<div class="terminal-block">
+<span class="prompt">$ bash plugins/dev-kernel/scripts/init.sh /path/to/project</span>
+
+<span class="output">ai-dev-kernel — installing into: /path/to/project</span>
+<span class="output">Checking dependencies...</span>
+<span class="success">  ✓ spec-management</span>
+<span class="output"></span>
+<span class="output">Installing scripts...</span>
+<span class="success">  ✓ scripts/dk/launch.ts</span>
+<span class="success">  ✓ scripts/dk/validate.py</span>
+<span class="success">  ✓ scripts/comms/ntfy.js</span>
+<span class="output"></span>
+<span class="output">Configuring package.json...</span>
+<span class="success">  ✓ Added dk:launch, dk:validate, ntfy scripts</span>
+<span class="output"></span>
+<span class="success">  ✓ Created tmp/initiatives/</span>
+<span class="success">  ✓ Added tmp/ to .gitignore</span>
+<span class="output"></span>
+<span class="output">Done! Run /dk to start your first initiative.</span>
+</div>
+
+<div class="note-warn">
+  <strong>No spec scaffolding here.</strong> dev-kernel does NOT create <code>specs/ARCHITECTURE.md</code>
+  or <code>INTENT.md</code> — that's spec-management's responsibility. It either has its own init
+  or <code>/manage-specs</code> scaffolds them on first run.
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== RUNTIME BOUNDARY ===== -->
+<h2>Runtime Boundary</h2>
+
+<div class="card">
+  <div class="card-header">
+    <span>Filesystem is the only coupling</span>
+    <span class="badge badge-dep">boundary</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Plugin</th>
+        <th>Reads specs/</th>
+        <th>Writes specs/</th>
+        <th>Invokes other plugin</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>spec-management</code></td>
+        <td>Yes</td>
+        <td>Yes</td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td><code>dev-kernel</code></td>
+        <td>Yes</td>
+        <td>No</td>
+        <td>No</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size:0.8rem; color:var(--muted); margin-top:0.75rem;">
+    No skill in dev-kernel writes to <code>specs/</code>. No skill imports or references
+    <code>${SPEC_MANAGEMENT_PLUGIN_ROOT}</code>. The boundary is the project filesystem:
+    dev-kernel reads <code>specs/</code>, spec-management writes <code>specs/</code>.
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span>Graceful fallback when specs are empty</span>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Skill</th><th>Spec interaction</th><th>If specs/ empty</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>dk-vision</code></td>
+        <td>None</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td><code>dk-design</code></td>
+        <td>None</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td><code>dk-plan</code></td>
+        <td>Reads domain specs for context</td>
+        <td>Works from design docs alone</td>
+      </tr>
+      <tr>
+        <td><code>dk-review</code></td>
+        <td>None (reads status.yaml)</td>
+        <td>N/A</td>
+      </tr>
+      <tr>
+        <td><code>dk-batch</code></td>
+        <td>Reads domain specs for sub-agents</td>
+        <td>Sub-agents work without</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== KEY STRUCTURAL DECISIONS ===== -->
+<h2>Key Structural Decisions</h2>
+
+<div class="card">
+  <div class="card-header">
+    <span>1. Specs separated into own plugin</span>
+    <span class="badge badge-dep">architecture</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted);">
+    The spec system (<code>manage-specs</code>, <code>spec-tree.py</code>, scaffold templates) has zero
+    dk-specific logic. Any project can use it for living architecture docs without the pipeline.
+    Separation keeps both plugins focused and independently useful.
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span>2. Agents extracted from skill bodies</span>
+    <span class="badge badge-agent">agents</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted);">
+    In the original repo, <code>dk-plan</code> and <code>dk-batch</code> inline their sub-agent prompts
+    within the SKILL.md. Following plan-clarity's pattern, these get extracted into standalone
+    <code>agents/*.md</code> files with frontmatter (name, description, model). Skills reference them
+    via <code>${CLAUDE_PLUGIN_ROOT}/agents/plan-classify.md</code>. Agents directory stays flat —
+    filenames already carry their prefix (<code>plan-*</code>, <code>batch-*</code>).
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span>3. Scripts namespaced by concern</span>
+    <span class="badge badge-script">scripts</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted);">
+    <code>scripts/dk/</code> for pipeline utilities (launch, validate).
+    <code>scripts/comms/</code> for notifications and integrations (ntfy.js today, slack/email later).
+    <code>init.sh</code> stays at the scripts root since it bootstraps everything.
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span>4. References namespaced under dk/</span>
+    <span class="badge badge-ref">references</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted);">
+    The original <code>specs/DK_PIPELINE.md</code> and <code>specs/DK_TEMPLATE.md</code> are pipeline
+    documentation that agents need to read at runtime. These become <code>references/dk/</code> — the same
+    pattern plan-clarity uses for <code>references/review/COMPONENTS.md</code>.
+  </p>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <span>5. Skills use plugin-relative paths</span>
+    <span class="badge badge-skill">skills</span>
+  </div>
+  <p style="font-size:0.82rem; color:var(--muted);">
+    All skill SKILL.md files use <code>${CLAUDE_PLUGIN_ROOT}</code> for referencing agents, scripts,
+    and references. Portable across global and per-project installs.
+  </p>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== AGENT BREAKDOWN ===== -->
+<h2>Agent Definitions</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Agent</th>
+      <th>Called By</th>
+      <th>Model</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>plan-classify</code></td>
+      <td>dk-plan</td>
+      <td>sonnet</td>
+      <td>Classifies areas into domains, identifies boundaries</td>
+    </tr>
+    <tr>
+      <td><code>plan-architect</code></td>
+      <td>dk-plan</td>
+      <td>opus</td>
+      <td>Per-domain architecture design + ticket generation</td>
+    </tr>
+    <tr>
+      <td><code>plan-review</code></td>
+      <td>dk-plan</td>
+      <td>opus</td>
+      <td>Cross-domain consistency review</td>
+    </tr>
+    <tr>
+      <td><code>plan-revise</code></td>
+      <td>dk-plan</td>
+      <td>sonnet</td>
+      <td>Apply review feedback, revise domain designs</td>
+    </tr>
+    <tr>
+      <td><code>plan-assemble</code></td>
+      <td>dk-plan</td>
+      <td>sonnet</td>
+      <td>Assemble domains into staged status.yaml</td>
+    </tr>
+    <tr>
+      <td><code>batch-orchestrator</code></td>
+      <td>dk-batch</td>
+      <td>opus</td>
+      <td>Execute all tickets in a stage</td>
+    </tr>
+    <tr>
+      <td><code>batch-validate</code></td>
+      <td>dk-batch</td>
+      <td>sonnet</td>
+      <td>Post-stage validation (types, tests, lint)</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="section-divider">
+
+<!-- ===== SKILL ROUTING ===== -->
+<h2>Skill Invocation Flow</h2>
+
+<div class="flow">
+  <div class="flow-step">
+    <span class="flow-num">1</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-desc">User types <span class="highlight">/dk</span> or <span class="highlight">/dev-kernel:dk</span></span>
+  </div>
+  <div class="flow-step">
+    <span class="flow-num">2</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-desc">Router reads <code>tmp/initiatives/</code> state files</span>
+  </div>
+  <div class="flow-step">
+    <span class="flow-num">3</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-desc">Routes to appropriate skill: <span class="highlight">dk-vision</span> | <span class="highlight">dk-design</span> | <span class="highlight">dk-plan</span> | <span class="highlight">dk-review</span> | <span class="highlight">dk-batch</span></span>
+  </div>
+  <div class="flow-step">
+    <span class="flow-num">4</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-desc">Automated skills spawn agents from <code>${CLAUDE_PLUGIN_ROOT}/agents/</code></span>
+  </div>
+  <div class="flow-step">
+    <span class="flow-num">5</span>
+    <span class="flow-arrow">&rarr;</span>
+    <span class="flow-desc">Conversational transitions open fresh terminal via <code>scripts/dk/launch.ts</code></span>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== MIGRATION TABLE ===== -->
+<h2>Migration from ai-dev-kernel repo</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Original Location</th>
+      <th>New Location</th>
+      <th>Change</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>skills/dk*/SKILL.md</code></td>
+      <td><code>dev-kernel/skills/dk*/SKILL.md</code></td>
+      <td>Path refs updated to use <code>${CLAUDE_PLUGIN_ROOT}</code></td>
+    </tr>
+    <tr>
+      <td><code>skills/manage-specs/SKILL.md</code></td>
+      <td><code>spec-management/skills/manage-specs/SKILL.md</code></td>
+      <td>Moved to separate plugin</td>
+    </tr>
+    <tr>
+      <td><code>scripts/dk/launch.ts</code></td>
+      <td><code>dev-kernel/scripts/dk/launch.ts</code></td>
+      <td>Kept under dk/ namespace</td>
+    </tr>
+    <tr>
+      <td><code>scripts/dk/validate.py</code></td>
+      <td><code>dev-kernel/scripts/dk/validate.py</code></td>
+      <td>Kept under dk/ namespace</td>
+    </tr>
+    <tr>
+      <td><code>scripts/dk/ntfy.js</code></td>
+      <td><code>dev-kernel/scripts/comms/ntfy.js</code></td>
+      <td>Moved to comms/ namespace</td>
+    </tr>
+    <tr>
+      <td><code>scripts/spec-tree.py</code></td>
+      <td><code>spec-management/scripts/spec-tree.py</code></td>
+      <td>Moved to separate plugin</td>
+    </tr>
+    <tr>
+      <td><code>specs/DK_PIPELINE.md</code></td>
+      <td><code>dev-kernel/references/dk/PIPELINE.md</code></td>
+      <td>Runtime doc for agents, not a scaffold</td>
+    </tr>
+    <tr>
+      <td><code>specs/DK_TEMPLATE.md</code></td>
+      <td><code>dev-kernel/references/dk/TEMPLATE.md</code></td>
+      <td>Runtime doc for agents, not a scaffold</td>
+    </tr>
+    <tr>
+      <td><code>init.sh</code> (root)</td>
+      <td><code>dev-kernel/scripts/init.sh</code></td>
+      <td>No longer copies skills; checks for spec-management</td>
+    </tr>
+    <tr>
+      <td>Inline agent prompts in skills</td>
+      <td><code>dev-kernel/agents/*.md</code></td>
+      <td>Extracted — reusable, testable, model-tagged</td>
+    </tr>
+    <tr>
+      <td>Scaffold specs (ARCHITECTURE, INTENT)</td>
+      <td><code>spec-management/templates/</code></td>
+      <td>Owned by spec-management, not dev-kernel</td>
+    </tr>
+  </tbody>
+</table>
+
+<hr class="section-divider">
+
+<!-- ===== COMPARISON WITH PLAN-CLARITY ===== -->
+<h2>Comparison: plan-clarity vs. dev-kernel</h2>
+
+<div class="card">
+  <p style="font-size:0.82rem; color:var(--muted);">
+    plan-clarity is a <strong>single-skill</strong> plugin (one orchestrator, multiple facet agents, one output).
+    dev-kernel is a <strong>multi-skill pipeline</strong> (router + 5 phase skills, with sub-agents in automated phases)
+    that depends on a separate <strong>spec-management</strong> plugin.
+  </p>
+  <table style="margin-top:0.75rem;">
+    <thead>
+      <tr><th>Aspect</th><th>plan-clarity</th><th>dev-kernel</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Skills</td>
+        <td>1 (<code>pc-review</code>)</td>
+        <td>6 (<code>dk</code> + 5 phases)</td>
+      </tr>
+      <tr>
+        <td>Agents</td>
+        <td>5 (parallel facets)</td>
+        <td>7 (pipeline sub-agents)</td>
+      </tr>
+      <tr>
+        <td>Companion plugin</td>
+        <td>None</td>
+        <td><code>spec-management</code></td>
+      </tr>
+      <tr>
+        <td>Interaction mode</td>
+        <td>Fully automated</td>
+        <td>Mixed (conversational + automated)</td>
+      </tr>
+      <tr>
+        <td>Output</td>
+        <td>Single-file HTML</td>
+        <td>File-based state + implemented code</td>
+      </tr>
+      <tr>
+        <td>Template dir</td>
+        <td>Yes (Svelte app)</td>
+        <td>No (YAML/markdown)</td>
+      </tr>
+      <tr>
+        <td>Init script</td>
+        <td>Per-review scaffolding</td>
+        <td>One-time project bootstrapping</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="section-divider">
+
+<!-- ===== DESIGN PRINCIPLES ===== -->
+<h2>Design Principles</h2>
+
+<ul>
+  <li><strong>Single entry point</strong> — <code>/dk</code> routes everything; users don't call sub-skills directly</li>
+  <li><strong>Agents are data</strong> — markdown files with frontmatter, not inline prompt strings</li>
+  <li><strong>References are read-only docs</strong> — agents read them, never write to them</li>
+  <li><strong>Scripts namespaced by concern</strong> — <code>dk/</code> for pipeline, <code>comms/</code> for notifications</li>
+  <li><strong>File-based state lives in the target project</strong> — <code>tmp/initiatives/</code>, not the plugin</li>
+  <li><strong>Filesystem boundary between plugins</strong> — dev-kernel reads <code>specs/</code>, spec-management writes it</li>
+  <li><strong>Plugin is portable</strong> — works via <code>${CLAUDE_PLUGIN_ROOT}</code>, no hardcoded paths</li>
+  <li><strong>Dependency enforced at init</strong> — not at runtime; print and exit non-zero</li>
+</ul>
+
+<hr class="section-divider">
+
+<div class="note">
+  <strong>Next step:</strong> Scaffold both plugin directories under <code>plugins/</code> and
+  migrate content from the standalone <code>ai-dev-kernel</code> repo — extracting inline agent
+  prompts, splitting spec-management out, and updating all path references.
+</div>
+
+</body>
+</html>

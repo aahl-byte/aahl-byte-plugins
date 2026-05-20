@@ -1,0 +1,5 @@
+{
+  "name": "spec-management",
+  "description": "Living architecture documentation — audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection.",
+  "version": "1.0.0"
+}

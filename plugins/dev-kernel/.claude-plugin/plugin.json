@@ -1,0 +1,5 @@
+{
+  "name": "dev-kernel",
+  "description": "End-to-end AI dev pipeline — vision, design, plan, review, execute. Orchestrates context-isolated skills to take a vague idea through to implemented code.",
+  "version": "1.0.0"
+}
