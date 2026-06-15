@@ -1,0 +1,5 @@
+{
+  "name": "notes-architect",
+  "description": "Architect of living study-notes sites — decomposes a topic right→left into onion tiers, scaffolds a docsify site, and delegates one sub-agent per page to write learner-first notes.",
+  "version": "1.0.0"
+}

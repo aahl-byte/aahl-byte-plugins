@@ -8,6 +8,11 @@
       "name": "plan-clarity",
       "source": "./plugins/plan-clarity",
       "description": "Multi-facet interactive design review — orchestrates parallel agents to produce risk, execution, logic, data, and layout reviews as a single-file HTML"
+    },
+    {
+      "name": "notes-architect",
+      "source": "./plugins/notes-architect",
+      "description": "Architect of living study-notes sites — decomposes a topic right→left into onion tiers, scaffolds a docsify site, and delegates one sub-agent per page to write learner-first notes"
     }
   ]
 }
