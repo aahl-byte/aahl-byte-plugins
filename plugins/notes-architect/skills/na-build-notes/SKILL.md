@@ -38,16 +38,24 @@ before proceeding.
 
 Decompose the topic **right → left**: start from "how big things get done" with this
 topic — the real outcomes — and work leftward into the capabilities, then the
-specifics. Map the result onto the four onion tiers (foundation → building blocks →
-cross-cutting → synthesis).
+specifics. Then organize the result with the **two-scale onion** (see PHILOSOPHY §2):
 
-Decide the **pages**: name each one, assign it to a tier, and write a one-line
-purpose plus the cross-links it should make to other pages.
+1. **Macro onion — DOMAINS.** Split the topic into domains and order them by
+   dependency: a **GLOBAL FOUNDATION** domain first, then domains that deepen it or
+   open genuinely separate boundaries (simpler-first among independent ones). Name
+   domains by subject, not by depth. **A small topic is just one domain** — don't
+   invent domains a topic doesn't have.
+2. **Micro onion — PHASES.** Within each domain, place pages into the phases
+   (foundation → building blocks → cross-cutting → synthesis). Use a phase only when
+   it holds pages.
+
+Decide the **pages**: name each one, assign it to a domain + phase, and write a
+one-line purpose plus the cross-links it should make to other pages.
 
 **Present this outline to the user and wait for a reaction before writing anything.**
 The outline is the lesson plan — it is cheaper to fix here than after the pages
-exist. Show: the tiers, the pages under each, and the through-line that connects
-them.
+exist. Show: the domains (in onion order), the phases + pages under each, and the
+through-line that connects them.
 
 ### 3. Scaffold
 
@@ -68,8 +76,10 @@ Create the section subfolders your outline needs (e.g. `notes/foundation/`,
 
 The architect owns the structural pages. Write these directly (do NOT delegate):
 
-- `notes/_sidebar.md` — organized by onion tier, site-absolute paths, DOMAINS made
-  visually distinct (uppercase + tier sub-label), one entry per page you plan.
+- `notes/_sidebar.md` — the two-scale onion, site-absolute paths: top-level `**bold**`
+  = a DOMAIN (in onion order) with a `<small>` caption; nested `**bold**` = an onion
+  PHASE; links beneath = pages. List a phase only when it holds pages; for a
+  single-phase domain, skip phase headers and list pages directly. One entry per page.
 - `notes/home.md` — lean, casual landing: how the notes are structured (the onion)
   and where to start.
 - `notes/_coverpage.md` and `notes/_navbar.md` — tailor the title/tagline/links to
@@ -106,15 +116,32 @@ cross-link resolves, and the sidebar covers every page with no orphans. Fix any
 findings (re-spawn the responsible author agent for content fixes; fix nav files
 yourself).
 
-### 7. Report & offer to publish
+### 7. Report, then ASK how they want to deploy
 
-Summarize the tiers and pages produced. Then:
+Summarize the domains, phases, and pages produced. Tell the user how to preview
+locally: `cd notes && python3 -m http.server` (or any static server), open the URL.
 
-- Tell the user how to preview locally:
-  `cd notes && python3 -m http.server` (or any static server), open `index.html`.
-- Note GitHub Pages publishing: serve the repo (or the `notes/` folder) — `.nojekyll`
-  is already present.
-- Offer to commit and push the new site.
+Then **ask how they want to deploy** — don't assume. Offer:
+
+- **GitHub Pages (recommended)** — serverless, free, no build. If chosen, copy the
+  workflow into place:
+  ```bash
+  mkdir -p .github/workflows
+  cp ${CLAUDE_PLUGIN_ROOT}/template/deploy/github-pages.yml .github/workflows/deploy-pages.yml
+  ```
+  The site is a no-build docsify app, so the workflow just publishes `notes/` as-is
+  (`.nojekyll` is already present). Check the `branches:` value matches their default
+  branch, and remind them to enable Pages → "GitHub Actions" in repo settings.
+- **Another static host** (Netlify / Vercel / Cloudflare Pages / S3) — point it at the
+  `notes/` folder as the publish directory; there is no build command.
+- **Local only** — nothing more to do.
+
+Optionally offer the convenience `Makefile` (`make serve/open/stop/verify`):
+```bash
+cp ${CLAUDE_PLUGIN_ROOT}/template/deploy/Makefile ./Makefile
+```
+
+Finally, offer to commit and push the new site.
 
 ---
 

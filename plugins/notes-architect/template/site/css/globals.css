@@ -117,23 +117,35 @@ html, body {
 .markdown-section tr:nth-child(2n) { background: rgba(255, 255, 255, .02); }
 
 /* ── sidebar ────────────────────────────────────────────────────────────── */
+/* Two-scale onion: top-level <li> = a DOMAIN (a macro-onion layer); nested
+   **bold** = an onion PHASE within that domain; links beneath = pages. A
+   single-phase domain may list its pages directly with no phase header — the
+   phase rules below are simply inert when no phase <strong> is present. */
+.sidebar-nav ul { margin: 0; }
 .sidebar {
   background: var(--bg-soft);
   border-right: 1px solid var(--border);
   width: var(--sidebar-w-tablet);
+  padding: .5rem;   /* trim vue.css's 40px top gap */
 }
-.sidebar > h1 { margin: 1.4rem 0 .6rem; }
+.sidebar > h1 { margin: .6rem 0; }
 .sidebar > h1 a { color: var(--heading); font-weight: 800; }
 
-.sidebar-nav { padding: 0 .9rem 2rem; line-height: 1.5; }
+.sidebar-nav { padding-bottom: 2rem; line-height: 1; }
+.sidebar-nav .app-sub-sidebar { margin-left: 1rem; line-height: 1.2rem; }
 
-/* top-level <li> = a DOMAIN (onion tier). Make it visually distinct. */
+/* top-level <li> = a DOMAIN (macro-onion layer). Make it visually distinct. */
 .sidebar-nav > ul > li {
   margin-top: 1.4rem;
   padding-top: 1.1rem;
   border-top: 1px solid var(--border);
+  line-height: 1.2rem;
 }
-.sidebar-nav > ul > li:first-child { border-top: none; margin-top: .4rem; padding-top: 0; }
+.sidebar-nav > ul > li:first-child {
+  border-top: none;
+  margin-top: .4rem;
+  padding-top: 0;
+}
 
 .sidebar-nav > ul > li > strong {
   display: block;
@@ -143,21 +155,44 @@ html, body {
   font-size: .78rem;
   font-weight: 800;
 }
-/* the smaller tier sub-label beneath a domain */
+/* the smaller domain caption — light + thin, tucked right under the title */
 .sidebar-nav > ul > li > strong + small,
 .sidebar-nav small {
   display: block;
   color: var(--text-soft);
   font-size: .72rem;
-  margin: .1rem 0 .5rem;
+  font-weight: 100;
+  opacity: .5;
+  line-height: 1;
+  margin-left: .5rem;
 }
 
-/* page links nested under a domain */
-.sidebar-nav ul ul { margin-left: 0; }
-.sidebar-nav ul ul li a {
+/* onion PHASE sub-headers within a domain — a quiet uppercase "eyebrow" label.
+   Deliberately NOT link-colored, so it never reads as a clickable page. */
+.sidebar-nav > ul > li > ul > li > strong {
+  display: block;
   color: var(--text-soft);
+  text-transform: uppercase;
+  letter-spacing: .13em;
+  font-size: .62rem;
+  font-weight: 700;
+  opacity: .72;
+  margin-top: 1.5rem;
+}
+.sidebar-nav > ul > li > ul > li:first-child > strong { margin-top: .8rem; }
+
+/* page links — brighter than the labels, and indented under a faint guide line
+   (when nested below a phase) so the grouping reads clearly. */
+.sidebar-nav ul ul { padding-left: 0; }
+.sidebar-nav > ul > li > ul > li > ul {
+  padding-left: .8rem;
+  margin-left: .15rem;
+  border-left: 1px solid var(--border);
+}
+.sidebar-nav ul ul li a {
+  color: var(--text);
   font-size: .92rem;
-  padding: .15rem 0;
+  padding: 0;
 }
 .sidebar-nav a:hover { color: var(--accent); }
 .sidebar-nav li.active > a,
@@ -167,16 +202,79 @@ html, body {
   border-right: 2px solid var(--accent);
 }
 
-/* ── search ─────────────────────────────────────────────────────────────── */
-.search input {
+/* ── top navbar + its dropdown ──────────────────────────────────────────── */
+.app-nav a { color: var(--text-soft); }
+.app-nav a.active,
+.app-nav a:hover { color: var(--accent); }
+.app-nav a.active { border-bottom-color: var(--accent); }
+
+/* dropdown panel (vue.css hardcodes a white background) */
+.app-nav li ul {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .45);
+}
+.app-nav li ul li a { color: var(--text); }
+.app-nav li ul li a:hover { color: var(--accent); }
+
+/* ── sidebar toggle (hamburger) ─────────────────────────────────────────── */
+/* vue.css pins this bottom-left, 284px wide, white. Move it top-left, size it
+   to the icon, and let it float transparently over whatever's behind it. */
+.sidebar-toggle,
+body.close .sidebar-toggle {
+  top: 0;
+  bottom: auto;
+  left: 0;
+  width: auto;
+  padding: 14px 16px;
+  background: transparent;
+  border-right: none;
+}
+.sidebar-toggle span { background-color: var(--accent); }
+
+/* ── dedicated search page (#notes-search, mounted by the notesSearch plugin) ─ */
+#notes-search { margin: 1.4rem 0 2rem; }
+#notes-search .ns-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: .75rem .95rem;
+  font-size: 1rem;
   background: var(--bg-elev);
   border: 1px solid var(--border);
   color: var(--text);
-  border-radius: 6px;
+  border-radius: 8px;
 }
-.search .results-panel { color: var(--text); }
-.search .matching-post { border-bottom: 1px solid var(--border); }
-.search p.empty { color: var(--text-soft); }
+#notes-search .ns-input:focus { outline: none; border-color: var(--accent); }
+#notes-search .ns-status { color: var(--text-soft); font-size: .76rem; margin: .55rem .1rem 1rem; }
+
+#notes-search .ns-results { display: flex; flex-direction: column; gap: .55rem; }
+#notes-search .ns-result {
+  display: block;
+  padding: .8rem .95rem;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+#notes-search .ns-result:hover { border-color: var(--accent); }
+
+#notes-search .ns-crumb { font-size: .72rem; letter-spacing: .02em; margin-bottom: .3rem; }
+#notes-search .ns-domain { color: var(--domain); text-transform: uppercase; font-weight: 800; }
+#notes-search .ns-phase { color: var(--accent); }
+#notes-search .ns-chapter { color: var(--text); }
+#notes-search .ns-sep { color: var(--text-soft); margin: 0 .35rem; }
+
+#notes-search .ns-trail { font-size: .82rem; color: var(--heading); font-weight: 600; margin-bottom: .3rem; }
+#notes-search .ns-arrow { color: var(--text-soft); margin: 0 .35rem; font-weight: 400; }
+
+#notes-search .ns-snippet { font-size: .85rem; color: var(--text-soft); line-height: 1.6; }
+#notes-search .ns-snippet mark {
+  background: var(--accent-soft);
+  color: var(--heading);
+  border-radius: 3px;
+  padding: 0 .15em;
+}
+#notes-search .ns-empty { color: var(--text-soft); }
 
 /* ── pagination ─────────────────────────────────────────────────────────── */
 .docsify-pagination-container {
@@ -191,7 +289,9 @@ section.cover .cover-main > p > a {
   border-color: var(--accent);
   color: var(--accent);
 }
-section.cover .cover-main > p > a:last-child {
+/* both CTAs are outline by default; the FIRST one (start reading) is primary.
+   (vue.css order is [start reading] then [search], so target :first-child.) */
+section.cover .cover-main > p > a:first-child {
   background: var(--accent);
   color: var(--bg);
   border-color: var(--accent);
