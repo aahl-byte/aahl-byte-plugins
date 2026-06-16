@@ -38,8 +38,14 @@ Build a foundation of understanding, then peel back to specifics — never the
 reverse. Each layer must be complete and correct **on its own terms**, so a reader
 can stop at any depth and still hold a true (if coarse) mental model.
 
-1. **Outer skin — the MENTAL MODEL.** The shape of the thing in plain language, with
-   an analogy a beginner already owns. No jargon survives this layer undefined.
+1. **Outer skin — the MENTAL MODEL.** Describe the system *as it actually works* in
+   plain, jargon-free language, then name what you just described with the standard
+   term. The plain description does the teaching; the jargon is only the label for it.
+   Do NOT substitute an unrelated metaphor for that description — a comparison borrowed
+   from some other domain is the kind of analogy that falls flat. (A genuinely apt
+   comparison may supplement the description, but it never replaces describing the real
+   mechanics.) Assume the reader knows common terms and lean on the foundation pages
+   for the rest.
 2. **Middle layers — the MOVING PARTS.** The components and how they relate; what
    each is FOR, when you'd reach for it, what it replaces. Relationships over
    enumeration.
@@ -92,9 +98,11 @@ topic genuinely has parallel tracks or layered boundaries.
 ## 3. write for how people actually learn
 
 - **Manage cognitive load:** one hard idea at a time.
-- **Scaffold, then remove the scaffold:** lead with a familiar analogy, then
-  graduate to the precise term. Analogies are training wheels — retire them before
-  they mislead.
+- **Describe, then name:** explain the process directly in plain, jargon-free terms,
+  then attach the standard term to what you just described. The description carries the
+  understanding; the term is just its handle. Don't reach to an unrelated domain for a
+  metaphor — that's the analogy that falls flat. An apt comparison can supplement the
+  plain description, never replace it.
 - **Build schemas, not lists:** always answer "why does this exist" and "what does
   it connect to" before "what are its parameters."
 - **Progressive disclosure:** the first third of any page is a correct *coarse*
@@ -166,7 +174,25 @@ full-screen drawer on phones that auto-closes on selection.
 
 ---
 
-## 6. verification (before publishing)
+## 6. the cleanup pass — read the site as one document
+
+Pages are drafted one at a time (often by separate agents that never saw each other's
+work). Before publishing, someone with the **whole-site view** reads them together and
+edits across files. This pass is where a pile of correct pages becomes one coherent set
+of notes:
+
+- **Consistency** of terminology, voice, heading style, and depth across pages — the
+  site should read as one author.
+- **Connection:** cross-link ideas where they're re-encountered, and point each page
+  back to its prerequisite chapter(s) so the reading order is discoverable.
+- **A second editorial eye** on each chapter: tighten prose, fix gaps, cut padding,
+  and confirm every page still opens outcome-first and stays plainly described.
+- **Structure:** adjust architecture, page order, or sidebar grouping where the
+  through-line is weak, now that the real content exists.
+
+This is the one pass that intentionally crosses single-file boundaries.
+
+## 7. verification (before publishing)
 
 Run `node scripts/verify.js [site-root]` (default `notes`). It enforces:
 

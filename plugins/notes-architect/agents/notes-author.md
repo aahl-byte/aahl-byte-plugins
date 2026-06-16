@@ -31,12 +31,15 @@ replacement for it.
 2. **Right → left.** Open with the outcome — what a real person/system is trying to
    accomplish with this — not with a primitive or a definition. Name the destination
    before the road.
-3. **Onion order within the page.** First third = a correct *coarse* mental model
-   (analogy a beginner already owns). Middle = the moving parts and how they relate
-   (what each is FOR, when to reach for it). Last = the specifics/parameters.
-4. **Analogy before jargon.** Introduce a familiar analogy, then graduate to the
-   precise term — and retire the analogy before it misleads. No undefined jargon
-   survives the opening.
+3. **Onion order within the page.** First third = a correct *coarse* mental model in
+   plain language. Middle = the moving parts and how they relate (what each is FOR,
+   when to reach for it). Last = the specifics/parameters.
+4. **Describe the system, then name it.** Explain what the thing actually does in
+   plain, jargon-free language, then attach the standard term to what you just
+   described — the description teaches, the term is just its label. Don't reach to an
+   unrelated domain for a metaphor (that's the analogy that falls flat); an apt
+   comparison may supplement the plain description but never replaces it. Assume the
+   reader knows common terms; lean on the foundation pages for anything they might not.
 5. **Concept before code.** Never lead with a code block. State the idea, then show a
    short, illustrative example in the given language.
 6. **Contrast teaches.** Where options compete, write "X instead of Y because Z" and

@@ -116,7 +116,31 @@ cross-link resolves, and the sidebar covers every page with no orphans. Fix any
 findings (re-spawn the responsible author agent for content fixes; fix nav files
 yourself).
 
-### 7. Report, then ASK how they want to deploy
+### 7. CLEANUP pass — a second editorial eye
+
+The pages were written in parallel by separate agents that never saw each other's
+output. Now that they all exist, the architect makes **one holistic pass** over the
+whole site — you hold the only whole-site view, so this is your job, not a delegated
+one. Read the pages **together**, not in isolation, and edit in place to:
+
+- **Consistency.** Align terminology, heading style, voice, and depth across pages so
+  the site reads as one author. Reconcile anywhere two pages name or define the same
+  thing differently.
+- **Connection.** Add cross-links where one page re-encounters an idea another page
+  owns, and point each page back to its prerequisite chapter(s) so the reading order
+  is discoverable. Note-to-note links stay relative.
+- **Content review.** Re-read each chapter as a fresh editor: tighten prose, fix gaps
+  or inaccuracies, cut padding. Confirm each page still opens outcome-first and
+  describes-then-names — plain language for the mechanics, no unrelated borrowed
+  analogies, no jargon the foundation pages don't cover.
+- **Structure.** Adjust architecture, page order, sidebar grouping, or prose wherever
+  the through-line is weak. Move or merge pages if the onion order reads wrong now
+  that the real content exists.
+
+You may edit **any** file in this pass — this is the one step where the whole-site
+view outranks single-file scope. Re-run `verify.js` after any structural or link edits.
+
+### 8. Report, then ASK how they want to deploy
 
 Summarize the domains, phases, and pages produced. Tell the user how to preview
 locally: `cd notes && python3 -m http.server` (or any static server), open the URL.
@@ -149,6 +173,7 @@ Finally, offer to commit and push the new site.
 
 - The architect does the **decomposition, naming, sidebar, and landing pages**.
   Everything else (page bodies) is delegated.
-- Never lead a page with a primitive or with code. Outcome first, analogy second,
-  specifics last. Enforce this when reviewing agent output.
+- Never lead a page with a primitive or with code. Outcome first, then a plain
+  jargon-free description of the system named with its standard term, specifics last —
+  no unrelated borrowed analogies. Enforce this when reviewing agent output.
 - Author agents share the filesystem — never isolate them.
