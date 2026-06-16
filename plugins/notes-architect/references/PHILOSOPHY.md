@@ -46,20 +46,46 @@ can stop at any depth and still hold a true (if coarse) mental model.
 3. **Core — the SPECIFICS.** The detail that only makes sense once the outer layers
    exist.
 
-### the default tier scheme
+### the onion is SELF-SIMILAR — apply it at two scales
 
-The architect organizes *any* topic into these four onion tiers. They become the
-visually-distinct DOMAINS in the sidebar.
+The onion isn't a single ladder; it repeats fractally. A real topic has a **macro
+onion across DOMAINS** and, inside each domain, a **micro onion across PHASES.**
 
-| Tier | Domain label | What lives here |
-|------|--------------|-----------------|
-| 1 | **FOUNDATION** — the mental model | orientation, the plain-language shape + a beginner-owned analogy, the vocabulary |
-| 2 | **BUILDING BLOCKS** — the moving parts | the components; what each is *for*, when to reach for it, what it replaces |
-| 3 | **CROSS-CUTTING** — concerns that span the blocks | tradeoffs, pitfalls, "use X instead of Y because Z", patterns |
-| 4 | **SYNTHESIS** — putting it together | end-to-end worked examples, real systems, the details that only land last |
+**Macro onion — the DOMAINS (top level of the sidebar).** Decompose the topic into
+domains and order them so each rests on the ones before it:
 
-Not every topic needs all four tiers, and a tier may hold several pages. The tiers
-are the skeleton, not a quota.
+1. Start with a **GLOBAL FOUNDATION** domain — the shared core every later domain
+   assumes (the trunk of the tree).
+2. Then add domains that either *deepen the foundation* or open a *genuinely separate
+   boundary*. Order them by **dependency**; where two domains are independent (parallel
+   tracks), put the simpler one first.
+3. The "stop at any depth and still hold a true model" rule applies **here too**: after
+   finishing domain N, a reader should hold a coherent (if partial) model.
+
+Name domains by **subject/boundary**, not by depth — depth is the phase axis's job.
+When a subject grows too big, split it into more domains *by sub-topic*; don't suffix
+domains with `-deep-dive`/`-esoteric` (that double-encodes the onion and blurs the
+domain/phase line). A late "revisit the core, harder" domain is fine and valuable —
+name it for what it covers and let its late position convey the depth.
+
+**Micro onion — the PHASES (within each domain).** Inside a domain, organize pages
+into these four phases:
+
+| Phase | Label | What lives here |
+|-------|-------|-----------------|
+| 1 | **foundation** — the mental model | orientation, the plain-language shape + a beginner-owned analogy, the vocabulary |
+| 2 | **building blocks** — the moving parts | the components; what each is *for*, when to reach for it, what it replaces |
+| 3 | **cross-cutting** — concerns that span the blocks | tradeoffs, pitfalls, "use X instead of Y because Z", patterns |
+| 4 | **synthesis** — putting it together | end-to-end worked examples, real systems, the details that only land last |
+
+Not every domain needs all four phases, and a phase may hold several pages — the
+phases are a skeleton, not a quota. Emit a phase header only when it holds pages;
+for a **single-phase domain, skip the phase headers** and list its pages directly.
+
+**The degenerate case is a SMALL topic = one domain.** A topic that doesn't warrant
+multiple domains is simply one `GLOBAL FOUNDATION` domain with the four phases inside
+it — which is exactly the default scaffold. Reach for multiple domains only when the
+topic genuinely has parallel tracks or layered boundaries.
 
 ---
 
@@ -114,13 +140,20 @@ root). Files:
 
 - `index.html` — the docsify shell holding ONE central dark theme. Configured with
   `loadSidebar`, `loadNavbar`, `coverpage`, `relativePath: true`, `auto2top`,
-  full-text search, copy-code, and pagination. Every element is themed from here (via
-  `css/globals.css`) so pages need no styling of their own.
+  copy-code, and pagination, plus the bundled `notesSearch` plugin (see below).
+  Every element is themed from here (via `css/globals.css`) so pages need no styling
+  of their own.
 - `css/globals.css` — the palette source of truth. Owns the dark theme, the `<em>`
-  highlight color, and the responsive sidebar.
-- `_sidebar.md` — navigation organized by onion tier, using site-absolute paths.
-  Top-level DOMAINS are visually distinct from page links (divider + uppercase +
-  accent color) with smaller tier sub-labels beneath.
+  highlight color, the two-scale sidebar (domains → phases → pages), and the
+  breadcrumb search results.
+- `_sidebar.md` — navigation as the two-scale onion (DOMAINS → optional PHASE
+  sub-headers → pages), using site-absolute paths. Top-level DOMAINS are visually
+  distinct (divider + uppercase + accent color, with a light caption beneath); phases
+  read as quiet uppercase eyebrows; pages sit indented under a faint guide line.
+- A bundled **`notesSearch`** plugin (defined inline in `index.html`) replaces
+  docsify's built-in search. It indexes every page client-side and renders results
+  on `search.md` carrying the onion breadcrumb (DOMAIN · phase · chapter) plus the
+  heading trail, so a hit's place in the structure is obvious.
 - `_navbar.md`, `_coverpage.md`, `home.md` — the landing experience. Keep `home`
   LEAN and casual: a short note on how the notes are structured (the onion) and where
   to start — not self-promotion.
