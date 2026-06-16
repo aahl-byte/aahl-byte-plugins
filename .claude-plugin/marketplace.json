@@ -8,6 +8,16 @@
       "name": "plan-clarity",
       "source": "./plugins/plan-clarity",
       "description": "Multi-facet interactive design review — orchestrates parallel agents to produce risk, execution, logic, data, and layout reviews as a single-file HTML"
+    },
+    {
+      "name": "dev-kernel",
+      "source": "./plugins/dev-kernel",
+      "description": "End-to-end AI dev pipeline — vision, design, plan, review, execute. Orchestrates context-isolated skills to take a vague idea through to implemented code."
+    },
+    {
+      "name": "spec-management",
+      "source": "./plugins/spec-management",
+      "description": "Living architecture documentation — audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection."
     }
   ]
 }
