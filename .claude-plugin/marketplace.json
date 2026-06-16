@@ -10,14 +10,19 @@
       "description": "Multi-facet interactive design review — orchestrates parallel agents to produce risk, execution, logic, data, and layout reviews as a single-file HTML"
     },
     {
+      "name": "spec-management",
+      "source": "./plugins/spec-management",
+      "description": "Living architecture documentation — audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection."
+    },
+    {
       "name": "dev-kernel",
       "source": "./plugins/dev-kernel",
       "description": "End-to-end AI dev pipeline — vision, design, plan, review, execute. Orchestrates context-isolated skills to take a vague idea through to implemented code."
     },
     {
-      "name": "spec-management",
-      "source": "./plugins/spec-management",
-      "description": "Living architecture documentation — audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection."
+      "name": "notes-architect",
+      "source": "./plugins/notes-architect",
+      "description": "Architect of living study-notes sites — decomposes a topic right→left into onion tiers, scaffolds a docsify site, and delegates one sub-agent per page to write learner-first notes"
     }
   ]
 }
