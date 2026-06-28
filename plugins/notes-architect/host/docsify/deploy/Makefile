@@ -10,7 +10,7 @@ PORT  ?= 3000
 URL   := http://localhost:$(PORT)/
 
 .DEFAULT_GOAL := help
-.PHONY: help serve open stop verify
+.PHONY: help serve open stop build verify
 
 help: ## show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -26,10 +26,17 @@ open: ## open the served site in your browser
 stop: ## stop a server left running on $(PORT)
 	@lsof -ti:$(PORT) | xargs kill 2>/dev/null && echo "stopped server on $(PORT)" || echo "nothing running on $(PORT)"
 
-verify: ## check links/structure (needs the notes-architect plugin's verify.js)
-	@if [ -n "$(CLAUDE_PLUGIN_ROOT)" ] && [ -f "$(CLAUDE_PLUGIN_ROOT)/scripts/verify.js" ]; then \
-		node "$(CLAUDE_PLUGIN_ROOT)/scripts/verify.js" $(NOTES); \
+build: ## regenerate nav + landing from structure.yaml
+	@if [ -n "$(CLAUDE_PLUGIN_ROOT)" ] && [ -f "$(CLAUDE_PLUGIN_ROOT)/host/docsify/build.js" ]; then \
+		node "$(CLAUDE_PLUGIN_ROOT)/host/docsify/build.js" $(NOTES); \
 	else \
-		echo "verify.js not found — set CLAUDE_PLUGIN_ROOT to the notes-architect plugin"; \
-		echo "root, or re-run the /notes-architect:na-build-notes verify step."; \
+		echo "build.js not found — set CLAUDE_PLUGIN_ROOT to the notes-architect plugin root."; \
+	fi
+
+verify: ## check the built docsify site (needs the notes-architect plugin)
+	@if [ -n "$(CLAUDE_PLUGIN_ROOT)" ] && [ -f "$(CLAUDE_PLUGIN_ROOT)/host/docsify/verify-host.js" ]; then \
+		node "$(CLAUDE_PLUGIN_ROOT)/host/docsify/verify-host.js" $(NOTES); \
+	else \
+		echo "verify-host.js not found — set CLAUDE_PLUGIN_ROOT to the notes-architect plugin"; \
+		echo "root, or re-run the /notes-architect:na-host-docsify verify step."; \
 	fi
