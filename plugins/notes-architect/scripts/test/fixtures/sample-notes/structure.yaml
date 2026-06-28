@@ -1,0 +1,16 @@
+title: "X internals"
+tagline: "how X actually runs your code"
+domains:
+  - name: "global foundation"
+    caption: "the lay of the land"
+    phases:
+      - name: "foundation"
+        pages:
+          - slug: "what-is-x"
+            title: "what is X"
+            path: "global-foundation/what-is-x.md"
+      - name: "building blocks"
+        pages:
+          - slug: "the-event-loop"
+            title: "the event loop"
+            path: "global-foundation/the-event-loop.md"
