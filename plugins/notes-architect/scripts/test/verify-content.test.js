@@ -44,3 +44,28 @@ test('flags a footnote reference with no definition', () => {
   const { errors } = verifyContent(tmp);
   assert.ok(errors.some(e => /\[footnote\]/.test(e)), errors.join('\n'));
 });
+
+test('does NOT flag a footnote-shaped token inside a fenced code block', () => {
+  const tmp = mutatedFixture('global-foundation/what-is-x.md', '\n\n```js\nconst x = arr[^2];\n```\n');
+  const { errors } = verifyContent(tmp);
+  assert.ok(!errors.some(e => /\[footnote\]/.test(e)), errors.join('\n'));
+});
+
+test('does NOT flag a sibling CLAUDE.md / README.md as an orphan', () => {
+  const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'verify-content-meta-'));
+  fs.cpSync(FIX, tmp, { recursive: true });
+  fs.writeFileSync(path.join(tmp, 'CLAUDE.md'), '# notes conventions\n');
+  fs.writeFileSync(path.join(tmp, 'README.md'), '# these notes\n');
+  const { errors } = verifyContent(tmp);
+  assert.deepEqual(errors, []);
+});
+
+test('flags a duplicate slug across pages', () => {
+  const { errors } = verifyContent(FIX, {
+    overridePages: [
+      { slug: 'dup', title: 'a', path: 'global-foundation/what-is-x.md', domain: 'd', phase: 'p' },
+      { slug: 'dup', title: 'b', path: 'global-foundation/the-event-loop.md', domain: 'd', phase: 'p' },
+    ],
+  });
+  assert.ok(errors.some(e => /\[slug\]/.test(e) && /dup/.test(e)), errors.join('\n'));
+});

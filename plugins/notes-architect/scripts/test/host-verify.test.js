@@ -32,3 +32,21 @@ test('flags a missing _notes-map.json', () => {
   const { errors } = verifyHost(root);
   assert.ok(errors.some(e => /_notes-map\.json/.test(e)));
 });
+
+test('flags a missing wikilink-render.js (wikilinks/search would break)', () => {
+  const root = hostedSite();
+  fs.rmSync(path.join(root, 'wikilink-render.js'));
+  const { errors } = verifyHost(root);
+  assert.ok(errors.some(e => /wikilink-render\.js/.test(e)), errors.join('\n'));
+});
+
+test('init.sh resolves its template without CLAUDE_PLUGIN_ROOT set', () => {
+  const root = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'hv-noenv-')), 'notes');
+  fs.mkdirSync(root, { recursive: true });
+  fs.cpSync(path.join(__dirname, 'fixtures', 'sample-notes'), root, { recursive: true });
+  const env = { ...process.env };
+  delete env.CLAUDE_PLUGIN_ROOT;
+  execFileSync('bash', [INIT, root], { env });
+  assert.ok(fs.existsSync(path.join(root, 'index.html')));
+  assert.ok(fs.existsSync(path.join(root, 'wikilink-render.js')));
+});

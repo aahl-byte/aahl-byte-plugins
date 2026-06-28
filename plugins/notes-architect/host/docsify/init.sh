@@ -7,12 +7,14 @@ set -euo pipefail
 
 SITE_ROOT="${1:-notes}"
 
-# Resolve plugin root: prefer CLAUDE_PLUGIN_ROOT, fall back to relative from this script
+# Resolve plugin root: prefer CLAUDE_PLUGIN_ROOT, fall back to relative from this
+# script. This script lives at <plugin-root>/host/docsify/init.sh, so the plugin
+# root is two directories up from the script's directory.
 if [ -n "${CLAUDE_PLUGIN_ROOT:-}" ]; then
   PLUGIN_ROOT="$CLAUDE_PLUGIN_ROOT"
 else
   SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-  PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
+  PLUGIN_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 fi
 
 TEMPLATE_DIR="$PLUGIN_ROOT/host/docsify/template"

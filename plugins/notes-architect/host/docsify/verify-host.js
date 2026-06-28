@@ -34,6 +34,7 @@ const REQUIRED_FILES = [
   '_navbar.md',
   'home.md',
   'css/globals.css',
+  'wikilink-render.js',
 ];
 
 function verifyHost(root) {
@@ -48,6 +49,9 @@ function verifyHost(root) {
     const html = fs.readFileSync(indexPath, 'utf8');
     if (!html.includes('./css/globals.css')) {
       errors.push('[shell] index.html does not reference ./css/globals.css');
+    }
+    if (!html.includes('./wikilink-render.js')) {
+      errors.push('[shell] index.html does not load ./wikilink-render.js (wikilinks/search will break)');
     }
   }
 

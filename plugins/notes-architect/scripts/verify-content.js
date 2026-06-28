@@ -50,13 +50,19 @@ function verifyContent(root, opts = {}) {
           errors.push(`[wikilink] ${p.path} → [[${link.slug}#${link.heading}]] — heading not found on target`);
       }
     }
-    const refs = [...md.matchAll(/\[\^([^\]]+)\](?!:)/g)].map(m => m[1]);
-    const defs = new Set([...md.matchAll(/^\[\^([^\]]+)\]:/gm)].map(m => m[1]));
+    // ignore footnote-shaped tokens inside fenced code blocks (e.g. `arr[^2]`)
+    const prose = stripFences(md);
+    const refs = [...prose.matchAll(/\[\^([^\]]+)\](?!:)/g)].map(m => m[1]);
+    const defs = new Set([...prose.matchAll(/^\[\^([^\]]+)\]:/gm)].map(m => m[1]));
     for (const r of refs) if (!defs.has(r)) errors.push(`[footnote] ${p.path} → [^${r}] used but never defined`);
   }
 
   return { errors, warnings, pageCount: pages.length };
 }
+
+// meta files live alongside the notes but aren't content pages, so they're never
+// manifest pages and must not be flagged as orphans.
+const META_FILES = new Set(['CLAUDE.md', 'README.md']);
 
 function walkMd(dir) {
   const out = [];
@@ -64,9 +70,18 @@ function walkMd(dir) {
     if (e.name.startsWith('.')) continue;
     const full = path.join(dir, e.name);
     if (e.isDirectory()) out.push(...walkMd(full));
-    else if (e.name.endsWith('.md')) out.push(full);
+    else if (e.name.endsWith('.md') && !META_FILES.has(e.name)) out.push(full);
   }
   return out;
+}
+
+// drop fenced code blocks so their contents aren't scanned as prose
+function stripFences(md) {
+  let inFence = false;
+  return md.split(/\r?\n/).filter((line) => {
+    if (/^```/.test(line.trim())) { inFence = !inFence; return false; }
+    return !inFence;
+  }).join('\n');
 }
 
 module.exports = { verifyContent, walkMd };
