@@ -2,37 +2,37 @@ todos:
   - id: notes-architect-decouple-content-from-ho
     title: 'notes-architect: decouple content from hosting'
     type: feature
-    status: in-triage
+    status: done
     priority: medium
     super-phase: null
     created: 2026-06-28T05:12:48.034Z
-    completed: null
+    completed: 2026-06-28T05:47:54.383Z
     tasks:
       - {title: 'T1: test harness + shared host-independent fixture', status:
-          todo}
+          done}
       - {title: 'T2: minimal YAML reader (lib/manifest.js) + tests', status:
-          todo}
+          done}
       - {title: 'T3: verify-content.js — slug uniqueness + manifest/page coverage',
-        status: todo}
+        status: done}
       - {title: 'T4: wikilink + footnote validation (lib/wikilinks.js) in content-verify',
-        status: todo}
+        status: done}
       - {title: 'T5: update PHILOSOPHY.md for content/host split + manifest',
-          status: todo}
+          status: done}
       - {title: 'T6: update notes-author agent (wikilinks, footnotes, no stylesheet)',
-        status: todo}
+        status: done}
       - {title: 'T7: rewrite na-build-notes SKILL.md (content-only, writes manifest)',
-        status: todo}
+        status: done}
       - {title: 'T8: git mv docsify template/deploy/init into host/docsify',
-          status: todo}
+          status: done}
       - {title: 'T9: host build.js — generate nav + landing + slug->path map from
-          manifest', status: todo}
-      - {title: 'T10: host verify-host.js; delete old verify.js', status: todo}
-      - {title: 'T11: wikilink runtime plugin in index.html', status: todo}
+          manifest', status: done}
+      - {title: 'T10: host verify-host.js; delete old verify.js', status: done}
+      - {title: 'T11: wikilink runtime plugin in index.html', status: done}
       - {title: 'T12: na-host-docsify SKILL.md + end-to-end smoke test', status:
-          todo}
+          done}
       - {title: 'T13: plugin.json bump to 2.0.0 + stale-reference sweep', status:
-          todo}
-    calc-status: todo
+          done}
+    calc-status: done
     notes:
       - |-
         **Plan:** [docs/plans/2026-06-28-notes-architect-hosting-decouple.md](docs/plans/2026-06-28-notes-architect-hosting-decouple.md) — design at `-design.md` sibling.
@@ -41,3 +41,23 @@ todos:
         - Branch: `refactor/decouple-hosting-from-build-notes`.
         - Tests: dependency-free `node --test` over `plugins/notes-architect/scripts/test/`.
         - Tasks T1–T13 are sequential; each ends in a commit.
+      - '**Test runner quirk (Node 22):** `node --test <dir>/` fails (tries to load
+        the dir as a module). Use the glob form: `node --test plugins/notes-architect/scripts/test/*.test.js`.'
+      - "**index.html slugify bug — fix in T11.** The docsify `index.html` search
+        slugify uses char-class `[ -⁯…]` (ASCII space start) which strips ASCII letters
+        → heading anchors collapse to empty, so search results don't deep-link to
+        headings. The new `scripts/lib/wikilinks.js` `slugifyHeading` uses the correct
+        `[ -⁯⸀-⹿…]` (matches docsify core). When T11 factors a shared slugify for
+        the wikilink plugin, use the corrected range so search + wikilink anchors
+        agree with real docsify."
+      - '**T12 must fix deploy/Makefile.** Its `verify:` target still calls the deleted
+        `scripts/verify.js`; re-point to `host/docsify/verify-host.js` (and confirm
+        the `serve`/`open` targets + `NOTES` root still make sense post-move). Also
+        re-point any build step to `host/docsify/build.js`.'
+      - |-
+        **Done — all 13 tasks shipped + final review fixes applied.** 25 unit tests green; end-to-end (content-verify → init → build → verify-host → wikilink render) passes.
+
+        Deferred minor nits from final review (low impact, intentionally not done):
+        - slug == filename is documented but not enforced (`basename(path) === slug`).
+        - duplicate identical headings on one page resolve a `#heading` wikilink to the first (docsify dedups with `-1`/`-2`).
+        - host-leak check is first-line-only (matches the historical leak vector).
