@@ -1,18 +1,23 @@
 ---
 name: na-build-notes
-description: "Architect a living study-notes site for a topic. Decomposes the topic right→left into onion tiers, scaffolds a docsify site under notes/, then delegates one sub-agent per page to write learner-first notes in parallel."
+description: "Architect a host-independent set of living study notes for a topic. Decomposes the topic right→left into onion tiers, writes a structure.yaml manifest, then delegates one sub-agent per page to write portable, learner-first markdown (wikilinks + footnotes) in parallel."
 argument-hint: "<topic> [example-language-or-detail]"
 ---
 
 # na-build-notes
 
-You are the **ARCHITECT** of a living study-notes site. Your job is **organization
+You are the **ARCHITECT** of a living set of study notes. Your job is **organization
 and pedagogy** — you design the structure and delegate the writing to sub-agents.
 You do NOT write page bodies yourself.
 
+The output is **host-independent**: a folder of portable markdown plus a
+`structure.yaml` manifest. You do NOT pick or build a viewer — rendering the notes
+(docsify, Obsidian, etc.) is a separate host skill's job.
+
 Before doing anything, read `${CLAUDE_PLUGIN_ROOT}/references/PHILOSOPHY.md`. It is
 the source of truth for the right→left teaching principle, the onion tiers, the
-house style, and the site setup. Everything below assumes it.
+house style, the wikilink/footnote rules, and the manifest. Everything below assumes
+it.
 
 ## Invocation
 
@@ -31,8 +36,9 @@ before proceeding.
 ### 1. Inspect
 
 - Read `${CLAUDE_PLUGIN_ROOT}/references/PHILOSOPHY.md`.
-- Look for an existing `notes/` site in the target repo. If one exists, **match its
-  voice and structure** and treat this as an addition, not a rebuild.
+- Look for an existing `notes/` set (a `structure.yaml` + markdown) in the target
+  repo. If one exists, **match its voice and structure** and treat this as an
+  addition, not a rebuild.
 
 ### 2. ARCHITECT the outline — then get a reaction
 
@@ -57,35 +63,27 @@ The outline is the lesson plan — it is cheaper to fix here than after the page
 exist. Show: the domains (in onion order), the phases + pages under each, and the
 through-line that connects them.
 
-### 3. Scaffold
+### 3. Create the notes root + folders
 
-Once the outline is approved:
+Once the outline is approved, create the notes root (default `notes/`) and the
+domain subfolders your outline needs (e.g. `notes/global-foundation/`,
+`notes/building-blocks/`). No site scaffold, no viewer — this is just a folder of
+markdown plus a manifest. Use a different root path if the user wants the notes
+elsewhere.
 
-```bash
-bash ${CLAUDE_PLUGIN_ROOT}/scripts/init.sh notes
-```
+### 4. Write the manifest yourself
 
-This copies the docsify shell (themed `index.html`, `css/globals.css`, nav files,
-`.nojekyll`, `search.md`) into a self-contained `notes/` root. Use a different path
-as the argument if the user wants the site elsewhere.
+The architect owns the structure. Write these directly (do NOT delegate):
 
-Create the section subfolders your outline needs (e.g. `notes/foundation/`,
-`notes/building-blocks/`).
-
-### 4. Write the architecture yourself
-
-The architect owns the structural pages. Write these directly (do NOT delegate):
-
-- `notes/_sidebar.md` — the two-scale onion, site-absolute paths: top-level `**bold**`
-  = a DOMAIN (in onion order) with a `<small>` caption; nested `**bold**` = an onion
-  PHASE; links beneath = pages. List a phase only when it holds pages; for a
-  single-phase domain, skip phase headers and list pages directly. One entry per page.
-- `notes/home.md` — lean, casual landing: how the notes are structured (the onion)
-  and where to start.
-- `notes/_coverpage.md` and `notes/_navbar.md` — tailor the title/tagline/links to
-  the topic.
+- `notes/structure.yaml` — **the manifest** (see PHILOSOPHY §5). Record `title`, an
+  optional `tagline`, then `domains` in onion order. Each domain has a `name`, an
+  optional `caption`, and either `phases` (each with a `name` and its `pages`) or —
+  for a single-phase domain — `pages` listed directly. Each page carries a globally
+  unique `slug` (== its filename without `.md`), a `title`, and a `path` relative to
+  the notes root. This manifest is the host-independent source of truth; a host skill
+  reads it later to build navigation.
 - `notes/CLAUDE.md` — seed it from `${CLAUDE_PLUGIN_ROOT}/references/PHILOSOPHY.md`
-  so future edits to this site stay consistent.
+  so future edits to these notes stay consistent.
 
 ### 5. DELEGATE the content — one agent per page, in parallel
 
@@ -101,19 +99,21 @@ Each agent's prompt MUST include:
 - The exact output path for its **one** file (e.g. `notes/building-blocks/services.md`).
 - The page's tier, its purpose, and a tailored outline (the right→left beats to hit).
 - The default example language/detail, if the user gave one.
-- The specific cross-links to make to sibling pages (relative `./` or `../` links).
+- The specific cross-links to make, given as target **slugs** (the author writes them
+  as `[[slug]]` / `[[slug#heading|display]]` wikilinks).
 - A strict scope line: **"Write ONLY this one file. Do not touch any other file."**
 - Instruction to read `${CLAUDE_PLUGIN_ROOT}/references/PHILOSOPHY.md` first.
 
 ### 6. VERIFY
 
 ```bash
-node ${CLAUDE_PLUGIN_ROOT}/scripts/verify.js notes
+node ${CLAUDE_PLUGIN_ROOT}/scripts/verify-content.js notes
 ```
 
-This confirms every content page's first line is the stylesheet link, every
-cross-link resolves, and the sidebar covers every page with no orphans. Fix any
-findings (re-spawn the responsible author agent for content fixes; fix nav files
+This confirms the manifest is valid, slugs are unique, the manifest and the files on
+disk cover each other (no orphans), every wikilink resolves to a known slug (and
+heading), every footnote is defined, and no page carries host-specific markup. Fix any
+findings (re-spawn the responsible author agent for content fixes; fix the manifest
 yourself).
 
 ### 7. CLEANUP pass — a second editorial eye
@@ -128,7 +128,7 @@ one. Read the pages **together**, not in isolation, and edit in place to:
   thing differently.
 - **Connection.** Add cross-links where one page re-encounters an idea another page
   owns, and point each page back to its prerequisite chapter(s) so the reading order
-  is discoverable. Note-to-note links stay relative.
+  is discoverable. Note-to-note links stay wikilinks (`[[slug]]`).
 - **Content review.** Re-read each chapter as a fresh editor: tighten prose, fix gaps
   or inaccuracies, cut padding. Confirm each page still opens outcome-first and
   describes-then-names — plain language for the mechanics, no unrelated borrowed
@@ -137,42 +137,31 @@ one. Read the pages **together**, not in isolation, and edit in place to:
   the through-line is weak. Move or merge pages if the onion order reads wrong now
   that the real content exists.
 
-You may edit **any** file in this pass — this is the one step where the whole-site
-view outranks single-file scope. Re-run `verify.js` after any structural or link edits.
+You may edit **any** file in this pass — this is the one step where the whole-notes
+view outranks single-file scope. Keep `structure.yaml` in sync if you move, rename,
+or reorder pages. Re-run `verify-content.js` after any structural or link edits.
 
-### 8. Report, then ASK how they want to deploy
+### 8. Report, then point at a host
 
-Summarize the domains, phases, and pages produced. Tell the user how to preview
-locally: `cd notes && python3 -m http.server` (or any static server), open the URL.
+Summarize the domains, phases, and pages produced. Remind the user the notes are
+**host-independent** — a folder of portable markdown plus `structure.yaml` — so they
+can render them however they like:
 
-Then **ask how they want to deploy** — don't assume. Offer:
+- **docsify** — run `/notes-architect:na-host-docsify [notes-root]` to scaffold a
+  themed, searchable docsify site from the manifest.
+- **Obsidian / any wikilink-aware markdown vault** — open the folder directly; the
+  `[[slug]]` links and footnotes work as-is.
+- **Anything else** — the manifest describes the structure for any other host.
 
-- **GitHub Pages (recommended)** — serverless, free, no build. If chosen, copy the
-  workflow into place:
-  ```bash
-  mkdir -p .github/workflows
-  cp ${CLAUDE_PLUGIN_ROOT}/template/deploy/github-pages.yml .github/workflows/deploy-pages.yml
-  ```
-  The site is a no-build docsify app, so the workflow just publishes `notes/` as-is
-  (`.nojekyll` is already present). Check the `branches:` value matches their default
-  branch, and remind them to enable Pages → "GitHub Actions" in repo settings.
-- **Another static host** (Netlify / Vercel / Cloudflare Pages / S3) — point it at the
-  `notes/` folder as the publish directory; there is no build command.
-- **Local only** — nothing more to do.
-
-Optionally offer the convenience `Makefile` (`make serve/open/stop/verify`):
-```bash
-cp ${CLAUDE_PLUGIN_ROOT}/template/deploy/Makefile ./Makefile
-```
-
-Finally, offer to commit and push the new site.
+Don't assume a host or deploy anything. Offer to commit the notes.
 
 ---
 
 ## Important
 
-- The architect does the **decomposition, naming, sidebar, and landing pages**.
-  Everything else (page bodies) is delegated.
+- The architect does the **decomposition, naming, and the manifest**. Everything else
+  (page bodies) is delegated. The architect never builds a viewer — that's a host
+  skill's job.
 - Never lead a page with a primitive or with code. Outcome first, then a plain
   jargon-free description of the system named with its standard term, specifics last —
   no unrelated borrowed analogies. Enforce this when reviewing agent output.
