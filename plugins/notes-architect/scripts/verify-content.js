@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const { readManifest, flattenPages } = require('./lib/manifest.js');
+const { parseWikilinks, headingSlugsIn, slugifyHeading } = require('./lib/wikilinks.js');
 
 function verifyContent(root, opts = {}) {
   const errors = [], warnings = [];
@@ -29,6 +30,29 @@ function verifyContent(root, opts = {}) {
 
   for (const f of onDisk) {
     if (!manifestPaths.has(path.resolve(f))) errors.push(`[orphan] ${path.relative(root, f)} is not listed in structure.yaml`);
+  }
+
+  const bySlug = new Map(pages.map(p => [p.slug, p]));
+  const headingCache = new Map();
+  for (const p of pages) {
+    const abs = path.resolve(root, p.path);
+    if (!fs.existsSync(abs)) continue;
+    const md = fs.readFileSync(abs, 'utf8');
+    for (const link of parseWikilinks(md)) {
+      const target = bySlug.get(link.slug);
+      if (!target) { errors.push(`[wikilink] ${p.path} → [[${link.slug}]] — no page with that slug`); continue; }
+      if (link.heading) {
+        if (!headingCache.has(link.slug)) {
+          const tAbs = path.resolve(root, target.path);
+          headingCache.set(link.slug, fs.existsSync(tAbs) ? headingSlugsIn(fs.readFileSync(tAbs, 'utf8')) : new Set());
+        }
+        if (!headingCache.get(link.slug).has(slugifyHeading(link.heading)))
+          errors.push(`[wikilink] ${p.path} → [[${link.slug}#${link.heading}]] — heading not found on target`);
+      }
+    }
+    const refs = [...md.matchAll(/\[\^([^\]]+)\](?!:)/g)].map(m => m[1]);
+    const defs = new Set([...md.matchAll(/^\[\^([^\]]+)\]:/gm)].map(m => m[1]));
+    for (const r of refs) if (!defs.has(r)) errors.push(`[footnote] ${p.path} → [^${r}] used but never defined`);
   }
 
   return { errors, warnings, pageCount: pages.length };
