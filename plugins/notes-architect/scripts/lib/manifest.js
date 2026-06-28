@@ -28,7 +28,9 @@ function readManifest(file) {
       }
       if (/^slug:/.test(body)) {                // new page
         page = { slug: '', title: '', path: '' };
+        // phase-less (single-phase) domains list pages directly under the domain
         if (phase) phase.pages.push(page);
+        else if (domain) (domain.pages = domain.pages || []).push(page);
         applyKV(page, body, unquote);
         continue;
       }
