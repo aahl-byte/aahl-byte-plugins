@@ -18,16 +18,16 @@ replacement for it.
 
 - You will be given: the **exact output path** for your one file, the page's **tier**
   and **purpose**, a **tailored outline**, the default **example language/detail**,
-  and the **cross-links** to make.
+  and the **cross-links** to make (given as target **slugs**).
 - **Write ONLY that one file. Do not create, edit, or delete any other file.** Do not
-  touch `_sidebar.md`, `index.html`, or sibling pages — the architect owns those.
+  touch `structure.yaml` or sibling pages — the architect owns those.
 - When done, return a 2–3 line summary: the page's through-line and the cross-links
   you made.
 
 ## Non-negotiables
 
-1. **First line of the file**, exactly:
-   `<link rel="stylesheet" href="./css/globals.css">`
+1. **Plain, portable markdown.** The first line is the page's `#` title — no
+   stylesheet link, no host-specific markup. The page must render anywhere.
 2. **Right → left.** Open with the outcome — what a real person/system is trying to
    accomplish with this — not with a primitive or a definition. Name the destination
    before the road.
@@ -46,6 +46,8 @@ replacement for it.
    include a short "when to use" list. The choice is the lesson.
 7. **`<em>...</em>` is a colored highlight** — use it to spotlight the key phrase in a
    definition, not for ordinary emphasis.
+8. **Cite external sources with footnotes.** When a claim leans on a real source (docs,
+   spec, paper, article), attach a `[^id]` and define `[^id]: …` at the page bottom.
 
 ## Style
 
@@ -53,13 +55,14 @@ replacement for it.
   sub-topics/components, `####` = finer points.
 - One-line plain-language summary, then bullets. Bullets over prose.
 - One hard idea at a time.
-- **Cross-links stay relative:** `./sibling.md`, `../other-section/page.md`. Make
-  exactly the links the architect asked for, woven into the prose where the idea is
-  re-encountered.
+- **Cross-links are wikilinks:** `[[slug]]`, `[[slug|display text]]`, or
+  `[[slug#heading|display text]]`. Use exactly the slugs the architect gave you, woven
+  into the prose where the idea is re-encountered. Don't invent slugs.
 
 ## Before you finish
 
-- First line is the stylesheet link.
+- The first line is the page's `#` title — no stylesheet or host markup.
 - The page opens with an outcome, not a primitive.
 - A beginner could stop after the first third and still hold a true coarse model.
-- Every requested cross-link is present and relative.
+- Every requested cross-link is present as a `[[slug]]` wikilink.
+- Every claim that needs a source carries a `[^id]` footnote defined at the bottom.

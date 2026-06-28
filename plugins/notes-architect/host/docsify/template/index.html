@@ -37,16 +37,12 @@
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
-      // mirrors docsify's own heading slugify so result links hit the anchor
-      // (same punctuation-strip range, spaces→dashes, digit-prefix guard)
-      function slugify(text) {
-        return text.toLowerCase().trim()
-          .replace(/<[^>]+>/g, '')
-          .replace(/[ -⁯⸀-⹿\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
-          .replace(/\s/g, '-')
-          .replace(/-+/g, '-')
-          .replace(/^(\d)/, '_$1');
-      }
+      // delegates to the shared, correct slugify (host/docsify/template/
+      // wikilink-render.js, loaded as window.NotesWikilinks before docsify boots).
+      // The previous inline copy had a transcription bug — its punctuation range
+      // started at an ASCII space, stripping ASCII letters and collapsing every
+      // heading anchor to '', so search results never deep-linked.
+      function slugify(text) { return window.NotesWikilinks.slugify(text); }
 
       // ── read domain / phase / chapter from _sidebar.md ──
       // indent 0 bold = DOMAIN; indent 2 bold = PHASE (optional); links = pages.
@@ -205,6 +201,31 @@
       });
     }
 
+    /* ───────────────────────────────────────────────────────────────────────
+       wikilinks — renders host-independent [[slug#heading|alias]] wikilinks as
+       real docsify hash links at view time. Fetches the generated
+       _notes-map.json (slug → "/path.md") once, then rewrites each page's
+       markdown in beforeEach using the shared NotesWikilinks module.
+       ─────────────────────────────────────────────────────────────────────── */
+    function wikilinks(hook) {
+      var mapPromise = null;
+      function siteRoot() { return location.href.split('#')[0].replace(/index\.html$/, ''); }
+      function loadMap() {
+        if (!mapPromise) {
+          mapPromise = fetch(siteRoot() + '_notes-map.json')
+            .then(function (r) { return r.ok ? r.json() : {}; })
+            .catch(function () { return {}; });
+        }
+        return mapPromise;
+      }
+      hook.init(function () { loadMap(); });
+      hook.beforeEach(function (content, next) {
+        loadMap().then(function (map) {
+          next(window.NotesWikilinks.rewriteWikilinks(content, map));
+        });
+      });
+    }
+
     window.$docsify = {
       name: 'study notes',
       loadSidebar: true,
@@ -231,10 +252,12 @@
             }
           });
         },
+        wikilinks,
         notesSearch,
       ],
     };
   </script>
+  <script src="./wikilink-render.js"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@3"></script>
   <script src="//cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
