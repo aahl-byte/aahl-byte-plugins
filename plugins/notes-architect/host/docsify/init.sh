@@ -15,7 +15,7 @@ else
   PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
 fi
 
-TEMPLATE_DIR="$PLUGIN_ROOT/template/site"
+TEMPLATE_DIR="$PLUGIN_ROOT/host/docsify/template"
 
 if [ ! -d "$TEMPLATE_DIR" ]; then
   echo "Error: template not found at $TEMPLATE_DIR"
@@ -33,13 +33,9 @@ mkdir -p "$SITE_ROOT"
 cp -r "$TEMPLATE_DIR"/. "$SITE_ROOT"/
 
 echo "Ready: $SITE_ROOT/"
-echo "  index.html, css/globals.css, _sidebar.md, _navbar.md, _coverpage.md,"
-echo "  home.md, search.md, .nojekyll"
+echo "  index.html, css/globals.css, search.md, .nojekyll"
 echo ""
-echo "Next (architect):"
-echo "  1. create section folders under $SITE_ROOT/ per the approved outline"
-echo "  2. write _sidebar.md / home.md / _coverpage.md / _navbar.md / CLAUDE.md"
-echo "  3. delegate one notes-author agent per page (parallel)"
-echo "  4. node \$CLAUDE_PLUGIN_ROOT/scripts/verify.js $SITE_ROOT"
-echo ""
-echo "Preview: cd $SITE_ROOT && python3 -m http.server 8080  (then open the URL)"
+echo "Next (host):"
+echo "  1. run the docsify build step to generate nav + landing from structure.yaml"
+echo "  2. run the host verify step to validate the built site"
+echo "  3. preview: cd $SITE_ROOT && python3 -m http.server 8080  (then open the URL)"
