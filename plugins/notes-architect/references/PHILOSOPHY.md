@@ -1,9 +1,14 @@
 # notes-architect — philosophy & conventions
 
-This is the single source of truth for how a `notes-architect` site is organized,
-written, and published. The `na-build-notes` skill and the `notes-author` agent
-both read this file. When the architect generates a site, it seeds the site's own
+This is the single source of truth for how a `notes-architect` note set is
+organized and written. The `na-build-notes` skill and the `notes-author` agent
+both read this file. When the architect generates a note set, it seeds the set's own
 `CLAUDE.md` from this document so future edits stay consistent.
+
+Notes are **host-independent**: a folder of portable markdown plus a `structure.yaml`
+manifest (see §5). *How* the notes get published or viewed — docsify, Obsidian,
+mkdocs, a bare markdown reader — is a separate concern owned by a **host skill**
+(e.g. `na-host-docsify`), never by the notes themselves.
 
 The product is **UNDERSTANDING, not coverage.** Every change should leave a learner
 better able to *reason* about the topic, not just better supplied with facts. A
@@ -57,7 +62,7 @@ can stop at any depth and still hold a true (if coarse) mental model.
 The onion isn't a single ladder; it repeats fractally. A real topic has a **macro
 onion across DOMAINS** and, inside each domain, a **micro onion across PHASES.**
 
-**Macro onion — the DOMAINS (top level of the sidebar).** Decompose the topic into
+**Macro onion — the DOMAINS (the top tier of the manifest).** Decompose the topic into
 domains and order them so each rests on the ones before it:
 
 1. Start with a **GLOBAL FOUNDATION** domain — the shared core every later domain
@@ -119,9 +124,9 @@ topic genuinely has parallel tracks or layered boundaries.
 
 ## 4. house style & conventions
 
-- Markdown. **One topic area per file**, under `<section>/` within the site root.
-- **First line of every content page** is exactly:
-  `<link rel="stylesheet" href="./css/globals.css">`
+- Markdown. **One topic area per file**, under `<domain>/` within the notes root.
+- Pages are **plain, portable markdown** — no stylesheet links, no host-specific
+  markup. The first line is the page's `#` title.
 - `<em>...</em>` is a **COLORED HIGHLIGHT**, not italics — use it to spotlight the
   key phrase in a definition. Don't use it for ordinary emphasis.
 - Lowercase, casual headers (these are *study notes*, not a manual):
@@ -131,46 +136,49 @@ topic genuinely has parallel tracks or layered boundaries.
 - Keep code examples short and illustrative. Introduce the concept FIRST, code as
   the concrete example — **never lead with code.**
 
-### linking rules
+### linking & citation rules
 
-- **Note-to-note links stay RELATIVE:** `./other.md`, `../section/page.md`.
-- **Nav files use ABSOLUTE paths:** `/section/page.md` (so they resolve from any
-  page). Nav files are `_sidebar.md`, `_navbar.md`, `_coverpage.md`.
-- Keep all CDN/stylesheet links resolvable under the published subpath.
+- **Note-to-note links are WIKILINKS:** `[[slug]]`, `[[slug|display text]]`, or
+  `[[slug#heading|display text]]`. The `slug` is the target page's filename without
+  `.md`; slugs are **globally unique** and resolve against `structure.yaml`. A host
+  translates wikilinks into whatever it needs at view time — the notes stay portable.
+- **External sources are cited with markdown footnotes:** `[^id]` inline, with the
+  matching `[^id]: …` definition at the bottom of the same page. Footnotes are
+  per-page and render everywhere, so the citations travel with the notes.
+- No nav-file paths, CDN links, or stylesheet links live in note bodies — those are
+  host concerns.
 
 ---
 
-## 5. the site (docsify — no build step)
+## 5. the manifest (`structure.yaml`)
 
-Published via GitHub Pages, rendered client-side by docsify so the markdown stays
-the source of truth. The site is **self-contained under `notes/`** (the docsify
-root). Files:
+A note set is a folder of portable `.md` files plus a single `structure.yaml` at the
+root. The manifest is the **host-independent contract**: it records the two-scale
+onion as data so any host can rebuild navigation without parsing prose. The notes
+themselves carry no host-specific markup.
 
-- `index.html` — the docsify shell holding ONE central dark theme. Configured with
-  `loadSidebar`, `loadNavbar`, `coverpage`, `relativePath: true`, `auto2top`,
-  copy-code, and pagination, plus the bundled `notesSearch` plugin (see below).
-  Every element is themed from here (via `css/globals.css`) so pages need no styling
-  of their own.
-- `css/globals.css` — the palette source of truth. Owns the dark theme, the `<em>`
-  highlight color, the two-scale sidebar (domains → phases → pages), and the
-  breadcrumb search results.
-- `_sidebar.md` — navigation as the two-scale onion (DOMAINS → optional PHASE
-  sub-headers → pages), using site-absolute paths. Top-level DOMAINS are visually
-  distinct (divider + uppercase + accent color, with a light caption beneath); phases
-  read as quiet uppercase eyebrows; pages sit indented under a faint guide line.
-- A bundled **`notesSearch`** plugin (defined inline in `index.html`) replaces
-  docsify's built-in search. It indexes every page client-side and renders results
-  on `search.md` carrying the onion breadcrumb (DOMAIN · phase · chapter) plus the
-  heading trail, so a hit's place in the structure is obvious.
-- `_navbar.md`, `_coverpage.md`, `home.md` — the landing experience. Keep `home`
-  LEAN and casual: a short note on how the notes are structured (the onion) and where
-  to start — not self-promotion.
-- `search.md` — a dedicated search page that gives search room to breathe.
-- `.nojekyll` — **REQUIRED**, so GitHub Pages doesn't run Jekyll and hide the
-  underscore-prefixed files.
+```yaml
+title: "Topic Name"
+tagline: "one-line description"          # optional; some hosts show it on a landing
+domains:                                  # macro onion, in dependency order
+  - name: "global foundation"
+    caption: "the lay of the land"        # optional one-line blurb
+    phases:                               # micro onion; omit for a single-phase domain
+      - name: "foundation"                # foundation | building blocks | cross-cutting | synthesis
+        pages:
+          - slug: "what-is-x"             # globally unique; == filename without .md
+            title: "what is X"
+            path: "global-foundation/what-is-x.md"   # relative to the notes root
+```
 
-The sidebar is responsive: wider on desktop, standard width on tablets, and a
-full-screen drawer on phones that auto-closes on selection.
+- **Domains** are listed in onion order; each carries an optional `caption`.
+- **Phases** are optional — a single-phase domain lists its `pages:` directly under
+  the domain, skipping phase headers (mirrors §2's degenerate case).
+- **Pages** record `slug`, `title`, and `path`. The `slug` is the wikilink target and
+  must be unique across the whole set.
+
+The architect writes and owns `structure.yaml`; authors never touch it. A **host
+skill** reads it to generate that host's navigation (e.g. a docsify `_sidebar.md`).
 
 ---
 
@@ -187,18 +195,24 @@ of notes:
   back to its prerequisite chapter(s) so the reading order is discoverable.
 - **A second editorial eye** on each chapter: tighten prose, fix gaps, cut padding,
   and confirm every page still opens outcome-first and stays plainly described.
-- **Structure:** adjust architecture, page order, or sidebar grouping where the
+- **Structure:** adjust architecture, page order, or domain/phase grouping where the
   through-line is weak, now that the real content exists.
 
 This is the one pass that intentionally crosses single-file boundaries.
 
-## 7. verification (before publishing)
+## 7. verification (before handing off to a host)
 
-Run `node scripts/verify.js [site-root]` (default `notes`). It enforces:
+Run `node scripts/verify-content.js [notes-root]` (default `notes`). It enforces the
+host-independent content contract:
 
-1. Every content page's first line is the stylesheet link.
-2. Every relative cross-link resolves to a file that exists.
-3. Every content page appears in `_sidebar.md` (no orphans), and every sidebar link
-   points to a real file.
+1. `structure.yaml` exists and is valid.
+2. Slugs are globally unique.
+3. Every manifest page has a file on disk, and every `.md` on disk is in the manifest
+   (no orphans).
+4. Every wikilink resolves to a known slug — and, if `#heading`-qualified, to a real
+   heading on the target page.
+5. Every footnote reference `[^id]` has a matching definition on its page.
+6. No page carries host-specific markup (e.g. a stylesheet link).
 
-Fix all findings before committing.
+Fix all findings before committing. Host-specific verification (themed shell present,
+nav generated, etc.) lives with each host skill, not here.
