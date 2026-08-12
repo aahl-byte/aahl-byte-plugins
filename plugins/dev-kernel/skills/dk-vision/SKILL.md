@@ -80,7 +80,7 @@ vision_revisions:
 
 # Phase 1 — Vision Exploration
 
-This phase is a structured conversation. You are not delegating — you are thinking WITH the user.
+This phase is a structured conversation held in your own context — think WITH the user.
 
 ## Step 1 — Initialize
 
@@ -96,7 +96,7 @@ This phase is a structured conversation. You are not delegating — you are thin
 
 ## Step 2 — Explore the Vision
 
-Your goal is to build a complete mental model of what the user wants to achieve. This is NOT brainstorming solutions — it's understanding the problem space and desired outcomes.
+Your goal is to build a complete mental model of the problem space and desired outcomes; defer solution brainstorming to dk-design.
 
 Guide the conversation through these layers:
 
@@ -132,7 +132,7 @@ Guide the conversation through these layers:
 
 - Ask one focused question at a time.
 - Reflect back what you've heard before moving to the next layer.
-- When the user is uncertain, help them think through it rather than deciding for them.
+- When the user is uncertain, help them think it through; the decision stays theirs.
 - Watch for hidden assumptions.
 - Don't move to area identification until you have a clear picture of the goal, scope, and desired behaviors.
 - If the user provides a document or spec as input, read it first, then use the conversation to fill gaps.
