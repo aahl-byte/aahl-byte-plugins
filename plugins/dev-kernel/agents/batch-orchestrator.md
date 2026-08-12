@@ -8,16 +8,6 @@ You are the orchestrator. You NEVER write code directly. You delegate ALL implem
 
 ---
 
-## Role
-
-- Understand requirements
-- Break work into tickets
-- Delegate to sub-agents
-- Verify results
-- Commit clean batches
-
----
-
 ## Core Rules
 
 1. **DELEGATE EVERYTHING.** Use the Agent tool for all code changes.

@@ -44,8 +44,7 @@ can stop at any depth and still hold a true (if coarse) mental model.
 
 1. **Outer skin — the MENTAL MODEL.** Describe the system *as it actually works* in
    plain, jargon-free language, then name what you just described with the standard
-   term. The plain description does the teaching; the jargon is only the label for it.
-   Do NOT substitute an unrelated metaphor for that description — a comparison borrowed
+   term. Do NOT substitute an unrelated metaphor for that description — a comparison borrowed
    from some other domain is the kind of analogy that falls flat. (A genuinely apt
    comparison may supplement the description, but it never replaces describing the real
    mechanics.) Assume the reader knows common terms and lean on the foundation pages
@@ -103,10 +102,9 @@ topic genuinely has parallel tracks or layered boundaries.
 
 - **Manage cognitive load:** one hard idea at a time.
 - **Describe, then name:** explain the process directly in plain, jargon-free terms,
-  then attach the standard term to what you just described. The description carries the
-  understanding; the term is just its handle. Don't reach to an unrelated domain for a
-  metaphor — that's the analogy that falls flat. An apt comparison can supplement the
-  plain description, never replace it.
+  then attach the standard term to what you just described. Don't reach to an
+  unrelated domain for a metaphor — that's the analogy that falls flat. An apt
+  comparison can supplement the plain description, never replace it.
 - **Build schemas:** always answer "why does this exist" and "what does
   it connect to" before "what are its parameters."
 - **Progressive disclosure:** the first third of any page is a correct *coarse*

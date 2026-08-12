@@ -89,7 +89,7 @@ All stages in status.yaml have status: "done"
 ## Routing Rules
 
 - **Always pass the initiative name** to the sub-skill so it can find its files.
-- **Never perform the sub-skill's work yourself.** Your only job is to read state and invoke.
+- **Never perform the sub-skill's work yourself.**
 - **If the state is ambiguous**, ask the user what they want to do.
 - **If progress files conflict** (e.g., tracker says "diving" but progress.plan exists), present the conflict to the user and ask how to proceed.
 

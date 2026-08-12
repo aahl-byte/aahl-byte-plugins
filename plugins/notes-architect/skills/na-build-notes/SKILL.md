@@ -159,10 +159,6 @@ Don't assume a host or deploy anything. Offer to commit the notes.
 
 ## Important
 
-- The architect does the **decomposition, naming, and the manifest**. Everything else
-  (page bodies) is delegated. The architect never builds a viewer — that's a host
-  skill's job.
 - Never lead a page with a primitive or with code. Outcome first, then a plain
   jargon-free description of the system named with its standard term, specifics last —
   no unrelated borrowed analogies. Enforce this when reviewing agent output.
-- Author agents share the filesystem — never isolate them.

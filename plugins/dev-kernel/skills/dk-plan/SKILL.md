@@ -15,7 +15,7 @@ argument-hint: "{initiative-name}"
 
 The planner NEVER performs design or implementation directly. All steps are delegated to sub-agents that write output to disk.
 
-Protect your context window. Your task is only to schedule and delegate. You do not ever want to receive the output of your sub-agents.
+Protect your context window: never receive the output of your sub-agents.
 
 ---
 

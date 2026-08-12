@@ -35,7 +35,7 @@ structure, and style. The notes below are its enforcement checklist.
    when to reach for it). Last = the specifics/parameters.
 4. **Describe the system, then name it.** Explain what the thing actually does in
    plain, jargon-free language, then attach the standard term to what you just
-   described — the description teaches, the term is just its label. Don't reach to an
+   described. Don't reach to an
    unrelated domain for a metaphor (that's the analogy that falls flat); an apt
    comparison may supplement the plain description but never replaces it. Assume the
    reader knows common terms; lean on the foundation pages for anything they might not.
