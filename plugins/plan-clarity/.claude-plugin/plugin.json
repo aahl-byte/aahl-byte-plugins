@@ -1,5 +1,5 @@
 {
   "name": "plan-clarity",
   "description": "Multi-facet interactive design review — orchestrates parallel agents to produce risk, execution, logic, data, and layout reviews as a single-file HTML",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }

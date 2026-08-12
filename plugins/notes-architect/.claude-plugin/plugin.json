@@ -1,5 +1,5 @@
 {
   "name": "notes-architect",
   "description": "Architect host-independent living study notes — decompose a topic right→left into onion tiers, write a structure.yaml manifest, and delegate one sub-agent per page to write portable markdown (wikilinks + footnotes); then render it with a pluggable host (docsify included).",
-  "version": "2.0.0"
+  "version": "2.0.1"
 }
