@@ -94,3 +94,5 @@ If any facets failed, tell the user they can retry individual facets with `/plan
 ## Important
 
 - The orchestrator does NO analysis itself — all review content comes from facet agents.
+- Do not set `isolation: worktree` on any agent — they need shared filesystem access.
+- Hybrid agents (logic, data, layout) need `${CLAUDE_PLUGIN_ROOT}/references/review/COMPONENTS.md` for the Svelte component API.
