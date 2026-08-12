@@ -86,8 +86,8 @@ See `${CLAUDE_PLUGIN_ROOT}/references/review/COMPONENTS.md` for:
 
 **Drop fields**: include a `migration` note explaining what replaces the removed field.
 
-**Arrows**: define for the most important data flows, not every field. Each arrow should tell the reviewer "this field drives this UI element" or "this button triggers this action".
+**Arrows**: define only the most important data flows. Each arrow should tell the reviewer "this field drives this UI element" or "this button triggers this action".
 
 **Tab organization**: one tab per affected UI component or screen. Labels should match what the user sees.
 
-**Mockups**: schematic, not pixel-perfect. Use text labels, simple cards, and buttons to convey structure. Current UI at full opacity. Use `mock-new` / `mock-removed` for change markers in proposed UI. Every arrow target needs a `data-arrow-point` or `data-arrow-point-cur` attribute.
+**Mockups**: schematic only — text labels, simple cards, and buttons that convey structure. Current UI at full opacity. Use `mock-new` / `mock-removed` for change markers in proposed UI. Every arrow target needs a `data-arrow-point` or `data-arrow-point-cur` attribute.

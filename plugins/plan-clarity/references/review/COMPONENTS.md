@@ -168,9 +168,9 @@ Validation scans all `dynamic/**/*.svelte` files to verify every arrow target ex
 ## Code Diff Rules
 
 1. **Context is mandatory**: 2–4 lines of `existing` code above/below changes. Never show only new lines.
-2. **Show real code**: Actual TypeScript/SQL, not pseudo-code.
+2. **Show real code**: the actual TypeScript/SQL.
 3. **Use Gap for skipped sections**: `<Gap />` between non-contiguous code regions.
-4. **Full-file diffs**: The code panel shows the complete file as a continuous scroll, not per-trace-node fragments. Clicking a trace node highlights the relevant CodeSection.
+4. **Full-file diffs**: The code panel shows the complete file as a continuous scroll. Clicking a trace node highlights the relevant CodeSection.
 5. **Granular sections**: Split large blocks into granular CodeSections so edge cases highlight only their relevant lines.
 6. **Tabbed panels**: Use the `files` prop on CodePanel when changes touch multiple files. Tab labels should be short file paths.
 7. **Escape curly braces**: Svelte treats `{` as expression start. Literal curly braces in displayed code MUST be escaped as `{'{'}`  and `{'}'}`. Example: `<Line type="existing">  {'{'} <Cm>// block</Cm></Line>`. This applies to JS object literals, function bodies, destructuring, etc. Forgetting this causes a Svelte parse error at build time.

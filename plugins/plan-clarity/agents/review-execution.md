@@ -54,7 +54,7 @@ phases:
 
 ## Content Guidelines
 
-**Step naming**: short imperative names. Good: "Create tech_story table", "Add auth guard to PUT". Bad: "The tech_story table should be created".
+**Step naming**: short imperative names, e.g. "Create tech_story table", "Add auth guard to PUT".
 
 **Risk tags**: only `migration` and `compat`. If a concern doesn't fit either, describe it in the `description` instead.
 
