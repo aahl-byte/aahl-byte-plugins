@@ -69,6 +69,12 @@ Default to paragraphs. Structure earns its place only where a reader will scan r
 
 The reflex: simulating energy. Rhetorical questions as transitions ("So what does this mean?"), "Here's the thing", "Let's dive in", exclamation points in technical prose, em-dash chains — three per sentence — that shatter the line, and one-word fragments. For punch. Energy in writing comes from verbs and specifics.
 
+### Redundancy
+
+The reflex: saying it again. Restating a point in different words for emphasis, a summary sentence that repeats its own bullets, "in other words", a definition followed by its paraphrase, and the trailing clause that re-explains what the example just showed — the example already taught it; the clause insults the reader. Each point gets said once, in its best form. When a sentence adds no new fact to its paragraph, delete whichever version is weaker.
+
+Over-emphasis is the same reflex in formatting: bold on every third phrase, ALL CAPS for volume, an exclamation where a period carries it. Emphasis spends from a small budget — a page with ten bolded phrases has none. Reserve bold for the one thing a scanner must not miss.
+
 ### Hedged authority
 
 The reflex: qualifying every claim to avoid being wrong. Stacked hedges ("it could potentially, in some cases..."), "arguably", both-sides paragraphs where one answer is correct, and ending with "ultimately, it depends" when it doesn't. Commit to the claim you can defend and state the actual uncertainty once, precisely: e.g. "untested above 10k rows."
@@ -84,4 +90,5 @@ For cleaning existing text, in order:
 5. Un-bullet anything that reads top-to-bottom; keep bullets only where the reader scans.
 6. Rewrite nominalized sentences with actor-subject, action-verb.
 7. Read for cadence; break up uniform sentence lengths and em-dash chains.
-8. Cut the closing recap.
+8. Cut restatements and the closing recap: any sentence that adds no new fact, including clauses that re-explain a preceding example.
+9. Audit bold: keep it only on what a scanner must not miss.
