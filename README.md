@@ -6,7 +6,7 @@ Claude Code plugins, served from this repo as the `aahl-byte` marketplace.
 - **spec-management** — living architecture documentation; audit, create, and maintain spec files with parent/child hierarchy, source tracking, and staleness detection
 - **dev-kernel** — end-to-end AI dev pipeline (vision → design → plan → review → execute) built from context-isolated skills
 - **notes-architect** — living study-notes sites; decomposes a topic right→left into onion tiers, delegates one sub-agent per page, hosts via docsify
-- **thinking** — habits of clear thought on the page, starting with the writing-style skill
+- **thinking** — habits of clear thought on the page: writing-style for sentence craft, explaining for building a reader's mental model
 
 # Plan Clarity
 
