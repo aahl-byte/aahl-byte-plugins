@@ -13,7 +13,7 @@ The product is understanding. An explanation can be complete and correct and sti
 
 Reason from what someone is trying to accomplish and move leftward into the detail needed to get there. Name the destination before describing the road.
 
-The default drift is the opposite: open at the smallest primitive — the config flag, the base class, the schema — and hope the reader assembles the picture. That order forces them to hold unattached facts until the payoff arrives, and most stop before it does.
+The default drift is the opposite: open at the smallest primitive — the config flag, the base class — and hope the reader assembles the picture. That order forces them to hold unattached facts until the payoff arrives, and most stop before it does.
 
 Leftward movement surfaces categories before specific things, and specific things before their settings. The smallest details come last, once there is somewhere for them to land.
 
@@ -27,7 +27,7 @@ Build a coarse model first, then peel into specifics. Each layer must be true on
 2. **The moving parts.** The components and how they relate: what each is for, when you'd reach for it, what it replaces.
 3. **The specifics.** Parameters, edge cases, exact syntax — the detail that only makes sense once the outer layers exist.
 
-A coarse-but-correct model beats a precise-but-unmoored one, so simplify by omission rather than by fudging. "The scheduler runs one job at a time" is a fine layer-one claim if it holds in the common case; "the scheduler is basically a queue" is not, if it isn't one. When a simplification will later be revised, say so where you make it.
+Simplify by omission: drop the detail the reader cannot use yet, and keep every claim you do make true at full depth. Fudging fails differently — "the scheduler is basically a queue", when it isn't one, sends the reader reasoning from queue semantics and getting wrong answers. Where a simplification will be revised later, say so as you make it.
 
 The same shape repeats at every scale — a whole document, a section, a paragraph, a single answer. A five-line reply still opens with the outcome and lands the details last.
 
@@ -47,7 +47,7 @@ Watch for the sentence that smuggles in three new terms to define a fourth.
 
 ## Answer "why" and "what does it touch" before "what are its parameters"
 
-New facts attach to a structure or wash out. The structure comes from what a thing is for and what it connects to. A reader who knows why the retry wrapper exists will remember its backoff setting; a reader given the setting first has nowhere to put it.
+New facts attach to a structure or wash out. The structure comes from what a thing is for and what it connects to. Given the backoff setting before the reason the retry wrapper exists, a reader has nowhere to put it.
 
 ## Contrast where options compete
 
