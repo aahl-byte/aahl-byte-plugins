@@ -44,7 +44,8 @@ can stop at any depth and still hold a true (if coarse) mental model.
 
 1. **Outer skin — the MENTAL MODEL.** Describe the system *as it actually works* in
    plain, jargon-free language, then name what you just described with the standard
-   term. Do NOT substitute an unrelated metaphor for that description — a comparison borrowed
+   term — the description does the teaching; the term is only its label. Do NOT
+   substitute an unrelated metaphor for that description — a comparison borrowed
    from some other domain is the kind of analogy that falls flat. (A genuinely apt
    comparison may supplement the description, but it never replaces describing the real
    mechanics.) Assume the reader knows common terms and lean on the foundation pages

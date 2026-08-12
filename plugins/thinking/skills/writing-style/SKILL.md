@@ -71,7 +71,9 @@ The reflex: simulating energy. Rhetorical questions as transitions ("So what doe
 
 ### Redundancy
 
-The reflex: saying it again. Restating a point in different words for emphasis, a summary sentence that repeats its own bullets, "in other words", a definition followed by its paraphrase, and the trailing clause that re-explains what the example just showed — the example already taught it; the clause insults the reader. Each point gets said once, in its best form. When a sentence adds no new fact to its paragraph, delete whichever version is weaker.
+The reflex: saying it again. Restating a point in different words for emphasis, a summary sentence that repeats its own bullets, "in other words", a definition followed by its paraphrase, and the trailing clause that re-explains what the example just showed. Each point gets said once, in its best form.
+
+The test is new information, never surface similarity. A clause that echoes a rule's shape still earns its place when it carries a fact the rule alone doesn't: the reason behind the rule, the positive counterpart of a prohibition (what to do instead), the general principle an example instantiates, or the consequence that makes a constraint matter. "Never perform the sub-skill's work — your only job is to read state and invoke" is a don't plus its do; both halves inform. Cut only when the second telling adds nothing the first didn't already say, and then delete whichever version is weaker.
 
 Over-emphasis is the same reflex in formatting: bold on every third phrase, ALL CAPS for volume, an exclamation where a period carries it. Emphasis spends from a small budget — a page with ten bolded phrases has none. Reserve bold for the one thing a scanner must not miss.
 
@@ -90,5 +92,5 @@ For cleaning existing text, in order:
 5. Un-bullet anything that reads top-to-bottom; keep bullets only where the reader scans.
 6. Rewrite nominalized sentences with actor-subject, action-verb.
 7. Read for cadence; break up uniform sentence lengths and em-dash chains.
-8. Cut restatements and the closing recap: any sentence that adds no new fact, including clauses that re-explain a preceding example.
+8. Cut restatements and the closing recap — sentences that add no new fact. Keep clauses that carry the reason, the what-to-do counterpart of a don't, or the principle behind an example: those are information, however repetitive their shape.
 9. Audit bold: keep it only on what a scanner must not miss.
