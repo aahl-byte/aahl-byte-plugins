@@ -28,8 +28,8 @@ does is mechanical: read the manifest, generate the host files, verify.
 ### 1. Check the notes exist
 
 Confirm `<notes-root>/structure.yaml` exists. If it doesn't, stop and tell the user to
-run `/notes-architect:na-build-notes <topic>` first — this skill hosts existing notes,
-it does not create them.
+run `/notes-architect:na-build-notes <topic>` first — this skill only hosts existing
+notes.
 
 ### 2. Verify the content first
 
@@ -40,8 +40,8 @@ node ${CLAUDE_PLUGIN_ROOT}/scripts/verify-content.js <notes-root>
 This confirms the manifest is valid, slugs are unique, pages and manifest cover each
 other, every wikilink and footnote resolves, and no page carries host markup. **Run
 this BEFORE scaffolding** — once the host files (`home.md`, `_sidebar.md`, …) are
-written into the root, they are host-owned, not content, so re-running content-verify
-afterward will (correctly) see them as extra files. Host the notes only once content
+written into the root, they are host-owned, so re-running content-verify afterward
+will (correctly) see them as extra files. Host the notes only once content
 verifies clean.
 
 ### 3. Scaffold the docsify shell

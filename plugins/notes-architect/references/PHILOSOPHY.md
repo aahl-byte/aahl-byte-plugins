@@ -10,10 +10,9 @@ manifest (see §5). *How* the notes get published or viewed — docsify, Obsidia
 mkdocs, a bare markdown reader — is a separate concern owned by a **host skill**
 (e.g. `na-host-docsify`), never by the notes themselves.
 
-The product is **UNDERSTANDING, not coverage.** Every change should leave a learner
-better able to *reason* about the topic, not just better supplied with facts. A
-section can be perfectly accurate and still FAIL — if a beginner finishes it with no
-mental model, it failed. Accuracy is necessary, not sufficient.
+The product is **UNDERSTANDING.** Every change should leave a learner better able to
+*reason* about the topic. A section can be perfectly accurate and still FAIL — if a
+beginner finishes it with no mental model, it failed.
 
 ---
 
@@ -39,8 +38,8 @@ backwards — fix it.
 
 ## 2. structure like an onion
 
-Build a foundation of understanding, then peel back to specifics — never the
-reverse. Each layer must be complete and correct **on its own terms**, so a reader
+Build a foundation of understanding, then peel back to specifics. Each layer must
+be complete and correct **on its own terms**, so a reader
 can stop at any depth and still hold a true (if coarse) mental model.
 
 1. **Outer skin — the MENTAL MODEL.** Describe the system *as it actually works* in
@@ -59,7 +58,7 @@ can stop at any depth and still hold a true (if coarse) mental model.
 
 ### the onion is SELF-SIMILAR — apply it at two scales
 
-The onion isn't a single ladder; it repeats fractally. A real topic has a **macro
+The onion repeats fractally. A real topic has a **macro
 onion across DOMAINS** and, inside each domain, a **micro onion across PHASES.**
 
 **Macro onion — the DOMAINS (the top tier of the manifest).** Decompose the topic into
@@ -73,7 +72,7 @@ domains and order them so each rests on the ones before it:
 3. The "stop at any depth and still hold a true model" rule applies **here too**: after
    finishing domain N, a reader should hold a coherent (if partial) model.
 
-Name domains by **subject/boundary**, not by depth — depth is the phase axis's job.
+Name domains by **subject/boundary**; depth is the phase axis's job.
 When a subject grows too big, split it into more domains *by sub-topic*; don't suffix
 domains with `-deep-dive`/`-esoteric` (that double-encodes the onion and blurs the
 domain/phase line). A late "revisit the core, harder" domain is fine and valuable —
@@ -90,7 +89,7 @@ into these four phases:
 | 4 | **synthesis** — putting it together | end-to-end worked examples, real systems, the details that only land last |
 
 Not every domain needs all four phases, and a phase may hold several pages — the
-phases are a skeleton, not a quota. Emit a phase header only when it holds pages;
+phases are a skeleton. Emit a phase header only when it holds pages;
 for a **single-phase domain, skip the phase headers** and list its pages directly.
 
 **The degenerate case is a SMALL topic = one domain.** A topic that doesn't warrant
@@ -108,7 +107,7 @@ topic genuinely has parallel tracks or layered boundaries.
   understanding; the term is just its handle. Don't reach to an unrelated domain for a
   metaphor — that's the analogy that falls flat. An apt comparison can supplement the
   plain description, never replace it.
-- **Build schemas, not lists:** always answer "why does this exist" and "what does
+- **Build schemas:** always answer "why does this exist" and "what does
   it connect to" before "what are its parameters."
 - **Progressive disclosure:** the first third of any page is a correct *coarse*
   model.
@@ -129,7 +128,7 @@ topic genuinely has parallel tracks or layered boundaries.
   markup. The first line is the page's `#` title.
 - `<em>...</em>` is a **COLORED HIGHLIGHT**, not italics — use it to spotlight the
   key phrase in a definition. Don't use it for ordinary emphasis.
-- Lowercase, casual headers (these are *study notes*, not a manual):
+- Lowercase, casual headers (these are *study notes*):
   `#` = page/topic, `##` = sections, `###` = sub-topics/components, `####` = finer
   points.
 - **Bullets over prose:** a one-line plain-language summary, then bullets.

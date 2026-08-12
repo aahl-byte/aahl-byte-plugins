@@ -38,7 +38,7 @@ before proceeding.
 - Read `${CLAUDE_PLUGIN_ROOT}/references/PHILOSOPHY.md`.
 - Look for an existing `notes/` set (a `structure.yaml` + markdown) in the target
   repo. If one exists, **match its voice and structure** and treat this as an
-  addition, not a rebuild.
+  addition to the existing set.
 
 ### 2. ARCHITECT the outline — then get a reaction
 
@@ -49,8 +49,8 @@ specifics. Then organize the result with the **two-scale onion** (see PHILOSOPHY
 1. **Macro onion — DOMAINS.** Split the topic into domains and order them by
    dependency: a **GLOBAL FOUNDATION** domain first, then domains that deepen it or
    open genuinely separate boundaries (simpler-first among independent ones). Name
-   domains by subject, not by depth. **A small topic is just one domain** — don't
-   invent domains a topic doesn't have.
+   domains by subject; depth is the phase axis's job. **A small topic is just one
+   domain** — don't invent domains a topic doesn't have.
 2. **Micro onion — PHASES.** Within each domain, place pages into the phases
    (foundation → building blocks → cross-cutting → synthesis). Use a phase only when
    it holds pages.
@@ -120,8 +120,8 @@ yourself).
 
 The pages were written in parallel by separate agents that never saw each other's
 output. Now that they all exist, the architect makes **one holistic pass** over the
-whole site — you hold the only whole-site view, so this is your job, not a delegated
-one. Read the pages **together**, not in isolation, and edit in place to:
+whole site — you hold the only whole-site view, so this pass is yours alone. Read
+the pages **together**, and edit in place to:
 
 - **Consistency.** Align terminology, heading style, voice, and depth across pages so
   the site reads as one author. Reconcile anywhere two pages name or define the same
