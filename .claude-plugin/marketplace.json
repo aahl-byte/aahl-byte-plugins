@@ -27,7 +27,7 @@
     {
       "name": "thinking",
       "source": "./plugins/thinking",
-      "description": "Habits of clear thought on the page — writing-style for sentence craft and machine-writing tells, explaining for building a reader's mental model."
+      "description": "Habits of clear thought on the page — right-to-left for planning backward from the end state, explaining for building a reader's mental model, writing-style for sentence craft and machine-writing tells, and all for the merged toolkit in one load."
     }
   ]
 }
