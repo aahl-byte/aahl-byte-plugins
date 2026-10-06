@@ -11,7 +11,7 @@
 **Design doc:** `docs/plans/2026-06-28-notes-architect-hosting-decouple-design.md`
 
 **Conventions for this plan:**
-- All paths are relative to repo root `/mnt/oak/git/aahl-byte-plugins`.
+- All paths are relative to repo root `/mnt/rain/git/aahl-byte-plugins`.
 - Plugin root shorthand: `P = plugins/notes-architect`.
 - Use `git mv` for moves (preserve history). Commit after every task.
 - Tests run with `node --test <dir>`; they use throwaway fixtures created under
