@@ -96,6 +96,7 @@ Before grading, check that the runner did its integrity checks:
 
 - Launch detached and wait for the completion notification.
 - For every lease, also set a one-shot wakeup 30–45 minutes before each deadline it can hit: the high end of its estimate and its hard cap. The completion notification arrives only after the box is gone; the wakeup is what lets you relaunch before the stop. `research:cloud-compute` covers what to check when it fires.
+- Before ending a session, wait for every agent still working. A headless session (`claude -p`) stops its background agents when it ends, and its scheduled wakeups end with it, so record each in the resume note before you stop.
 - Never poll in a sleep loop. A waiter whose check matches its own command line never finishes, and a hung waiter can't be told apart from a slow job.
 - Write output to files, never through pipes.
 - Kill by PID. `pkill -f` matches the shell running it. Check what else is running first, because shared machines run other projects.
@@ -121,7 +122,7 @@ Every fold answers one question and raises several, and each new question is rea
 
 When a fold triggers it, run it before that fold's new questions are filed, so it ranks them with the rest.
 
-Save the audit verbatim at `<direction>/<YYYY-MM-DD>-AUDIT.md`, and rule on it in a dated section of `<direction>/RULINGS.md`, as for a criterion audit. A ruling may re-rank, park or merge open questions; a parked question keeps its entry, with status `parked` and the ruling's date. The list of end-state checks no question serves goes to the next question generation (`research:setup`, step 3). No ruling touches a frozen pre-registration or a running spike: a finding about one becomes a note in its record or a new question.
+Save the audit the auditor returns verbatim at `<direction>/<YYYY-MM-DD>-AUDIT.md`, and rule on it in a dated section of `<direction>/RULINGS.md`, as for a criterion audit. A ruling may re-rank, park or merge open questions; a parked question keeps its entry, with status `parked` and the ruling's date. The list of end-state checks no question serves goes to the next question generation (`research:setup`, step 3). No ruling touches a frozen pre-registration or a running spike: a finding about one becomes a note in its record or a new question.
 
 ## Fold
 
@@ -153,7 +154,7 @@ Engineering, such as a harness, a faster solver or a refactor, runs beside the s
 ## The agent economy
 
 - Run at most `agent_cap` agents at once.
-- **Choose the model by role, and set it explicitly on every agent:** Opus for judgement (planning, audits, reviews, scouting), Sonnet for mechanical work, never Fable.
+- **Choose the model by role, and set it explicitly on every agent:** Opus for judgement (planning, audits, reviews, scouting), Sonnet for mechanical work, never Fable. The one exception is setup's second question generator, Sonnet at `high`, where the difference between models is the point.
 - **Set effort explicitly on every agent:** `low` for lookups and waiting, `medium` for mechanical work, `high` for audits, reviews and planning, and `xhigh` only for long judgement work.
 - Pass both rules into every brief, so agents that spawn agents follow them too.
 - Runners stay idle while compute runs.

@@ -27,6 +27,7 @@ Status is `open`, `spiking`, `parked` (by a dated direction ruling), or the resu
 - **Falsifiable criterion:** <measurable pass/fail: every threshold with its population, units and the regime it binds in>
 - **Spike:** <what to build or run, and its rough size>
 - **Independent?** yes | follows <IDs>
+- **Origin:** raised independently | contested (<the other generator's framing>) | backlog <todo item> | direction audit <date> | <parent spike ID>
 - **Leads:** <path to the scout's batch file, once scouted>
 - **Prior evidence:** <results produced before the programme, each folded as `prior-evidence`; omit if none>
 - **Result:** <path to the result file>, <the verdict, copied exactly, with its regime>
