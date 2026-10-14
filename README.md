@@ -7,6 +7,7 @@ Claude Code plugins, served from this repo as the `aahl-byte` marketplace.
 - **dev-kernel** — end-to-end AI dev pipeline (vision → design → plan → review → execute) built from context-isolated skills
 - **notes-architect** — living study-notes sites; decomposes a topic right→left into onion tiers, delegates one sub-agent per page, hosts via docsify
 - **thinking** — habits of clear thought on the page: right-to-left for planning backward from the end state, explaining for building a reader's mental model, writing-style for sentence craft, and all for the merged toolkit in one load
+- **research** — a research programme that makes a wrong result expensive: catalogued questions ranked by kill-risk, criteria audited before they freeze, mutation-tested instruments, adversarial review by tier, results re-derived at fold, a literature scout per question, standing experts, and cloud compute through the `gpu` CLI
 
 # Plan Clarity
 
