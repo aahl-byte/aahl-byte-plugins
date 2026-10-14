@@ -23,6 +23,7 @@ Otherwise, copy `templates/research.md` there and settle each key:
 - **Paths.** The defaults put the catalogue, results, the criterion audit, leads and expert stores under `docs/research/`; spikes under `spikes/`; and scratch under `.scratch/research/`. If the project already keeps a catalogue or results somewhere, point the keys there instead of moving the files.
 - **Scratch must survive a reboot,** because long runs and the resume note live there. Never put it under `/tmp`. Add it to `.gitignore`.
 - **`resume_note`** defaults to a file in scratch. Use `todo:<item-id>` if the project tracks work in a todo store and the coordinator should keep the note on a todo item instead.
+- **`todo`**, if the project keeps a todo store. The catalogue stays the one source of truth for every question's state and verdict. The store holds phases: one item per phase of the programme, with child tasks per batch or milestone, never one per question. Name the current phase's item here.
 - **`commit_trailer`, `agent_cap` and `tiers`.** Keep the defaults unless the project has a reason to change them. Tiers can be raised, never lowered.
 - **`local_cpus`** is the CPU list this programme may use when other projects share the machine. Ask the author for it rather than taking every CPU.
 - **`cloud.project`** is needed only before the first lease. Leave it empty until then.

@@ -63,6 +63,7 @@ Record the instrument's hash with every number you re-grade. Re-grading old outp
 - **Check whether a direction audit is due** (`research:coordinate`): this fold killed or narrowed a question an end-state check depends on, or it is the fifth fold since the last audit. If one is due, run it before filing the new questions.
 - **Add the new questions** as full entries plus index rows, keeping the names the spike gave them. Never renumber them to the next free integer. Scout each one (`research:literature-scout`).
 - **Add any new defect class** the spike or its reviews found to the project's `CRITERION_AUDIT.md`, as a one-line lesson with its case.
+- **Log the verdict in the todo store**, if the config names a `todo` item: one log line with the question ID, the verdict copied exactly, and the result path. Never mirror a verdict into a task's title or status; each copy is one more hand-off where a claim can strengthen.
 - **Update the status document**, if `.claude/research.md` names one under `status:` and the result changes what is settled or what is blocked.
 
 ## 7. Move bulk data

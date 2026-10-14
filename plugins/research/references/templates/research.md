@@ -15,6 +15,7 @@ direction: docs/research/direction           # direction audits, verbatim, and t
 status: ""                                   # optional status document a fold updates when a result changes what is settled
 
 resume_note: .scratch/research/RESUME.md     # or todo:<item-id> to keep it in a todo item's note
+todo: ""                                     # todo item for the current phase, if the project keeps a todo store; a fold logs each verdict there
 commit_trailer: ""                           # appended to every research commit, e.g. "Research-Programme: x"
 
 agent_cap: 2                                 # concurrent agents the coordinator runs at once
