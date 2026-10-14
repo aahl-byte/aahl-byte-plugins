@@ -24,6 +24,7 @@ Otherwise, copy `templates/research.md` there and settle each key:
 - **Scratch must survive a reboot,** because long runs and the resume note live there. Never put it under `/tmp`. Add it to `.gitignore`.
 - **`resume_note`** defaults to a file in scratch. Use `todo:<item-id>` if the project tracks work in a todo store and the coordinator should keep the note on a todo item instead.
 - **`commit_trailer`, `agent_cap` and `tiers`.** Keep the defaults unless the project has a reason to change them. Tiers can be raised, never lowered.
+- **`local_cpus`** is the CPU list this programme may use when other projects share the machine. Ask the author for it rather than taking every CPU.
 - **`cloud.project`** is needed only before the first lease. Leave it empty until then.
 - **Project notes.** Anything the author has said about spend, hardware or who may do what goes in the free-text section under the frontmatter, where every research agent reads it.
 

@@ -16,6 +16,7 @@ resume_note: .scratch/research/RESUME.md     # or todo:<item-id> to keep it in a
 commit_trailer: ""                           # appended to every research commit, e.g. "Research-Programme: x"
 
 agent_cap: 2                                 # concurrent agents the coordinator runs at once
+local_cpus: ""                               # CPU list this programme may use locally, e.g. 0-11,28-39; empty means all
 
 tiers:                                       # kill-risk → scrutiny; raise these, never lower them
   low:    {step0_audit: required-unless-ruled, reviewers: 0}   # one consumer-brief reviewer if another spike inherits

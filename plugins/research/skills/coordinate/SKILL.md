@@ -19,7 +19,7 @@ The method is in `${CLAUDE_PLUGIN_ROOT}/references/METHOD.md` (the plugin root i
 
 ## At the start of every session
 
-Read `.claude/research.md`, then the resume note. The note says what is running where, and what comes next. Check that each PID and lease it names is still alive (`ps -p <pid>`, `gpu status`) before acting on it. Scheduled wakeups die with the session that set them, so set one again for each lease deadline the note lists.
+Read `.claude/research.md`, then the resume note. The note says what is running where, and what comes next. Check that each PID and lease it names is still alive (`ps -p <pid>`, `gpu status`) before acting on it. Scheduled wakeups die with the session that set them, so set one again for each lease deadline the note lists. If the config sets `local_cpus`, pin this session to it again (`taskset -a -cp <local_cpus> <session pid>`); a restart drops the pin, and other projects need the remaining CPUs.
 
 ## Choose the batch
 
@@ -82,7 +82,7 @@ If the repaired instrument fails, the verdict is `instrument-failed`, spending s
 
 Runners build and test at small scale and then stop. You launch long jobs. While a job runs, its runner stays idle. When the job lands, resume the runner by message to its agent id; it still has its full context.
 
-- **Local jobs:** start detached, at `nice -n 19` on a shared machine, with output to a file: `setsid nohup <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`. Launch through your harness's background mode, so you are notified when the job exits.
+- **Local jobs:** start detached, at `nice -n 19` on a shared machine, inside `local_cpus` if the config sets it, with output to a file: `setsid nohup taskset -c <local_cpus> nice -n 19 <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`. Launch through your harness's background mode, so you are notified when the job exits.
 - **Cloud jobs:** use `research:cloud-compute`. You own every lease and every stop.
 
 Before grading, check that the runner did its integrity checks:

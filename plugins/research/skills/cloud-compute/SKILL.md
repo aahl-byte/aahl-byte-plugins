@@ -15,6 +15,8 @@ Everything goes through the `gpu` CLI. `gpu <cmd> --help` is the most precise re
 
 Read `.claude/research.md` first. `cloud.project` names the project on every lease. The project notes may cap how many machines run at once, or how much a spike may spend.
 
+**Caps are shared beyond this programme.** Other projects lease on the same account, draw on the same quotas and run on the same local machine. Before leasing against any cap, count every live lease on the account in `gpu status`, not only this project's. If the notes don't say whether a cap is per project or per account, take it as per account and ask the author.
+
 ## Choose the machine
 
 There are two kinds, from two providers, and they behave differently.
@@ -25,7 +27,7 @@ There are two kinds, from two providers, and they behave differently.
 - Lease with `gpu lease <CARD>[:N]`.
 - The card you name is the card you get, or the launch fails. There is no fallback card, so check stock first, and fall back to another card yourself.
 - Choose by measuring your own job's throughput per dollar. *Example:* for float32 molecular dynamics with an ML potential, an A40 48 GB at $0.59/h, running six trajectories at once with cuEquivariance, gave about 10× a local RTX 3060. Bigger cards added nothing below about 2000 atoms, at three to seven times the price.
-- One job rarely fills a card, so run several independent jobs per card. The pod's CPU allowance caps the useful count. `nproc` shows the host's cores; the real limit is in `/sys/fs/cgroup/cpu.max`.
+- One job rarely fills a card, so run several independent jobs per card. The pod's CPU allowance caps the useful count. `nproc` shows the host's cores; the real limit is in `/sys/fs/cgroup/cpu.max` (see *Count the cores* below).
 
 **CPU boxes** come from AWS, on demand or spot.
 
@@ -44,6 +46,18 @@ When a box runs out of memory, its watchdog stops answering while SSH still work
 **Disk.** The default is 100 GB; `--disk-gb` accepts 20 to 2000. Size it by the chain's scratch. A full disk fails jobs silently, as empty result files. *Example:* sixty-four plane-wave DFT jobs filled 100 GB in 25 minutes.
 
 **Cores.** Past the point where every ready job has a core, more cores only add cost. The longest single-threaded job sets the floor on wall time.
+
+**Count the cores a job may use, on the box itself.** `nproc` obeys `OMP_NUM_THREADS`: with it exported as 1, `nproc` printed 1 on a 64-core box, and every job ran one worker. `nproc --all` overshoots the other way, counting every installed CPU while ignoring the affinity mask and a pod's cgroup quota. Count like this, in the job script:
+
+```bash
+cpus=$(env -u OMP_NUM_THREADS -u OMP_THREAD_LIMIT nproc)
+if read -r quota period 2>/dev/null < /sys/fs/cgroup/cpu.max && [ "$quota" != max ]; then
+  limit=$(( quota / period )); [ "$limit" -lt 1 ] && limit=1
+  [ "$limit" -lt "$cpus" ] && cpus=$limit
+fi
+```
+
+On a whole AWS box all three counts agree; on a RunPod pod only the quota is right. Then cap the job count by memory, which usually binds first.
 
 ## Spot or on-demand (CPU boxes only)
 
