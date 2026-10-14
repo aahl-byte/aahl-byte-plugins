@@ -88,7 +88,7 @@ Each step exists because the step after it needs it. The kill-risk tier (below) 
 
    The sha256 goes into a `.sha256` file beside the frozen document and into the rulings, and the coordinator commits the frozen file, its hash and the rulings. *Coordinator.*
 7. **Build the instrument red-first.** Every oracle, guard and planted fault has a mutant that turns its test red for the right reason. The runner reports the mutation tally on the final tree. *Runner.*
-8. **Run.** The runner builds and tests at small scale, then stops. The coordinator launches long jobs: locally, detached; in the cloud, through the `gpu` CLI. The runner stays idle while compute runs and is resumed by message when it lands. *Coordinator.*
+8. **Run.** The runner builds, gates, pilots and dry-runs at small scale (*Fail fast*, below), then stops. The coordinator launches long jobs: locally, detached; in the cloud, through the `gpu` CLI. The runner stays idle while compute runs and is resumed by message when it lands. *Coordinator.*
 9. **Check the outputs' integrity:**
    - every unit is present and verified;
    - lock or version checks pass;
@@ -109,6 +109,20 @@ Each step exists because the step after it needs it. The kill-risk tier (below) 
     - commit named paths only, after reading the staged diff.
 
     *Coordinator.*
+
+## Fail fast
+
+Hours of compute can end in "the run was too short" or "a gate had already decided". Most of that can be learned in seconds, by running the checks that could end the spike before the run that can't. *Example:* one spike's verdict was fixed by a table oracle that ran in seconds and failed before either rented card started. The cards ran anyway, for about $12 and 20 wall-hours of data that could only be reported.
+
+Before any run longer than an hour, and again at each of its checkpoints:
+
+1. **Run every cheap gate first, cheapest first, and stop at the first failure.** Table oracles, parity lines and dry fits take seconds. A failed instrument oracle goes to its one diagnosed repair before any production runs. Where the stopping rule says a failure fixes the verdict, it is fixed: further production runs only for a named consumer, and its numbers are reported, never graded.
+2. **Skip a run that can't change the answer.** If the pre-registration predicts a run will grade nothing (unresolved, refused by a guard, below resolution), it doesn't run, unless a follow-up question names the data it needs.
+3. **Size the run to the effect.** Estimate how long the measured effect takes to appear, such as a settling, nucleation or diffusion time, before choosing the run length. If that exceeds the budget, redesign so the effect shows sooner: a planted interface, a larger driving force, an observable that converges faster.
+4. **Pilot at about 1% of production, scored by the guards that grade production**, such as agreement between halves, settling slope, box width and peak memory. A guard that refuses the pilot will refuse production.
+5. **Dry-run the whole chain with stub jobs before leasing anything.** A plumbing bug found mid-chain costs the hours of every box already running.
+6. **Stop for futility only by a rule written in the pre-registration**: which reading, at which checkpoint, ends the run. The reading at a futility stop is reported, never graded; the verdict still comes from the stopping rule's triggers. A stop decided by looking at the data is a deviation.
+7. **Scout the literature before the freeze** (pipeline step 2), including known failures of the procedure itself. A paper showing a protocol fails changes a draft for free, and costs an experiment after the freeze.
 
 ## Tiers
 
@@ -182,6 +196,7 @@ These rules are what make a wrong result expensive. Generalising the method for 
 - **Audits, reviews and rulings are saved verbatim.** The coordinator's ruling is a separate, dated section that quotes what it accepts.
 - **Every oracle is mutation-tested.** An oracle that survives its own mutation constrains nothing.
 - **Nothing is repaired once grading starts.** A failure becomes the finding, and the repair becomes a new question.
+- **Cheap gates run before any run longer than an hour, and a run that can't change the answer doesn't run.**
 - **An instrument gets one diagnosed repair.** If the repaired instrument fails, the verdict is `instrument-failed`.
 - **A post-freeze change that touches the criterion goes to the auditor first.** A deviation never softens a frozen label.
 - **At fold, the coordinator re-derives one load-bearing number without any of the spike's code.** If it can't be re-derived from what was kept, that is the finding.

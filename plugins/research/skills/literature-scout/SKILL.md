@@ -57,7 +57,7 @@ Search for those. A lead that changes nothing earns a card only when it confirms
 
 ### 2. Search
 
-Search for prior work that measured the same quantity, for methods the hypotheses could borrow, and for known failure modes of each hypothesis. Use standard search mode, and switch to extended mode only when a standard search comes back thin or off-target.
+Search for prior work that measured the same quantity, for methods the hypotheses could borrow, and for known failure modes of each hypothesis and of the procedure the spike will run. A paper showing a protocol fails changes a draft for free. Use standard search mode, and switch to extended mode only when a standard search comes back thin or off-target.
 
 **Search for recent preprints on purpose**: this year's and last year's arXiv listings, and the field's preprint servers. They postdate your training, and in the pilot they carried the most plan-changing leads.
 

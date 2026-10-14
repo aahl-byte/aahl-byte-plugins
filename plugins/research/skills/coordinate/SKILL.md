@@ -80,7 +80,9 @@ If the repaired instrument fails, the verdict is `instrument-failed`, spending s
 
 ## Run compute
 
-Runners build and test at small scale and then stop. You launch long jobs. While a job runs, its runner stays idle. When the job lands, resume the runner by message to its agent id; it still has its full context.
+Runners build, gate, pilot and dry-run at small scale and then stop. You launch long jobs. While a job runs, its runner stays idle. When the job lands, resume the runner by message to its agent id; it still has its full context.
+
+**Gate every run longer than an hour before you launch it** (`METHOD.md`, Fail fast). Launch it only when the hand-over shows the cheap gates passed, the pilot passed the production guards, and the chain ran end to end with stub jobs. The run must also grade a frozen clause or feed a named consumer that needs its data; otherwise send it back. At each checkpoint, re-run the cheap gates on what has landed and apply the frozen futility rule, or resume the runner to do it.
 
 - **Local jobs:** start detached, at `nice -n 19` on a shared machine, inside `local_cpus` if the config sets it, with output to a file: `setsid nohup taskset -c <local_cpus> nice -n 19 <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`. Launch through your harness's background mode, so you are notified when the job exits.
 - **Cloud jobs:** use `research:cloud-compute`. You own every lease and every stop.

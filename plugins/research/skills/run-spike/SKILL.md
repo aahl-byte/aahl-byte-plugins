@@ -55,7 +55,8 @@ Fill in `templates/PREREGISTRATION.md`. Its sections ask for:
 
   Halting on a broken scoring rule throws away a working instrument. Continuing past a broken solver throws away the result.
 - **The input range each oracle presents, beside the range the experiment will present.** Where the experiment's range is wider, extend the oracle or record the uncovered band as a blind spot. An instrument is often broken only on inputs its oracle never presents. *Example:* a stress recovery matched its oracle to 1.35% for the life of a spike, while returning up to 3.78× the true value on mesh nodes that the oracle's part never produced.
-- **The stopping rule, with each verdict's trigger stated literally.** State what the verdict is if a blockable input stays blocked.
+- **The gates, cheapest first, and what each run grades** (`METHOD.md`, Fail fast). Size each run from an estimate of how long the measured effect takes to appear, and cut any run that would grade nothing.
+- **The stopping rule, with each verdict's trigger stated literally.** State what the verdict is if a blockable input stays blocked, and the futility rule: which reading, at which checkpoint, ends a run.
 - **The consumers**: who inherits this result, and the statistic each of them reads.
 
 Keep every revision as its own file, `PREREGISTRATION_r<n>.md`, until the freeze, so each diff can be shown. Nothing is committed until the coordinator freezes it.
@@ -90,15 +91,22 @@ A finding that arrives after the freeze, from a lead card, a reviewer or your ow
 
 **Where the criterion uses a proxy, correlate it with its obvious confound** and report the number. A legibility metric that correlated 0.987 with "distance from the simplest arm" was measuring that distance.
 
-## 5. Hand long compute to the coordinator
+## 5. Fail fast, then hand long compute to the coordinator
 
-Build and test at small scale, then stop and hand over:
+Spend seconds before anyone spends hours (`METHOD.md`, Fail fast):
+
+1. Run every cheap gate, cheapest first, and stop at the first failure. A failed instrument oracle goes to its one repair; a failure the stopping rule says fixes the verdict ends production, unless a named consumer needs the data.
+2. Pilot at about 1% of production, scored by the guards that grade production. A guard that refuses the pilot will refuse production, so take the redesign to the coordinator as a deviation instead of handing over.
+3. Dry-run the whole chain with stub jobs in place of the real ones.
+
+Then stop and hand over:
 
 - the chain command;
 - the output directory, a single subdirectory of your spike;
 - the machine type and count;
 - the wall time per machine;
-- one job's peak memory.
+- one job's peak memory;
+- the gate results and the pilot's guard scores.
 
 The chain must resume from its own checkpoints, write a done marker only on a clean exit, and run any parity check as its first unit. Kill it and resume it once at small scale before handing it over. The coordinator launches it (`research:cloud-compute` for leased machines) and resumes you by message when it lands. Do nothing while it runs.
 

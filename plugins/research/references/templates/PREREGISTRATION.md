@@ -14,7 +14,9 @@ The quantity, and why it answers this question rather than an adjacent one.
 H0 (null) and each competing hypothesis, including any the step-0 audit or the lead cards added.
 
 ## Procedure
-Setup, inputs, what is varied, what is held fixed, and the machines it runs on.
+Setup, inputs, what is varied, what is held fixed, and the machines it runs on. For each run: the
+clause it grades, or the follow-up question that names its data, and its length, sized from an
+estimate of how long the measured effect takes to appear.
 
 ## Predictions
 For each hypothesis: the number expected, with a range, and its basis (a lead card, a closed form, a
@@ -44,9 +46,15 @@ Each guessed-at parameter and the range it is swept over.
 Unit verification, lock or version checks, the parity line per machine, and the kill-and-resume test
 for any resumable chain.
 
+## Gates and pilot
+The cheap gates (table oracles, parity, dry fits), cheapest first, and what each failure does: send
+the instrument to its one repair, or fix the verdict. The pilot's size, about 1% of production, and
+the production guards that score it.
+
 ## Stopping rule
 What ends the spike, each verdict's trigger stated literally, and the verdict if a blocked input stays
-blocked.
+blocked. The futility rule: which reading, at which checkpoint, ends a run. Its reading is reported,
+never graded.
 
 ## Cost
 Compute budget in hours or dollars, and the cut order if it runs short.

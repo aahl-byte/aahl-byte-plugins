@@ -11,7 +11,7 @@ Everything goes through the `gpu` CLI. `gpu <cmd> --help` is the most precise re
 
 ## Who leases
 
-**Only the coordinator leases, launches on, or stops a cloud machine.** The author grants one session an allowance of machines, the deadline wakeups and the budget need one session that sees every lease, and a lease has to outlive the agent that asked for it (`METHOD.md`, Roles). Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory.
+**Only the coordinator leases, launches on, or stops a cloud machine.** The author grants one session an allowance of machines, the deadline wakeups and the budget need one session that sees every lease, and a lease has to outlive the agent that asked for it (`METHOD.md`, Roles). Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory. Lease only for a chain that passed the fail-fast gate (`research:coordinate`, Run compute).
 
 Read `.claude/research.md` first. `cloud.project` names the project on every lease. The project notes may cap how many machines run at once, or how much a spike may spend.
 
