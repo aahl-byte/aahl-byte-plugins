@@ -9,7 +9,7 @@ sections hold the full entries. When a result is folded, its answer goes back in
 
 Kill-risk is how much of the project dies if the answer is bad, not how likely a bad answer is.
 
-Status is `open`, `spiking`, or the result's verdict, copied exactly. A question with only pre-programme results stays `open`, and its entry links them on a **Prior evidence:** line.
+Status is `open`, `spiking`, `parked` (by a dated direction ruling), or the result's verdict, copied exactly. A question with only pre-programme results stays `open`, and its entry links them on a **Prior evidence:** line.
 
 | ID | Question | Kill-risk | Independent | Spike | Status |
 |---|---|---|---|---|---|

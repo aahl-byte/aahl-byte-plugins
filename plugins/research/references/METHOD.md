@@ -62,6 +62,7 @@ Each role exists because someone else has to check the work of the role before i
 | **Runner** (one per spike) | Plans, pre-registers, builds the instrument, runs it, writes the record | Stages, commits, leases, edits the catalogue, or writes outside its spike directory and its one result file |
 | **Criterion auditor** | Attacks the hypothesis list and the criterion before anything is built | Runs the experiment or writes code |
 | **Reviewer** | Attacks a finished result, and runs its own checks to do it | Modifies anything the spike owns |
+| **Direction auditor** | Checks the catalogue against the end state, right to left, at setup and every few folds | Rules, or touches a frozen or running spike |
 | **Literature scout** | Returns lead cards on prior art for one question | Edits a criterion, a spike or the catalogue |
 | **Domain expert** | Answers from its own store of measured facts, where the domain is contested | Answers a number it didn't measure as if it had |
 

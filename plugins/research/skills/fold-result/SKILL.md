@@ -60,6 +60,7 @@ Record the instrument's hash with every number you re-grade. Re-grading old outp
 - **Attach the regime to every claim.** A conclusion measured on one clean case reads as general in the catalogue, and will be quoted as general.
 - **Update the index row and the entry together:** the status, the kill-risk if the result changed it, and the pointer to the result file.
 - **Change kill-risk only on evidence, and name the evidence.** Kill-risk has been raised on the size of a number before its cause was known, then lowered twice as the cause emerged. Ask why the number is what it is before rating it.
+- **Check whether a direction audit is due** (`research:coordinate`): this fold killed or narrowed a question an end-state check depends on, or it is the fifth fold since the last audit. If one is due, run it before filing the new questions.
 - **Add the new questions** as full entries plus index rows, keeping the names the spike gave them. Never renumber them to the next free integer. Scout each one (`research:literature-scout`).
 - **Add any new defect class** the spike or its reviews found to the project's `CRITERION_AUDIT.md`, as a one-line lesson with its case.
 - **Update the status document**, if `.claude/research.md` names one under `status:` and the result changes what is settled or what is blocked.

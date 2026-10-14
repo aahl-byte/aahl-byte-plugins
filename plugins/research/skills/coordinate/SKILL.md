@@ -111,6 +111,18 @@ Whenever another spike will inherit the result, one brief is the consumer brief.
 
 Save each review verbatim at `<spikes>/<id>/review-<brief>/REVIEW_<BRIEF>.md`, for example `review-consumer/REVIEW_CONSUMER.md`. Rule on each review in a dated section of the rulings: which replacement text the runner applies word for word, and, where the reviews disagree or the runner disputes an attack, which side to take and why.
 
+## Direction audit
+
+Every fold answers one question and raises several, and each new question is reasonable on its own. Nothing in that loop asks whether the catalogue as a whole still leads to the end state, so commission `research:direction-auditor` (Opus, `high`) to ask it:
+
+- at setup, once the first questions exist;
+- after a fold that kills or narrows a question an end-state check depends on;
+- otherwise, every five folds.
+
+When a fold triggers it, run it before that fold's new questions are filed, so it ranks them with the rest.
+
+Save the audit verbatim at `<direction>/<YYYY-MM-DD>-AUDIT.md`, and rule on it in a dated section of `<direction>/RULINGS.md`, as for a criterion audit. A ruling may re-rank, park or merge open questions; a parked question keeps its entry, with status `parked` and the ruling's date. The list of end-state checks no question serves goes to the next question generation (`research:setup`, step 3). No ruling touches a frozen pre-registration or a running spike: a finding about one becomes a note in its record or a new question.
+
 ## Fold
 
 Fold every result with `research:fold-result` before trusting any of it. That skill carries the re-derivation, the impact audit and the record update.

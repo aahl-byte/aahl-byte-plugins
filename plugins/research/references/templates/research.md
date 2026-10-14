@@ -10,6 +10,8 @@ leads: docs/research/leads                   # lead-card batches and TALLY.md
 experts: docs/research/experts               # one store per standing expert
 scratch: .scratch/research                   # bulk data, venvs, downloads; must survive a reboot
 brief: ""                                    # optional project brief every spike brief points to
+end_state: docs/research/END_STATE.md        # the checks that say the product works, written right to left
+direction: docs/research/direction           # direction audits, verbatim, and their RULINGS.md
 status: ""                                   # optional status document a fold updates when a result changes what is settled
 
 resume_note: .scratch/research/RESUME.md     # or todo:<item-id> to keep it in a todo item's note

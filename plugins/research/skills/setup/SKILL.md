@@ -34,7 +34,9 @@ Copy `${CLAUDE_PLUGIN_ROOT}/references/CRITERION_AUDIT.md` to the configured `cr
 
 ## 3. Generate the questions
 
-Start from what the project is trying to build, and ask which of its decisions can't be settled by reasoning alone. Generate broadly across every area. This is the divergent phase, so don't converge, recommend or prune yet.
+Write the end state first, at the config's `end_state` path: the checks that say the product works, planned right to left (`thinking:right-to-left`). The generators read it, and so does every later direction audit.
+
+Start from that end state, and ask which of the project's decisions can't be settled by reasoning alone. Generate broadly across every area. This is the divergent phase, so don't converge, recommend or prune yet.
 
 For a new programme, run two independent agents on an identical written brief. Give them different models, Opus and Sonnet, each with `effort: high` set explicitly. Because the input is identical, any difference in what they return comes from the model rather than from how each was briefed.
 
@@ -60,12 +62,14 @@ Fix each failing entry or drop it. Every entry gets a null hypothesis.
 
 Sort the index by how much of the project dies if the answer comes back bad. Pipeline order doesn't matter here. Check each entry's *Independent?* field against its body, because an index row can read "yes" while the entry names a blocker. The independent, high-kill-risk questions at the top are the work queue.
 
+Then run the first direction audit (`research:coordinate`, Direction audit). Rule on it, and send the end-state checks no question serves back through step 3.
+
 ## 6. Scout the top of the queue
 
 Each question is scouted when it is filed (`research:literature-scout`), so the planner and the criterion auditor have its lead cards before gate 1. At setup, scout the questions you will spike first. Scout the rest as they come up.
 
 ## 7. Create the directories and commit
 
-Create the results, spikes, leads and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the catalogue, the criterion audit, `.gitignore`, `<leads>/TALLY.md` and any leads batch files by name, read the staged diff, and commit.
+Create the results, spikes, leads, direction and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the end state, the catalogue, the criterion audit, the direction audit and its rulings, `.gitignore`, `<leads>/TALLY.md` and any leads batch files by name, read the staged diff, and commit.
 
 From here, the coordinator runs the programme with `research:coordinate`.
