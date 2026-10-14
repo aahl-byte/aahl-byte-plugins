@@ -35,7 +35,7 @@ Launch `research:spike-runner` with model and effort set explicitly. The brief c
 
 1. **The protocol and the tier**: `research:run-spike`, at this kill-risk.
 2. **What the spike is about, and what it is for.** Name the consumers.
-3. **The constraints**: the spike directory, no staging, no leasing, foreground builds, and the agent id to report to.
+3. **The constraints**: the spike directory, no staging, no leasing, no long compute, and the agent id to report to.
 4. **Context that postdates the catalogue entry.** This is the item most often missed. Entries go stale as decisions land, and a spike briefed only from its entry will faithfully answer a question nobody has any longer.
 5. **The lead cards** for the question.
 
@@ -80,7 +80,7 @@ If the repaired instrument fails, the verdict is `instrument-failed`, spending s
 
 ## Run compute
 
-Runners build and test in the foreground and then stop. You launch long jobs. While a job runs, its runner stays idle. When the job lands, resume the runner by message to its agent id; it still has its full context.
+Runners build and test at small scale and then stop. You launch long jobs. While a job runs, its runner stays idle. When the job lands, resume the runner by message to its agent id; it still has its full context.
 
 - **Local jobs:** start detached, at `nice -n 19` on a shared machine, with output to a file: `setsid nohup <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`. Launch through your harness's background mode, so you are notified when the job exits.
 - **Cloud jobs:** use `research:cloud-compute`. You own every lease and every stop.
@@ -131,7 +131,7 @@ Only you commit. Stage named paths, never `git add -A`. Read the staged diff, th
 - **Set effort explicitly on every agent:** `low` for lookups and waiting, `medium` for mechanical work, `high` for audits, reviews and planning, and `xhigh` only for long judgement work.
 - Pass both rules into every brief, so agents that spawn agents follow them too.
 - Runners stay idle while compute runs.
-- Builds run in the foreground. An agent that backgrounds a build and ends its turn never wakes.
+- An agent that backgrounds a build detaches it with `setsid nohup` to a log file, so a harness that kills its background tasks doesn't take the build too.
 - Mutation sweeps run in a copy of the tree whenever a live chain might be pushed from the tree.
 - Tell every agent the exact agent id to report back to.
 

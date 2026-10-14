@@ -23,7 +23,7 @@ Each of these has already gone wrong once, which is why it is a rule:
 - **Write outside your spike directory and your one result file.** Reading and importing from other spikes is encouraged; writing outside your own directory corrupts concurrent runs.
 - **Stage, commit, reset or check out.** Concurrent staging has taken a commit off a branch. The coordinator commits.
 - **Edit the catalogue.** The coordinator folds your result into it.
-- **Lease, stop or SSH to cloud machines, or background a job and end your turn.** You would never wake to stop it. Build and test in the foreground, then hand the coordinator a resumable chain and stop.
+- **Lease, stop or SSH to cloud machines, or launch long compute.** One owner has to count the account's caps, watch every lease's deadlines, and outlive any agent. Build and test at small scale, detaching anything you background with `setsid nohup` to a log file, then hand the coordinator a resumable chain and stop.
 - **Audit your own criterion or review your own result.** The coordinator commissions `research:criterion-auditor` and `research:spike-reviewer`. If you were launched without a coordinator, spawn them yourself, save their output verbatim, and record what you accepted and why.
 - **Repair anything once grading starts.** A failure becomes the finding.
 - **Carry on past a hand-off.** After handing over the draft, the revision, the compute chain, or the graded result, end your turn. The coordinator resumes you by message.

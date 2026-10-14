@@ -29,8 +29,8 @@ Spikes run concurrently. These rules hold whether or not anything else is runnin
 - **Write only in your spike directory, `<spikes>/<id>/`, and in your one result file, `<results>/<ID>.md`.** Read and import from other spikes freely; reusing a validated instrument is the point. Writing anywhere else corrupts whatever else is running.
 - **Never stage or commit.** No `git add`, `commit`, `reset` or `checkout`, anywhere. Concurrent staging has taken a commit off a branch and swept another agent's files into an unrelated commit. The coordinator commits.
 - **Never edit the catalogue.** The coordinator folds your result into it.
-- **Never lease, stop or SSH to a cloud machine.** An agent that backgrounds a job and ends its turn never wakes, so it can't stop what it started. You hand the coordinator a chain.
-- **Build and test in the foreground.** A build you background and then end your turn on will never report back.
+- **Never lease, stop or SSH to a cloud machine.** One owner has to count the account's caps, watch every lease's deadlines, and outlive any agent (`METHOD.md`, Roles). You hand the coordinator a chain.
+- **Detach any build or test you background**, with `setsid nohup <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`, so a harness that kills its background tasks doesn't take it with them. Long compute goes to the coordinator.
 - **Kill by PID, never `pkill -f`**, because the pattern matches your own shell. Check what else is running first.
 - **Redirect long output to a file, never through a pipe.** A pipe buffers until it closes, so a slow job looks identical to a hung one.
 - **Run long local jobs at `nice -n 19`** on shared machines.
@@ -91,7 +91,7 @@ A finding that arrives after the freeze, from a lead card, a reviewer or your ow
 
 ## 5. Hand long compute to the coordinator
 
-Build and test in the foreground at small scale, then stop and hand over:
+Build and test at small scale, then stop and hand over:
 
 - the chain command;
 - the output directory, a single subdirectory of your spike;

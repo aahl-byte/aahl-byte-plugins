@@ -65,7 +65,12 @@ Each role exists because someone else has to check the work of the role before i
 | **Literature scout** | Returns lead cards on prior art for one question | Edits a criterion, a spike or the catalogue |
 | **Domain expert** | Answers from its own store of measured facts, where the domain is contested | Answers a number it didn't measure as if it had |
 
-The runner can't commit because concurrent staging has taken a commit off a branch and swept another agent's files into an unrelated commit. The runner can't lease because a subagent that backgrounds a job and ends its turn never wakes up to stop the machine.
+The runner can't commit because concurrent staging has taken a commit off a branch and swept another agent's files into an unrelated commit. The runner can't lease because a lease needs an owner who sees every other lease and outlives every agent:
+
+- **Caps are per account.** Card caps and cloud quotas are shared by every spike, and often by other projects, so one owner has to count them.
+- **Deadlines need one watcher.** The deadline wakeups, the choice between extending and relaunching, the stop when the outputs land, and the budget all need the session that sees every lease at once.
+- **A lease outlives any agent.** A harness can kill every background task at once, and has, three times in one day. A lease watched only by a runner then loses its watcher, while the coordinator reattaches its pullers from the resume note.
+- **Waiting agents go stale.** Two watchers once outlived their parents by 20 hours and re-woke on notifications that no longer meant anything.
 
 ## The pipeline
 
@@ -82,7 +87,7 @@ Each step exists because the step after it needs it. The kill-risk tier (below) 
 
    The sha256 goes into a `.sha256` file beside the frozen document and into the rulings, and the coordinator commits the frozen file, its hash and the rulings. *Coordinator.*
 7. **Build the instrument red-first.** Every oracle, guard and planted fault has a mutant that turns its test red for the right reason. The runner reports the mutation tally on the final tree. *Runner.*
-8. **Run.** The runner builds and tests in the foreground, then stops. The coordinator launches long jobs: locally, detached; in the cloud, through the `gpu` CLI. The runner stays idle while compute runs and is resumed by message when it lands. *Coordinator.*
+8. **Run.** The runner builds and tests at small scale, then stops. The coordinator launches long jobs: locally, detached; in the cloud, through the `gpu` CLI. The runner stays idle while compute runs and is resumed by message when it lands. *Coordinator.*
 9. **Check the outputs' integrity:**
    - every unit is present and verified;
    - lock or version checks pass;

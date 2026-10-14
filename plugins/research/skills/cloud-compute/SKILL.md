@@ -11,7 +11,7 @@ Everything goes through the `gpu` CLI. `gpu <cmd> --help` is the most precise re
 
 ## Who leases
 
-**Only the coordinator leases, launches on, or stops a cloud machine.** An agent that backgrounds a job and ends its turn never wakes to stop it, and the box bills until something else ends it. Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory.
+**Only the coordinator leases, launches on, or stops a cloud machine.** Caps and quotas are per account, the deadline wakeups and the budget need one session that sees every lease, and a lease has to outlive the agent that asked for it (`METHOD.md`, Roles). Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory.
 
 Read `.claude/research.md` first. `cloud.project` names the project on every lease. The project notes may cap how many machines run at once, or how much a spike may spend.
 
