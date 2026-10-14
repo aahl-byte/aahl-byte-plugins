@@ -4,8 +4,8 @@ Rewritten in place at every state change, so a reboot or a context reset loses n
 are deleted, not struck through. Last updated <YYYY-MM-DD HH:MM UTC>.
 
 ## Running now
-| What | Where | PID or cluster | Started | Output file | Done when |
-|---|---|---|---|---|---|
+| What | Where | PID or cluster | Started | Output file | Done when | Deadlines (high estimate, hard cap) |
+|---|---|---|---|---|---|---|
 
 ## Waiting on
 Agents idle while compute runs, by agent id, and what resumes each one.

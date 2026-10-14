@@ -132,6 +132,19 @@ When the estimate moves, revise it at once with `gpu expect <CLUSTER> <LOW> <HIG
 
 The failure count resets only after a box has run for an hour (or twice `idle_minutes`, if that is longer) and pulled cleanly, so a job that dies at start ends the chain instead of relaunching forever.
 
+## Set a wakeup before each deadline
+
+Once a job or chain starts, schedule a one-shot wakeup 30–45 minutes before each deadline the lease can hit. In Claude Code that is `CronCreate` with `recurring: false`. A lease has two deadlines:
+
+- the high end of its `expect_hours`, past which `gpu status` flags it and a keep chain's budget projection starts to bind;
+- its `--max-hours` stop (`lease.max_hours` in a keep SPEC), where the watchdog takes the box.
+
+Nothing else warns you that a run is about to be cut off. The completion signal arrives only after the box is gone, with the unpulled work and a relaunch to pay for. *Example:* a CPU box ran past its 7 h estimate toward its 12 h cap, and only a chance status check caught it.
+
+At each wakeup, check the run's progress against what is left: `gpu status`, `gpu keep status`, and the pulled outputs. If it will not land before the next deadline, revise the estimate with `gpu expect` and plan the relaunch from the pulled state before the stop arrives. When an estimate moves, move its wakeup with it.
+
+The wakeups live only in the session that set them. Write each deadline in the resume note, so a resumed session sets them again.
+
 ## Spot outside `gpu keep`
 
 `gpu wait` follows AWS leases only, and refuses a RunPod card. Run `gpu wait <CLUSTER> --pull <REMOTE> <LOCAL>` in the background beside the job. It watches EC2 every 15 seconds, without needing a connection to the box. It pulls every `--every` seconds (default 300), and back to back once the reclaim warning lands. Its exit code says how the lease ended:

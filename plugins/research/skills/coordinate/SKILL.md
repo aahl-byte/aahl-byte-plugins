@@ -19,7 +19,7 @@ The method is in `${CLAUDE_PLUGIN_ROOT}/references/METHOD.md` (the plugin root i
 
 ## At the start of every session
 
-Read `.claude/research.md`, then the resume note. The note says what is running where, and what comes next. Check that each PID and lease it names is still alive (`ps -p <pid>`, `gpu status`) before acting on it.
+Read `.claude/research.md`, then the resume note. The note says what is running where, and what comes next. Check that each PID and lease it names is still alive (`ps -p <pid>`, `gpu status`) before acting on it. Scheduled wakeups die with the session that set them, so set one again for each lease deadline the note lists.
 
 ## Choose the batch
 
@@ -95,6 +95,7 @@ Before grading, check that the runner did its integrity checks:
 ## Waiting
 
 - Launch detached and wait for the completion notification.
+- For every lease, also set a one-shot wakeup 30–45 minutes before each deadline it can hit: the high end of its estimate and its hard cap. The completion notification arrives only after the box is gone; the wakeup is what lets you relaunch before the stop. `research:cloud-compute` covers what to check when it fires.
 - Never poll in a sleep loop. A waiter whose check matches its own command line never finishes, and a hung waiter can't be told apart from a slow job.
 - Write output to files, never through pipes.
 - Kill by PID. `pkill -f` matches the shell running it. Check what else is running first, because shared machines run other projects.
