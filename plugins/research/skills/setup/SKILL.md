@@ -1,6 +1,6 @@
 ---
 name: setup
-description: Set up a research programme in a project — the config at .claude/research.md, a question catalogue in the fixed schema ranked by kill-risk, the project's own copy of the criterion-defect catalogue, and the directories the other research skills write to. Use when a project starts asking questions it can't answer by reasoning alone, when someone asks for a research catalogue or programme, or when any research skill finds no .claude/research.md.
+description: Set up a research programme in a project — the config at .claude/research.md, a question catalogue in the fixed schema ranked by kill-risk, the project's own copy of the criterion-defect catalogue, and the directories the other research skills write to, including the path for adopting the programme in a project already mid-flight. Use when a project starts asking questions it can't answer by reasoning alone, when someone asks for a research catalogue or programme, or when any research skill finds no .claude/research.md.
 ---
 
 # Set up a research programme

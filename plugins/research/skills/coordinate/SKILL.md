@@ -1,6 +1,6 @@
 ---
 name: coordinate
-description: Run a research programme as its coordinator — the one session that owns the catalogue, the rulings, every lease and every commit. Covers briefing runners, commissioning audits and reviews and saving them verbatim, ruling in dated sections, freezing by diff and sha256, classifying post-freeze deviations, the one diagnosed repair, launching and waiting on compute, the agent economy, the resume note, and reporting to whoever commissioned the work. Use whenever you are directing spikes rather than running one.
+description: Run a research programme as its coordinator — the one session that owns the catalogue, the rulings, every lease and every commit. Covers briefing runners, commissioning audits and reviews and saving them verbatim, ruling in dated sections, freezing by diff and sha256, classifying post-freeze deviations, the one diagnosed repair, launching and waiting on compute, the direction audit, worktree runners and the engineering track beside spikes, the agent economy, the resume note, and reporting to whoever commissioned the work. Use whenever you are directing spikes rather than running one.
 ---
 
 # Coordinate a research programme
