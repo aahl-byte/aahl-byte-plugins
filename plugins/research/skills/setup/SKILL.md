@@ -40,6 +40,13 @@ Start from that end state, and ask which of the project's decisions can't be set
 
 For a new programme, run two independent agents on an identical written brief. Give them different models, Opus and Sonnet, each with `effort: high` set explicitly. Because the input is identical, any difference in what they return comes from the model rather than from how each was briefed.
 
+They may run one after the other when `agent_cap` is already in use. What must hold is their independence, because a generator that has seen the other's output turns "raised independently" into an echo:
+
+- one brief file for both, with its sha256 checked before each run;
+- a separate output file for each, outside the catalogue;
+- no merging until both have returned;
+- the second started fresh, never by resuming the first.
+
 The brief states what has already been decided and tells the agents not to relitigate it. Without that, much of what comes back covers ground already settled.
 
 When merging:
