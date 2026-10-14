@@ -14,6 +14,8 @@ When this is done, the project can run the research pipeline from end to end:
 
 The method behind all of it is in `${CLAUDE_PLUGIN_ROOT}/references/METHOD.md` (the plugin root is two directories above this skill's base directory). Read it first. The templates named below are in `references/templates/`, beside it.
 
+**If the project is already running**, with a backlog, agents at work, leases or a test suite, follow the steps below with the changes in *Adopting the programme mid-project*, at the end.
+
 ## 1. Write the config
 
 If `.claude/research.md` exists, read it and keep it; this skill only fills in what's missing.
@@ -81,3 +83,20 @@ Each question is scouted when it is filed (`research:literature-scout`), so the 
 Create the results, spikes, leads, direction and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the end state, the catalogue, the criterion audit, the direction audit and its rulings, `.gitignore`, `<leads>/TALLY.md` and any leads batch files by name, read the staged diff, and commit.
 
 From here, the coordinator runs the programme with `research:coordinate`.
+
+## Adopting the programme mid-project
+
+A running project brings a backlog, results, live work and its own tools. Each one enters the programme without being treated as something it isn't.
+
+**The backlog.** Open tasks are often research questions in all but schema. Run the two generators blind to them first (step 3), then merge the backlog in. Only a match from a blind generator counts as raised independently. A backlog task enters the catalogue only after it passes the three disqualifiers (step 4) and gets a kill-risk rank. When it enters, close its todo task with the catalogue ID.
+
+**Earlier results.** None had a frozen criterion, so none carries a verdict. Fold each one as `prior-evidence` (`METHOD.md`, Verdicts): interrogate it and re-derive one number, then link it from its question's **Prior evidence:** line. The question stays `open`. *Example:* in the originating programme, every spike run before the protocol found its own criterion defective.
+
+**Live work.**
+
+- Let an in-flight chain finish, rather than interrupting a running job to switch rules. Take over its lease at once: record it in the resume note and set its deadline wakeups (`research:cloud-compute`).
+- Message each running agent the new rules. From then on it neither commits nor leases.
+- Keep existing lease wrappers if they write the broker's lease fields. Their owner becomes the coordinator.
+
+**The test suites.** Run them once at adoption and commit the list of tests already failing, beside the catalogue. Otherwise an old red test gets blamed on the first spike that runs near it.
+
