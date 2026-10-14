@@ -3,3 +3,5 @@ docs/review/*
 
 tmp
 TODO.yaml
+.TODO
+.scratch/
