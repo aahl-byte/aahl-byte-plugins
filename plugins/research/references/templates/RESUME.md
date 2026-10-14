@@ -14,4 +14,4 @@ Agents idle while compute runs, by agent id, and what resumes each one.
 In order.
 
 ## Standing rules for this programme
-Anything a fresh session must know before acting: caps, budgets, rulings in force.
+Anything a fresh session must know before acting: the machine allowance the author granted this session, in their words; budgets; rulings in force.

@@ -68,7 +68,7 @@ Each role exists because someone else has to check the work of the role before i
 
 The runner can't commit because concurrent staging has taken a commit off a branch and swept another agent's files into an unrelated commit. The runner can't lease because a lease needs an owner who sees every other lease and outlives every agent:
 
-- **Caps are per account.** Card caps and cloud quotas are shared by every spike, and often by other projects, so one owner has to count them.
+- **The allowance belongs to one session.** The author grants a session an allowance of machines for its situation, such as how many cards it may hold, and changes it as the situation changes. The session that holds it has to count every lease against it.
 - **Deadlines need one watcher.** The deadline wakeups, the choice between extending and relaunching, the stop when the outputs land, and the budget all need the session that sees every lease at once.
 - **A lease outlives any agent.** A harness can kill every background task at once, and has, three times in one day. A lease watched only by a runner then loses its watcher, while the coordinator reattaches its pullers from the resume note.
 - **Waiting agents go stale.** Two watchers once outlived their parents by 20 hours and re-woke on notifications that no longer meant anything.

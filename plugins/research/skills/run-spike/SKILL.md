@@ -30,7 +30,7 @@ Spikes run concurrently. These rules hold whether or not anything else is runnin
 - **Never stage or commit.** No `git add`, `commit`, `reset` or `checkout`, anywhere, including in a worktree of your own. Concurrent staging has taken a commit off a branch and swept another agent's files into an unrelated commit. The coordinator commits, in your tree if you have one.
 - **Never change shared code from your spike.** If the spike needs a change to code other spikes import, hand it to the coordinator as engineering. It is made red-first and merged before your freeze.
 - **Never edit the catalogue.** The coordinator folds your result into it.
-- **Never lease, stop or SSH to a cloud machine.** One owner has to count the account's caps, watch every lease's deadlines, and outlive any agent (`METHOD.md`, Roles). You hand the coordinator a chain.
+- **Never lease, stop or SSH to a cloud machine.** One session owns the allowance the author granted it, plus every lease's deadlines and stops, and it outlives any agent (`METHOD.md`, Roles). You hand the coordinator a chain.
 - **Detach any build or test you background**, with `setsid nohup <cmd> > <spike>/logs/<name>.log 2>&1 < /dev/null &`, so a harness that kills its background tasks doesn't take it with them. Long compute goes to the coordinator.
 - **Kill by PID, never `pkill -f`**, because the pattern matches your own shell. Check what else is running first.
 - **Redirect long output to a file, never through a pipe.** A pipe buffers until it closes, so a slow job looks identical to a hung one.

@@ -24,7 +24,7 @@ Each of these has already gone wrong once, which is why it is a rule:
 - **Stage, commit, reset or check out**, even in a worktree of your own. Concurrent staging has taken a commit off a branch. The coordinator commits, in your tree if you have one.
 - **Change shared code from your spike.** Hand the change to the coordinator as engineering, to be merged before your freeze.
 - **Edit the catalogue.** The coordinator folds your result into it.
-- **Lease, stop or SSH to cloud machines, or launch long compute.** One owner has to count the account's caps, watch every lease's deadlines, and outlive any agent. Build and test at small scale, detaching anything you background with `setsid nohup` to a log file, then hand the coordinator a resumable chain and stop.
+- **Lease, stop or SSH to cloud machines, or launch long compute.** One session owns the allowance the author granted it, plus every lease's deadlines and stops, and it outlives any agent. Build and test at small scale, detaching anything you background with `setsid nohup` to a log file, then hand the coordinator a resumable chain and stop.
 - **Audit your own criterion or review your own result.** The coordinator commissions `research:criterion-auditor` and `research:spike-reviewer`. If you were launched without a coordinator, spawn them yourself, save their output verbatim, and record what you accepted and why.
 - **Repair anything once grading starts.** A failure becomes the finding.
 - **Carry on past a hand-off.** After handing over the draft, the revision, the compute chain, or the graded result, end your turn. The coordinator resumes you by message.

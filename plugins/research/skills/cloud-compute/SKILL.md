@@ -11,11 +11,13 @@ Everything goes through the `gpu` CLI. `gpu <cmd> --help` is the most precise re
 
 ## Who leases
 
-**Only the coordinator leases, launches on, or stops a cloud machine.** Caps and quotas are per account, the deadline wakeups and the budget need one session that sees every lease, and a lease has to outlive the agent that asked for it (`METHOD.md`, Roles). Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory.
+**Only the coordinator leases, launches on, or stops a cloud machine.** The author grants one session an allowance of machines, the deadline wakeups and the budget need one session that sees every lease, and a lease has to outlive the agent that asked for it (`METHOD.md`, Roles). Runners hand the coordinator a resumable chain instead: the command, the output directory, the machine type, the wall time, and one job's peak memory.
 
 Read `.claude/research.md` first. `cloud.project` names the project on every lease. The project notes may cap how many machines run at once, or how much a spike may spend.
 
-**Caps are shared beyond this programme.** Other projects lease on the same account, draw on the same quotas and run on the same local machine. Before leasing against any cap, count every live lease on the account in `gpu status`, not only this project's. If the notes don't say whether a cap is per project or per account, take it as per account and ask the author.
+**Lease within the allowance the author granted this session.** A card allowance, for example, belongs to this session and its situation, not to the project or the account, and the author changes it as things change. Record it in the resume note in the author's words, count this session's own leases against it, and check it with the author again whenever the situation changes.
+
+**The AWS vCPU quotas are the only account-wide limit.** Every session on the account draws on them; `gpu quota` shows what is free.
 
 ## Choose the machine
 
