@@ -114,7 +114,14 @@ When the estimate moves, revise it at once with `gpu expect <CLUSTER> <LOW> <HIG
 
 `gpu keep` supervises a chain on AWS spot, for CPU boxes only. It leases a box, provisions it, launches the chain, and pulls the outputs on a schedule. When the box is reclaimed, it leases a replacement in another pool and carries on. It stops when the chain's done marker comes home, or when a guard fires.
 
-**Run the smoke test first.** Before trusting `keep` with a real chain on a new account or machine, run the dummy chain in `references/templates/keep-smoke/` in the foreground with `gpu keep run spec.yaml`. It costs under a cent. Ctrl-C ends a `keep run` as `interrupted` and leaves any live box to its watchdog, so check `gpu status` and `gpu stop` it yourself. The chain leases the smallest spot box, ticks three times, writes `DONE`, comes home, and stops the box. *Example:* the first type in its list failed to launch, and keep moved on to the second, which is the type list doing its job.
+**Run the smoke test first.** Before trusting `keep` with a real chain on a new account or machine, run the dummy chain in `references/templates/keep-smoke/` in the foreground with `gpu keep run spec.yaml`. It costs under a cent. Ctrl-C ends a `keep run` as `interrupted` and leaves any live box to its watchdog, so check `gpu status` and `gpu stop` it yourself. The chain leases the smallest spot box, writes a tick file a minute for three minutes, writes `DONE`, comes home, and stops the box. Then run `./check.sh`. *Example:* the first type in its list failed to launch, and keep moved on to the second, which is the type list doing its job.
+
+**Test your own chain's harness the same way before trusting it, and watch the test fail once.** A test whose job ends inside the hook's one-hour timeout passes whether the launch is right or not. *Example:* a launch hook backgrounded its whole `&&` list without `setsid`, so its ssh stayed open until the batch ended. The short harness test passed. The real chain's hook timed out at an hour, and keep stopped a working box. Run the test once against a broken launch (the smoke's `launch_broken.sh` is one) and see it go red. The test checks four things:
+
+- **The launch hook returns within seconds.** keep doesn't record hook durations, so have the hook time itself and exit non-zero when it overruns.
+- **The job is alive after the hook's ssh closes.** Check its PID in a second ssh.
+- **A pull lands while the job runs.** A file the job writes once, early, has a local change time (`stat -c %Z`) earlier than the box's mtime on `DONE` (`stat -c %Y`, which `rsync -a` preserves). keep's first pull comes `pull_every_minutes` after the hooks return, so the job must outlast that.
+- **A job killed mid-run doesn't end the chain as done.** Kill it on the box and check that `DONE` never appears.
 
 **Write the SPEC from `references/templates/keep-chain/`.** It is a working spec with its three hooks, with project details replaced by placeholders:
 

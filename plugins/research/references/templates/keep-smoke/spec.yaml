@@ -1,6 +1,8 @@
-# Smoke test for gpu keep: the smallest spot box runs a dummy job that ticks once a minute three times, then writes DONE.
-# It exercises lease, provision, launch, pull, done and stop on real AWS for under a cent. Run it in the foreground:
-#   gpu keep run spec.yaml
+# Smoke test for gpu keep: the smallest spot box runs a dummy job that writes one tick file a minute for three minutes, then DONE.
+# It exercises lease, provision, launch, pull, done and stop on real AWS for under a cent. Run it in the foreground, then check:
+#   gpu keep run spec.yaml && ./check.sh
+# launch.sh fails unless it returns within 30 s and the job outlives its ssh; check.sh fails unless a pull landed mid-run.
+# Watch it go red once: point launch at ./launch_broken.sh, and keep should stop the box and end the chain with `failures`.
 name: <project>-keep-smoke
 types:
   - {instance_type: c8a.large, jobs: 1}
@@ -15,7 +17,7 @@ pulls: [{remote: /root/keep-smoke/out, local: ./out}]
 pull_every_minutes: 1
 done_marker: ./out/DONE
 title: gpu keep smoke test on a real spot box
-what: The smallest spot box runs a dummy job that writes a tick line once a minute three times and then a done marker, so gpu keep's lease, provision, launch, pull, done and stop path runs once before it supervises a research chain.
+what: The smallest spot box runs a dummy job that writes one tick file a minute for three minutes and then a done marker, so gpu keep's lease, provision, launch, pull, done and stop path runs once before it supervises a research chain.
 why: A real run for under a cent shows the hooks, the pulls and the stop at the done marker work before keep is trusted with a chain that costs dollars an hour.
 how: gpu keep run leases a small spot box, the provision hook makes the output directory, the launch hook starts the dummy job detached, the supervisor pulls every minute, sees the done marker, stops the box and exits.
 project: <cloud.project>
