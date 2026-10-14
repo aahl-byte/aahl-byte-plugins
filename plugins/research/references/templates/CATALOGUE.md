@@ -9,7 +9,7 @@ sections hold the full entries. When a result is folded, its answer goes back in
 
 Kill-risk is how much of the project dies if the answer is bad, not how likely a bad answer is.
 
-Status is `open`, `spiking`, or the result's verdict, copied exactly.
+Status is `open`, `spiking`, or the result's verdict, copied exactly. A question with only pre-programme results stays `open`, and its entry links them on a **Prior evidence:** line.
 
 | ID | Question | Kill-risk | Independent | Spike | Status |
 |---|---|---|---|---|---|
@@ -28,4 +28,5 @@ Status is `open`, `spiking`, or the result's verdict, copied exactly.
 - **Spike:** <what to build or run, and its rough size>
 - **Independent?** yes | follows <IDs>
 - **Leads:** <path to the scout's batch file, once scouted>
+- **Prior evidence:** <results produced before the programme, each folded as `prior-evidence`; omit if none>
 - **Result:** <path to the result file>, <the verdict, copied exactly, with its regime>

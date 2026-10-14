@@ -133,6 +133,8 @@ Every result carries exactly one verdict, chosen by its trigger:
 | `instrument-failed` | An instrument oracle failed and its one diagnosed repair also failed. No measurement exists. |
 | `blocked` | The spike couldn't run. Name what blocked it. |
 
+**`prior-evidence` is a status, never a verdict.** It marks a result produced without a frozen criterion, usually work done before the programme was adopted. The coordinator folds it like any result, interrogating it and re-deriving one number, and it may shape a question's hypotheses and predictions. It never answers a question: the question stays `open` until a spike grades it against a frozen criterion. Without this status, a fold reaches for `answered-narrow`.
+
 Evaluate every trigger in the frozen stopping rule literally, and quote it, before drafting a verdict. An agent asked for an answer will produce one, so making "no answer" cheap is what keeps the other verdicts meaningful. A negative result is a successful spike.
 
 **A negative result about the specimen has to clear the instrument first, in the specimen's own regime.** "The effect is not there", "these arms do not separate" and "this does not converge" are claims that a broken instrument produces as readily as the world does. Before recording one, show the instrument returning a known answer at the settings the negative came from.
