@@ -49,7 +49,7 @@ Launch `research:spike-runner` with model and effort set explicitly. The brief c
 
 **Freeze by reading the diff.** The runner applies the rulings as a new revision and hands back the diff and the sha256. Recompute the sha256 yourself.
 
-- If the diff holds only the ruled text, it freezes. Write the sha256 to `PREREGISTRATION.sha256` and to a freeze section of the rulings, then commit the frozen file, its hash and the rulings, so the freeze can't be edited unseen.
+- If the diff holds only the ruled text, it freezes. Write the sha256 to `PREREGISTRATION.sha256` and to a freeze section of the rulings, with the commit of the shared code the spike imports, then commit the frozen file, its hash and the rulings, so the freeze can't be edited unseen.
 - If the diff adds anything beyond the ruled text, send those lines to the auditor first, save that check verbatim too, and rule on it.
 
 **At low kill-risk you may skip the audit**, but only by recording in the rulings why. **Grow the defect catalogue.** When an audit names a new defect class, add it to the project's `CRITERION_AUDIT.md` as a one-line lesson, with the case that found it.
@@ -134,7 +134,21 @@ Two of its rules fire outside the fold as well:
 
 ## Commit
 
-Only you commit. Stage named paths, never `git add -A`. Read the staged diff, then commit with the config's `commit_trailer`. Concurrent staging by agents has taken commits off branches, which is why nobody else stages.
+Only you commit spike files. Stage named paths, never `git add -A`. Read the staged diff, then commit with the config's `commit_trailer`. Concurrent staging by agents has taken commits off branches, which is why nobody else stages.
+
+**A runner in its own worktree** is committed the same way, in its tree: `git -C <worktree> add <named paths>`, then read `git -C <worktree> diff --cached` in a separate call, and commit on the runner's branch. Merge the branch at fold. That keeps the frozen files, rulings and verbatim reviews passing through you, and stops a runner amending, resetting or rebasing them.
+
+- Keep the spike directory at the same relative path in the worktree, so the record's paths hold after the merge.
+- Keep bulk data, environments and weights at absolute paths outside every worktree, and set `scratch` to one. A worktree is removed at merge, and a box provisioned at a worktree's absolute path matches no other.
+- Never remove a worktree while a puller writes into it. The resume note lists those.
+
+## Work that isn't a question
+
+Engineering, such as a harness, a faster solver or a refactor, runs beside the spikes under the project's own development rules, in its own worktree and branch. Its implementer may commit there, because the hazard behind "only the coordinator commits" is a shared index, and a separate worktree has its own. You merge it after reading the diff and building the whole workspace. Leasing stays with you, for engineering as for spikes.
+
+**Protect every frozen instrument from the merge.** A merge that touches code a frozen or running spike imports waits until that spike grades, or the spike keeps measuring through the commit recorded at its freeze. A speed change counts as operational only when its parity line is identical. A defect fixed in shared code fires the impact audit.
+
+**A spike that must change shared code splits the change out as engineering**: red-first, merged before the freeze, with its commit recorded in the freeze. After the freeze, such a change is criterion-touching unless the parity line is identical. Never merge shared code together with a verdict at fold, because every other spike importing it would then measure through it unannounced.
 
 ## The agent economy
 
