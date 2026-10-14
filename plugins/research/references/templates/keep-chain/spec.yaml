@@ -1,0 +1,32 @@
+# gpu keep SPEC for a resumable CPU chain on AWS spot. Start it with: gpu keep start spec.yaml
+# Relative paths resolve from this file's directory. Unknown keys are refused.
+name: <project>-<spike-id>                     # also the systemd unit gpu-keep-<name> and the lease tag keep=<name>
+types:                                         # tried in order; jobs = parallel jobs this box's memory holds
+  - {instance_type: r7a.24xlarge, jobs: 13}    # e.g. 768 GB ÷ (peak job RSS + headroom)
+  - {instance_type: r8a.24xlarge, jobs: 13}    # another family of the same size, so a reclaim can move pools
+  - {instance_type: m7a.48xlarge, jobs: 13}
+  - {instance_type: r7a.16xlarge, jobs: 9}     # smaller boxes last; fewer jobs, same per-job memory
+max_price_hr: 8.0                              # caps spot and on-demand alike; a type dearer on-demand is only tried on spot
+market: {on_demand_after_minutes: 180, return_to_spot: true, return_check_minutes: 30}
+lease: {idle_minutes: 30, max_hours: 16, disk_gb: 100}   # size the disk by the chain's scratch, not the default
+provision: ./provision.sh                      # once per new box: environment, inherited code, data
+sync: ./sync.sh                                # on a replacement box: what the last pulls added
+launch: ./launch.sh                            # starts or resumes the chain from its own checkpoints
+pulls:                                         # everything a resume needs; rsync to the same path at home
+  - {remote: <PROJECT_ROOT>/<spikes>/<id>/results, local: <PROJECT_ROOT>/<spikes>/<id>/results}
+  - {remote: <PROJECT_ROOT>/<spikes>/<id>/boxmem, local: <PROJECT_ROOT>/<spikes>/<id>/boxmem}
+pull_every_minutes: 5
+done_marker: <PROJECT_ROOT>/<spikes>/<id>/results/chain/KEEP_DONE   # local; written on the box only on a clean exit
+title: <one line>
+what: <one paragraph>
+why: <one paragraph; why spot is acceptable for this chain>
+how: <one paragraph; how it is provisioned, launched, pulled and how it ends>
+project: <cloud.project>
+tags: {spike: <ID>}
+expect_hours: [3, 7]
+guards:
+  budget_usd: 55                               # enforced: spent + next box's price × hours left to expect_hours HIGH must fit;
+                                               # size it for the on-demand fallback too, or the chain ends with `budget` instead of falling back
+  max_leases_per_hour: 4
+  max_consecutive_failures: 3
+  capacity_backoff_minutes: [2, 5, 10, 10, 10]

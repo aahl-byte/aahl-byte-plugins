@@ -1,0 +1,9 @@
+{
+  "title": "<one line, 120 characters at most: what this box is doing>",
+  "what": "<One plain paragraph, no blank lines: what runs on the box, for a reader who has not seen the work.>",
+  "why": "<One paragraph: why this needs a leased machine, and why this type and market.>",
+  "how": "<One paragraph: how it is provisioned, launched, pulled and stopped. When the lease ends, finish it with how it ended and what it cost.>",
+  "project": "<cloud.project from .claude/research.md>",
+  "tags": {"spike": "<ID>"},
+  "expect_hours": [1, 3]
+}
