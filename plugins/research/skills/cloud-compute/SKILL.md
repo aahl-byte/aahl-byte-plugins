@@ -141,7 +141,12 @@ Once a job or chain starts, schedule a one-shot wakeup 30–45 minutes before ea
 
 Nothing else warns you that a run is about to be cut off. The completion signal arrives only after the box is gone, with the unpulled work and a relaunch to pay for. *Example:* a CPU box ran past its 7 h estimate toward its 12 h cap, and only a chance status check caught it.
 
-At each wakeup, check the run's progress against what is left: `gpu status`, `gpu keep status`, and the pulled outputs. If it will not land before the next deadline, revise the estimate with `gpu expect` and plan the relaunch from the pulled state before the stop arrives. When an estimate moves, move its wakeup with it.
+At each wakeup, check the run's progress against what is left: `gpu status`, `gpu keep status`, and the pulled outputs. If it will not land before the next deadline, revise the estimate with `gpu expect`, then choose before the stop arrives:
+
+- **Raise the cap** with `gpu extend <CLUSTER> --max-hours <N> --json`, when the box is healthy and the extra hours fit the budget. It restarts the box's watchdog with the new limit, leaves running jobs alone, moves the cap the reaper enforces, and records the old value in the ledger (`gpu history` shows `max_hours_changes`). The cap counts from the box's launch, so `N` must exceed the hours already run; a CPU lease tops out at 72 h. A spot reclaim can still end the box at any time. *Example:* a 12 h spot CPU box was raised to 22 h without a restart.
+- **Plan the relaunch** from the pulled state otherwise.
+
+When an estimate or a cap moves, move its wakeup with it.
 
 The wakeups live only in the session that set them. Write each deadline in the resume note, so a resumed session sets them again.
 
@@ -181,7 +186,7 @@ Keep a puller's own log outside every pulled path. A pull replaces the file, and
 **The watchdog on the box** checks every minute.
 
 - **Idle stop.** It stops the box after `--idle-minutes` with no activity. Activity is GPU use above 5%, CPU use above a quarter of a core, an open SSH session, or a touch of `/tmp/keepalive` in the last five minutes. Touch that file to hold a box through quiet work such as a download.
-- **Hard cap.** It stops the box at `--max-hours`. For cards the cap is 1–24 h (default 4); for CPU boxes, 1–72 h (default 24).
+- **Hard cap.** It stops the box at `--max-hours`. For cards the cap is 1–24 h (default 4); for CPU boxes, 1–72 h (default 24). `gpu extend` raises it on a live box.
 - **Boot timeout.** A box must answer its own health check within 15 minutes of boot.
 
 **The reaper**, run by the broker every five minutes, terminates three kinds of box:

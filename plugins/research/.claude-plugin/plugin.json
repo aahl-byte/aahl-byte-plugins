@@ -1,5 +1,5 @@
 {
   "name": "research",
   "description": "A research programme that makes a wrong result expensive to produce — catalogued questions ranked by kill-risk, criteria audited before they freeze, mutation-tested instruments, adversarial review by tier, results re-derived before they enter the record, a literature scout per question, standing domain experts, and leased cloud compute through the gpu CLI.",
-  "version": "0.1.1"
+  "version": "0.1.2"
 }
