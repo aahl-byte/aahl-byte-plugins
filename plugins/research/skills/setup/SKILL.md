@@ -65,6 +65,6 @@ Each question is scouted when it is filed (`research:literature-scout`), so the 
 
 ## 7. Create the directories and commit
 
-Create the results, spikes, leads and experts directories, and the scratch directory. Write the resume note from `templates/RESUME.md`. Then stage the config, the catalogue, the criterion audit and `.gitignore` by name, read the staged diff, and commit.
+Create the results, spikes, leads and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the catalogue, the criterion audit and `.gitignore` by name, read the staged diff, and commit.
 
 From here, the coordinator runs the programme with `research:coordinate`.
