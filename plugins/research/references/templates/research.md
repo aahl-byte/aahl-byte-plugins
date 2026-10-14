@@ -24,6 +24,7 @@ tiers:                                       # kill-risk → scrutiny; raise the
 
 scout:
   cards_per_question: 6
+  contact_email: ""       # only an address the author types here may go to an API's mailto/email field; agents never fill it
   hit_floor: 0.33          # plan-changing leads per question; below it two batches running narrows the scout, a third stops it
 
 cloud:

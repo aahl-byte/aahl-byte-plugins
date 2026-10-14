@@ -59,6 +59,10 @@ At high kill-risk, the default pairing is construct plus consumer on one brief, 
 
 If the result survives everything, say so, and name the weakest remaining point. Don't manufacture a finding to justify the review.
 
+## The network
+
+**Send no identity off the machine.** No name, email address, handle, hostname or tailnet name goes into a URL, header or payload, including the `mailto` or `email` parameter some scholarly APIs ask for. The one exception is a `scout.contact_email` the author wrote into `.claude/research.md` themselves; never take one from git config, the environment or memory.
+
 ## Subagents
 
 If you spawn one, set its model and effort explicitly: Opus at `high` for judgement, Sonnet at `medium` for mechanical work, never Fable. Pass this rule into its brief.

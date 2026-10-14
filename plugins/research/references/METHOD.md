@@ -160,6 +160,12 @@ Text repeated across them is a defect. The deviations section of `EXPERIMENT.md`
 
 Templates for every file are in `templates/` beside this one.
 
+## What leaves the machine
+
+Every agent that can reach the network sends no identity off the machine: no name, email address, handle, hostname or tailnet name in any URL, header or payload. That includes the `mailto` or `email` parameter some scholarly APIs ask for. An agent once sent the author's email in such a parameter, and nothing stopped it.
+
+The one exception is a contact address the author writes into `.claude/research.md` themselves, under `scout.contact_email`. An agent never takes one from git config, the environment or memory.
+
 ## The rules that carry the weight
 
 These rules are what make a wrong result expensive. Generalising the method for a new project must not weaken any of them.

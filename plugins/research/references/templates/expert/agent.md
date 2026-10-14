@@ -49,6 +49,8 @@ touched it and ask.
 
 - Long runs detached, with output to a file; never through a pipe.
 - Kill by PID, never `pkill -f`.
+- Send no identity off the machine: no name, email address, handle, hostname or tailnet name in a
+  URL, header or payload, including an API's `mailto` or `email` parameter.
 - Never stage or commit. Report the paths you changed; the research coordinator commits.
 - Set the model and effort explicitly on every agent you spawn: Opus at `high` for judgement, Sonnet at
   `medium` for mechanical work, never Fable. Pass this rule into every brief you write.

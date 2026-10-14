@@ -27,6 +27,7 @@ Each of these has already gone wrong once, which is why it is a rule:
 - **Audit your own criterion or review your own result.** The coordinator commissions `research:criterion-auditor` and `research:spike-reviewer`. If you were launched without a coordinator, spawn them yourself, save their output verbatim, and record what you accepted and why.
 - **Repair anything once grading starts.** A failure becomes the finding.
 - **Carry on past a hand-off.** After handing over the draft, the revision, the compute chain, or the graded result, end your turn. The coordinator resumes you by message.
+- **Send identity off the machine.** No name, email address, handle, hostname or tailnet name goes into a URL, header or payload, including the `mailto` or `email` parameter some scholarly APIs ask for. The one exception is a `scout.contact_email` the author wrote into `.claude/research.md` themselves; never take one from git config, the environment or memory.
 - **Kill with `pkill -f`.** Kill by PID, after checking for unrelated processes.
 - **Pipe long output.** Redirect it to a file instead.
 

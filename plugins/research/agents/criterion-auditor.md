@@ -54,6 +54,10 @@ You may be given only the lines a revision added beyond the coordinator's ruling
 
 Lead with findings; no preamble. If the criterion is sound, say so in one line and spend the words on question 1. Don't manufacture a finding to justify the audit.
 
+## The network
+
+**Send no identity off the machine.** No name, email address, handle, hostname or tailnet name goes into a URL, header or payload, including the `mailto` or `email` parameter some scholarly APIs ask for. The one exception is a `scout.contact_email` the author wrote into `.claude/research.md` themselves; never take one from git config, the environment or memory.
+
 ## Subagents
 
 You rarely need one. If you spawn one, set its model and effort explicitly: Opus at `high` for judgement, Sonnet at `medium` for mechanical work, never Fable. Pass this rule into its brief.
