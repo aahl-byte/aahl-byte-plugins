@@ -1,8 +1,8 @@
 # The research method
 
-This method stops one failure: a plausible number produced by broken reasoning. A spike that crashes costs nothing. A wrong result that reads as right costs whatever gets built on it. The likely causes are a wrong instrument, a silent bug, a test corpus too easy to fail, or a hypothesis that won because nobody looked for where it loses. One researcher working alone, motivated to produce an answer, produces exactly this failure and reports it with confidence.
+This method stops one failure: a plausible number produced by broken reasoning. A *spike* is the time-boxed experiment that answers one catalogue question. A spike that crashes costs nothing. A wrong result that reads as right costs whatever gets built on it. The likely causes are a wrong instrument, a silent bug, a test corpus too easy to fail, or a hypothesis that won because nobody looked for where it loses. One researcher working alone, motivated to produce an answer, produces exactly this failure and reports it with confidence.
 
-Every rule below either makes a wrong result expensive to produce or catches it before it travels. The rules cost little when the work is sound. They get expensive only when something is wrong, and that is when they are meant to.
+Every rule below either makes a wrong result expensive to produce or catches it before it travels.
 
 This file holds the method: the principles, the question schema, the roles, the pipeline, the tiers, the verdicts and the record. The skills hold the procedures:
 
@@ -57,6 +57,7 @@ Each role exists because someone else has to check the work of the role before i
 
 | Role | Does | Never does |
 |---|---|---|
+| **Orchestrator** (optional, one per family of questions; Opus, `high`) | Runs one runner per spike in the family, attacks each result before accepting it, and returns one consolidated report with the cross-spike findings | Commits, leases, or edits the catalogue |
 | **Coordinator** (one session) | Owns the catalogue, the rulings, every lease and every commit. Freezes criteria, launches long jobs, folds results. | Writes a spike's code, or audits a criterion it drafted |
 | **Runner** (one per spike) | Plans, pre-registers, builds the instrument, runs it, writes the record | Stages, commits, leases, edits the catalogue, or writes outside its spike directory and its one result file |
 | **Criterion auditor** | Attacks the hypothesis list and the criterion before anything is built | Runs the experiment or writes code |
@@ -75,25 +76,25 @@ Each step exists because the step after it needs it. The kill-risk tier (below) 
 3. **Plan right to left** (`thinking:right-to-left`): the end state as checks someone else can run, each step justified by what consumes it. The runner drafts the pre-registration. This draft is **gate 1**. *Runner.*
 4. **Step-0 criterion audit** by an agent that didn't write the plan. It checks the criterion against every class in `CRITERION_AUDIT.md`, simulates false-fail and false-pass rates where it can, and returns repaired text. The coordinator saves the audit verbatim. *Criterion auditor.*
 5. **Rule on the audit**, in dated sections of the rulings file: accept, accept amended, or reject, each with its reason. The runner applies the rulings as a new revision. *Coordinator, then runner.*
-6. **Freeze.** The runner hands back a diff and a sha256. The coordinator reads the diff:
+6. **Freeze.** The runner hands back a diff and a sha256. The coordinator reads the diff and recomputes the hash:
    - If the diff holds only the ruled text, the pre-registration freezes.
    - If it adds anything beyond that, the auditor checks those lines first.
 
-   The sha256 goes into a `.sha256` file beside the frozen document and into the rulings. *Coordinator.*
+   The sha256 goes into a `.sha256` file beside the frozen document and into the rulings, and the coordinator commits the frozen file, its hash and the rulings. *Coordinator.*
 7. **Build the instrument red-first.** Every oracle, guard and planted fault has a mutant that turns its test red for the right reason. The runner reports the mutation tally on the final tree. *Runner.*
 8. **Run.** The runner builds and tests in the foreground, then stops. The coordinator launches long jobs: locally, detached; in the cloud, through the `gpu` CLI. The runner stays idle while compute runs and is resumed by message when it lands. *Coordinator.*
 9. **Check the outputs' integrity:**
    - every unit is present and verified;
    - lock or version checks pass;
-   - each machine has a parity line;
+   - each machine has a parity line: one fixed reference job's output, which must match on every machine;
    - any chain that claims to resume has survived a deliberate kill-and-resume.
 
    *Runner.*
-10. **Grade exactly as frozen.** Nothing is repaired after the gate. A failure becomes the finding, and the repair becomes a new question. *Runner.*
+10. **Grade exactly as frozen.** Nothing is repaired once grading starts. A failure becomes the finding, and the repair becomes a new question. *Runner.*
 11. **Review by kill-risk tier.** Each review is saved verbatim. The runner applies the reviewers' replacement text word for word. Where reviews disagree, the coordinator rules which side to take, and why. *Reviewers, runner, coordinator.*
 12. **Fold:**
     - interrogate the result;
-    - re-derive one load-bearing number from raw data, without the spike's own code;
+    - re-derive one load-bearing number from raw data, without any of the spike's code;
     - run an impact audit on any defect found in something inherited;
     - copy the verdict exactly;
     - attach the regime to every claim;
@@ -105,13 +106,13 @@ Each step exists because the step after it needs it. The kill-risk tier (below) 
 
 ## Tiers
 
-The kill-risk tier sets how much scrutiny a spike gets. These are the defaults; a project can change them in its config.
+The kill-risk tier sets how much scrutiny a spike gets. These are the defaults. A project's config can raise them, never lower them.
 
 | Kill-risk | Step-0 audit | Reviewers |
 |---|---|---|
-| low | optional | none required. One is still worth running when other spikes will inherit the numbers. |
+| low | required, unless the coordinator records in the rulings why it was skipped | none, unless another spike will inherit the numbers; then one, on the consumer brief |
 | medium | required | one |
-| high | required | two, on different briefs. One takes construct and consumers. The other takes implementation, and re-derives from raw data without the spike's own library. |
+| high | required | two, on different briefs. One takes construct and consumers. The other takes implementation, and re-derives from raw data without any of the spike's code. |
 
 **Replication is reserved for spikes whose instrument is the deliverable**: a solver, sampler or scorer that other spikes will inherit. A second researcher gets the question and the criterion only, never the first one's code, predictions or result. Replication catches idiosyncratic error. It is blind to an error in a framing both researchers inherited, because two of them reaching for the same textbook closed form will reproduce the same mistake. Agreement shows that the method is reproducible; it doesn't show that the answer is right. Where the reviewer and the replicator conflict, the reviewer outranks the replicator.
 
@@ -124,7 +125,7 @@ Every result carries exactly one verdict, chosen by its trigger:
 | `answered` | The criterion was evaluated as frozen, every instrument oracle passed, the verdict holds across the sweep's plausible range, and the review tier is satisfied. |
 | `answered-narrow` | All of the above, but only inside a stated regime. The regime goes in the verdict line. |
 | `inconclusive` | The instrument passed and the criterion ran, but it didn't discriminate. This includes three cases: the verdict flips inside the plausible range of a guessed parameter; a frozen inconclusive trigger fired; a metric oracle exposed a defective criterion. |
-| `instrument-failed` | An instrument oracle failed, or the one diagnosed repair failed. No measurement exists. |
+| `instrument-failed` | An instrument oracle failed and its one diagnosed repair also failed. No measurement exists. |
 | `blocked` | The spike couldn't run. Name what blocked it. |
 
 Evaluate every trigger in the frozen stopping rule literally, and quote it, before drafting a verdict. An agent asked for an answer will produce one, so making "no answer" cheap is what keeps the other verdicts meaningful. A negative result is a successful spike.
@@ -142,7 +143,8 @@ Experiments are never deleted. Code, seeds, data and write-ups are kept, includi
   PREREGISTRATION_ADDENDUM_<n>.md (+ .sha256)   a repair or criterion change, audited and frozen like the original
   EXPERIMENT.md           the full auditable record, written during and after the run
   audit/                  each audit verbatim, plus COORDINATOR_RULINGS.md
-  review-<x>/             each review verbatim, plus the reviewer's own scripts
+  review-<brief>/         each review verbatim (e.g. review-consumer/REVIEW_CONSUMER.md), plus the reviewer's scripts
+  fold/                   the coordinator's re-derivation script and its output
   BULK_MOVED.txt          what moved to scratch, with sha256 and size per file
   run.sh                  one command that re-runs everything
 <results>/<ID>.md         the short answer: verdict, regime, consumers, new questions
@@ -162,13 +164,13 @@ Templates for every file are in `templates/` beside this one.
 
 These rules are what make a wrong result expensive. Generalising the method for a new project must not weaken any of them.
 
-- **The criterion is audited by someone who didn't write it, before it freezes.**
+- **The criterion is audited by someone who didn't write it, before it freezes.** Only at low kill-risk may the audit be skipped, and the rulings say why.
 - **Audits, reviews and rulings are saved verbatim.** The coordinator's ruling is a separate, dated section that quotes what it accepts.
 - **Every oracle is mutation-tested.** An oracle that survives its own mutation constrains nothing.
-- **Nothing is repaired after the gate.** A failure becomes the finding, and the repair becomes a new question.
+- **Nothing is repaired once grading starts.** A failure becomes the finding, and the repair becomes a new question.
 - **An instrument gets one diagnosed repair.** If the repaired instrument fails, the verdict is `instrument-failed`.
 - **A post-freeze change that touches the criterion goes to the auditor first.** A deviation never softens a frozen label.
-- **At fold, the coordinator re-derives one load-bearing number without the spike's own code.** If it can't be re-derived from what was kept, that is the finding.
+- **At fold, the coordinator re-derives one load-bearing number without any of the spike's code.** If it can't be re-derived from what was kept, that is the finding.
 - **An impact audit fires when a defect is found, before anyone proves it mattered.**
 - **The verdict is copied exactly. Every claim carries the regime it was measured in.**
 - **Runners never stage, commit or lease. Experiments are never deleted.**

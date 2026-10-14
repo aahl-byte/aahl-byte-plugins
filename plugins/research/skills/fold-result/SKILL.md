@@ -5,9 +5,9 @@ description: Fold a returned spike result into the catalogue and the record as t
 
 # Fold a result in
 
-A report is not a measurement. It arrives written to persuade, from an agent that wanted to have answered the question, and it lands when you are deepest in context and least inclined to argue. Nothing enters the catalogue until you have attacked it yourself. That holds even when the spike ran its own review, because those reviewers were briefed by whoever framed the question.
+Nothing enters the catalogue until you have attacked it yourself. A report arrives written to persuade, from an agent that wanted to have answered the question, and it lands when you are deepest in context and least inclined to argue. That holds even when the spike ran its own review, because those reviewers were briefed by whoever framed the question.
 
-**A pre-reviewed report needs more scrutiny, not less.** It arrives wearing armour: "review sent the first draft back on four attacks, and all four are reflected above". Its review happened inside the spike's own frame. The defects it can't reach are the ones about what the result means outside that frame: how it generalises, what regime it holds in, and what it does at a consumer's operating point. Those are your ground. Treat the list of attacks it survived as a map of ground already covered, and spend your effort somewhere else.
+**A pre-reviewed report needs more scrutiny.** A line like "review sent the first draft back on four attacks, and all four are reflected above" persuades, whatever else it does, and that review happened inside the spike's own frame. The defects it can't reach are the ones about what the result means outside that frame: how it generalises, what regime it holds in, and what it does at a consumer's operating point. Those are your ground. Treat the list of attacks it survived as a map of ground already covered, and spend your effort somewhere else.
 
 Paths below are defaults; `.claude/research.md` overrides them. Work in the order given. The record edits are the cheap part, and making them early makes you reluctant to undo them.
 
@@ -29,7 +29,7 @@ Ask what regime each headline was measured in, and whether that regime includes 
 
 ## 3. Re-derive one load-bearing number
 
-Take the number the conclusion rests on, the one that will be quoted downstream, and re-derive it from the raw data, without the spike's own library. It is usually a few minutes of work:
+Take the number the conclusion rests on, the one that will be quoted downstream, and re-derive it from the raw data, without any of the spike's code. It is usually a few minutes of work:
 
 - a melting point from the replicates' own status files;
 - a slope from the raw frames;
@@ -39,6 +39,8 @@ Take the number the conclusion rests on, the one that will be quoted downstream,
 That last case overturned a result that had already been folded.
 
 If the number can't be re-derived from what was kept, that is the finding.
+
+Save the script and its output in `<spikes>/<id>/fold/`, and cite them in the result file.
 
 ## 4. Send the attack back
 
@@ -60,7 +62,7 @@ Record the instrument's hash with every number you re-grade. Re-grading old outp
 - **Change kill-risk only on evidence, and name the evidence.** Kill-risk has been raised on the size of a number before its cause was known, then lowered twice as the cause emerged. Ask why the number is what it is before rating it.
 - **Add the new questions** as full entries plus index rows, keeping the names the spike gave them. Never renumber them to the next free integer. Scout each one (`research:literature-scout`).
 - **Add any new defect class** the spike or its reviews found to the project's `CRITERION_AUDIT.md`, as a one-line lesson with its case.
-- **Update the project's status document**, if the result changes what is settled or what is blocked.
+- **Update the status document**, if `.claude/research.md` names one under `status:` and the result changes what is settled or what is blocked.
 
 ## 7. Move bulk data
 
@@ -81,6 +83,6 @@ Generate the list with `sha256sum` and `stat`, before the move.
 
 ## 8. Commit
 
-Stage named paths only: the spike directory, the result file, the catalogue, the defect catalogue, and the rulings. Never `git add -A`. Read the staged diff in full, then commit with the config's `commit_trailer`. Only the coordinator commits, because concurrent staging by agents has taken commits off branches.
+Stage named paths only: the spike directory (with its `fold/` re-derivation and its rulings), the result file, the catalogue, the defect catalogue, any leads batch files, and `<leads>/TALLY.md`. Never `git add -A`. Read the staged diff in full, then commit with the config's `commit_trailer`. Only the coordinator commits, because concurrent staging by agents has taken commits off branches.
 
 Update the resume note.

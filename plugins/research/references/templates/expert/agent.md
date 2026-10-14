@@ -49,7 +49,7 @@ touched it and ask.
 
 - Long runs detached, with output to a file; never through a pipe.
 - Kill by PID, never `pkill -f`.
-- Stage named paths, read the staged diff, then commit. Local commits only.
+- Never stage or commit. Report the paths you changed; the research coordinator commits.
 - Set the model and effort explicitly on every agent you spawn: Opus at `high` for judgement, Sonnet at
   `medium` for mechanical work, never Fable. Pass this rule into every brief you write.
 - <The domain's own constraints.>

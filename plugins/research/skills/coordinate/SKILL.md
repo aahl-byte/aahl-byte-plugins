@@ -27,7 +27,7 @@ Take the independent questions with the highest kill-risk first. Select the batc
 
 Check each entry's *Independent?* field against its body before launching. Make sure each question has been scouted (`research:literature-scout`).
 
-Stay within `agent_cap`, which defaults to two concurrent agents. Running twelve spikes is cheap; reading twelve reports carefully is not, and reading them carelessly defeats the protocol. When reports become the bottleneck, give a whole family of related questions to one orchestrator. It runs one runner per spike, attacks each result before accepting it, and returns one consolidated report. It is also the place where cross-spike findings become visible.
+Stay within `agent_cap`, which defaults to two concurrent agents. Running twelve spikes is cheap; reading twelve reports carefully is not, and reading them carelessly defeats the protocol. When reports become the bottleneck, give a whole family of related questions to one orchestrator: a general agent (Opus, `high`) briefed with this skill. It runs one runner per spike, attacks each result before accepting it, and returns one consolidated report, which is also where cross-spike findings become visible. It never commits, leases or edits the catalogue; those stay with you.
 
 ## Brief a runner
 
@@ -47,25 +47,27 @@ Launch `research:spike-runner` with model and effort set explicitly. The brief c
 
 **Rule in `audit/COORDINATOR_RULINGS.md`**, from its template, one dated section per round. Each finding is accepted, accepted amended, or rejected, with the reason, and each ruling quotes the text it accepts. A rejection needs a reason a later auditor could check. Rulings are appended, never rewritten.
 
-**Freeze by reading the diff.** The runner applies the rulings as a new revision and hands back the diff and the sha256.
+**Freeze by reading the diff.** The runner applies the rulings as a new revision and hands back the diff and the sha256. Recompute the sha256 yourself.
 
-- If the diff holds only the ruled text, it freezes. Write the sha256 to `PREREGISTRATION.sha256`, and to a freeze section of the rulings.
+- If the diff holds only the ruled text, it freezes. Write the sha256 to `PREREGISTRATION.sha256` and to a freeze section of the rulings, then commit the frozen file, its hash and the rulings, so the freeze can't be edited unseen.
 - If the diff adds anything beyond the ruled text, send those lines to the auditor first, save that check verbatim too, and rule on it.
 
-**Grow the defect catalogue.** When an audit names a new defect class, add it to the project's `CRITERION_AUDIT.md` as a one-line lesson, with the case that found it.
+**At low kill-risk you may skip the audit**, but only by recording in the rulings why. **Grow the defect catalogue.** When an audit names a new defect class, add it to the project's `CRITERION_AUDIT.md` as a one-line lesson, with the case that found it.
 
 ## After the freeze
 
 **Deviations come in two kinds:**
+
+The runner reports every post-freeze change to you before using it, and you classify it. A doubtful one counts as criterion-touching.
 
 - *Operational* changes can't move a value: scheduling, slot counts, a GPU memory cap, a hardware move with an identical parity line. Record each one in the rulings with its reason.
 - *Criterion-touching* changes alter what is measured or how it is judged. They go to the auditor before anyone uses them.
 
 A deviation never softens a frozen label. "Instrument-failed" stays instrument-failed, even when the check it applies to moves somewhere fairer.
 
-**Nothing is repaired after the gate.** A failure becomes the finding, and the repair becomes a new question.
+**Nothing is repaired once grading starts.** A failure becomes the finding, and the repair becomes a new question.
 
-**An instrument that fails its gate gets one diagnosed repair.** Rule on it as a single frozen change:
+**An instrument that fails its own validation gets one diagnosed repair**, before grading starts. Rule on it as a single frozen change:
 
 - **Diagnosis comes before design.** Have the runner re-derive the failure from retained data. Name the competing readings, choose readings that predict different repairs, and tell them apart before anyone proposes a fix.
 - **A bug in the harness is a code fix, not the repair.** Fix it red-first. It doesn't count against the instrument.
@@ -87,7 +89,7 @@ Before grading, check that the runner did its integrity checks:
 
 - every unit is verified;
 - lock or version checks pass;
-- each machine has a parity line;
+- each machine has a parity line: one fixed reference job's output, matching on every machine;
 - any chain that claims to resume survived a deliberate kill-and-resume.
 
 ## Waiting
@@ -106,7 +108,7 @@ Commission reviewers by tier (`research:spike-reviewer`), each on a named brief:
 
 Whenever another spike will inherit the result, one brief is the consumer brief.
 
-Save each review verbatim at `<spikes>/<id>/review-<x>/REVIEW_<X>.md`. The runner applies the reviewers' replacement text word for word. Where the reviews disagree, rule which side to take, and why, in a dated section of the rulings.
+Save each review verbatim at `<spikes>/<id>/review-<brief>/REVIEW_<BRIEF>.md`, for example `review-consumer/REVIEW_CONSUMER.md`. Rule on each review in a dated section of the rulings: which replacement text the runner applies word for word, and, where the reviews disagree or the runner disputes an attack, which side to take and why.
 
 ## Fold
 
@@ -149,7 +151,7 @@ Delete untrue lines; the note shows the present, and git or the todo item keeps 
 
 ## Report to whoever commissioned the work
 
-- **Speak in their terms.** Use the product's or the game's language, and leave out spike IDs and verdict vocabulary up front.
+- **Speak in their terms.** Use the product's language, and leave out spike IDs and verdict vocabulary up front.
 - **Answer questions yourself first.** When a question comes up, send it to a subagent to derive the answer before asking anyone.
 - **Ask the person only what needs them.** That means a judgement of feel, or a large call on cost or scope. Batch those questions together, alongside everything already done.
 

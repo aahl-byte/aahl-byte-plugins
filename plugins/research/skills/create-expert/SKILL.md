@@ -5,7 +5,7 @@ description: Turn a session's accumulated knowledge of one domain into a standin
 
 # Create an expert
 
-When this is done, there is an agent definition at `.claude/agents/<name>.md` and a store at `<experts>/<name>/` (by default `docs/research/experts/<name>/`). A session six months from now can call the agent and get an answer that is correct then, not merely correct when you wrote it.
+When this is done, there is an agent definition at `.claude/agents/<name>-expert.md` and a store at `<experts>/<name>/` (by default `docs/research/experts/<name>/`). A session six months from now can call the agent and get an answer that is correct then, not merely correct when you wrote it.
 
 Do it while the domain is still warm. The knowledge with the longest life is the knowledge you've stopped noticing you have, and it is the first thing lost when a session ends.
 
@@ -74,8 +74,7 @@ Start from `templates/expert/agent.md`. It carries:
 - **The operating constraints a caller can't be trusted to pass on.** For this programme that means:
   - detached long runs with output to a file;
   - killing by PID;
-  - explicit staging, with the staged diff read before committing;
-  - local commits only;
+  - never staging or committing: it reports the paths it changed, and the research coordinator commits;
   - model and effort set explicitly on every subagent it spawns (Opus at `high` for judgement, Sonnet at `medium` for mechanical work, never Fable).
 
   Add the domain's own constraints.

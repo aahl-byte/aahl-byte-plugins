@@ -9,6 +9,8 @@ sections hold the full entries. When a result is folded, its answer goes back in
 
 Kill-risk is how much of the project dies if the answer is bad, not how likely a bad answer is.
 
+Status is `open`, `spiking`, or the result's verdict, copied exactly.
+
 | ID | Question | Kill-risk | Independent | Spike | Status |
 |---|---|---|---|---|---|
 | AREA-1 | <the question, short> | high | yes | <size> | open |
@@ -26,3 +28,4 @@ Kill-risk is how much of the project dies if the answer is bad, not how likely a
 - **Spike:** <what to build or run, and its rough size>
 - **Independent?** yes | follows <IDs>
 - **Leads:** <path to the scout's batch file, once scouted>
+- **Result:** <path to the result file>, <the verdict, copied exactly, with its regime>

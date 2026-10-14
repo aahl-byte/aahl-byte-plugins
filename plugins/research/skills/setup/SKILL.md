@@ -23,7 +23,7 @@ Otherwise, copy `templates/research.md` there and settle each key:
 - **Paths.** The defaults put the catalogue, results, the criterion audit, leads and expert stores under `docs/research/`; spikes under `spikes/`; and scratch under `.scratch/research/`. If the project already keeps a catalogue or results somewhere, point the keys there instead of moving the files.
 - **Scratch must survive a reboot,** because long runs and the resume note live there. Never put it under `/tmp`. Add it to `.gitignore`.
 - **`resume_note`** defaults to a file in scratch. Use `todo:<item-id>` if the project tracks work in a todo store and the coordinator should keep the note on a todo item instead.
-- **`commit_trailer`, `agent_cap` and `tiers`.** Keep the defaults unless the project has a reason to change them.
+- **`commit_trailer`, `agent_cap` and `tiers`.** Keep the defaults unless the project has a reason to change them. Tiers can be raised, never lowered.
 - **`cloud.project`** is needed only before the first lease. Leave it empty until then.
 - **Project notes.** Anything the author has said about spend, hardware or who may do what goes in the free-text section under the frontmatter, where every research agent reads it.
 
@@ -65,6 +65,6 @@ Each question is scouted when it is filed (`research:literature-scout`), so the 
 
 ## 7. Create the directories and commit
 
-Create the results, spikes, leads and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the catalogue, the criterion audit and `.gitignore` by name, read the staged diff, and commit.
+Create the results, spikes, leads and experts directories, and the scratch directory. Copy `templates/leads/TALLY.md` into the leads directory, and write the resume note from `templates/RESUME.md`. Then stage the config, the catalogue, the criterion audit, `.gitignore`, `<leads>/TALLY.md` and any leads batch files by name, read the staged diff, and commit.
 
 From here, the coordinator runs the programme with `research:coordinate`.

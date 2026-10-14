@@ -49,21 +49,25 @@ Fill in `templates/PREREGISTRATION.md`. Its sections ask for:
 - **A predicted number, with a range, for every hypothesis.** Predictions are the cheapest bug detector there is. Without a prior, a bug just looks like data.
 - **What would falsify each hypothesis.** If nothing would, the hypothesis can't be tested.
 - **The oracles, each labelled by kind.** The two kinds fail differently.
-  - An *instrument oracle* checks the solver, simulator or sampler. If it fails, stop: there is no measurement, only a bug, and the verdict is `instrument-failed`.
-  - A *metric oracle* checks the statistic the criterion is written in. If it fails while the instrument oracles pass, the instrument is sound and the criterion is defective. Report against both the original and a repaired statistic, record a deviation, and file the defect.
+  - An *instrument oracle* checks the solver, simulator or sampler. If it fails, stop measuring: there is no measurement, only a bug. The instrument gets one diagnosed repair (step 6), and if that fails too, the verdict is `instrument-failed`.
+  - A *metric oracle* checks the statistic the criterion is written in. If it fails while the instrument oracles pass, the instrument is sound and the criterion is defective. The verdict on that clause is `inconclusive`. Report the repaired statistic beside the original, ungraded; it goes to the auditor as a criterion-touching deviation, and the repair becomes a new question.
 
   Halting on a broken scoring rule throws away a working instrument. Continuing past a broken solver throws away the result.
 - **The input range each oracle presents, beside the range the experiment will present.** Where the experiment's range is wider, extend the oracle or record the uncovered band as a blind spot. An instrument is often broken only on inputs its oracle never presents. *Example:* a stress recovery matched its oracle to 1.35% for the life of a spike, while returning up to 3.78× the true value on mesh nodes that the oracle's part never produced.
 - **The stopping rule, with each verdict's trigger stated literally.** State what the verdict is if a blockable input stays blocked.
 - **The consumers**: who inherits this result, and the statistic each of them reads.
 
+Keep every revision as its own file, `PREREGISTRATION_r<n>.md`, until the freeze, so each diff can be shown. Nothing is committed until the coordinator freezes it.
+
 The criterion freezes here. Softening it later to match what was achieved is how a research programme quietly stops meaning anything.
 
-Hand the draft to the coordinator. At medium kill-risk and above, a criterion auditor who didn't write the plan attacks it first. **Never audit your own criterion.** If no coordinator launched you, spawn `research:criterion-auditor` yourself, save its output verbatim in `audit/`, and record what you accepted and why.
+Hand the draft to the coordinator and end your turn. A criterion auditor who didn't write the plan attacks it; only at low kill-risk may the coordinator skip that, and the rulings say why. **Never audit your own criterion.** If no coordinator launched you, spawn `research:criterion-auditor` yourself, save its output verbatim in `audit/`, and record what you accepted and why.
 
 ## 3. Apply the rulings and hand back a diff
 
-The coordinator rules on the audit in `audit/COORDINATOR_RULINGS.md`. Apply the rulings as a new revision, then hand back the diff from the previous revision and the new file's sha256. Put in only the ruled text. Anything you add beyond it goes back to the auditor before the freeze.
+The coordinator rules on the audit in `audit/COORDINATOR_RULINGS.md`. Apply the rulings as a new revision, then hand back `diff -u` between the last two revisions and the new file's sha256. Put in only the ruled text. Anything you add beyond it goes back to the auditor before the freeze.
+
+Then end your turn again. Build nothing until the coordinator resumes you with the freeze recorded, as `PREREGISTRATION.md` and `PREREGISTRATION.sha256`.
 
 A finding that arrives after the freeze, from a lead card, a reviewer or your own data, never edits the frozen text. It becomes a deviation, a note, or a new question.
 
@@ -103,7 +107,7 @@ The chain must resume from its own checkpoints, write a done marker only on a cl
 
 - every unit is present and verified;
 - lock or version checks pass;
-- each machine has a parity line;
+- each machine has a parity line: one fixed reference job's output, matching on every machine;
 - the kill-and-resume test has passed.
 
 **Then sweep.** Vary the least-certain parameters: resolution, timestep, sample count, corpus size. If the verdict flips inside the plausible range of a guessed parameter, the question isn't answered. A bare number with no sensitivity information isn't a result.
@@ -112,18 +116,20 @@ The chain must resume from its own checkpoints, write a done marker only on a cl
 
 **Self-falsify.** Attack the surviving hypothesis and find where it breaks. "Wins below about 10k elements, degrades above" is usable. "H2 wins" is not.
 
-**Nothing is repaired after the gate.** A failure becomes the finding, and the repair becomes a new question. Post-freeze changes are deviations of two kinds:
+**Nothing is repaired once grading starts.** A failure becomes the finding, and the repair becomes a new question.
 
-- *Operational* changes can't move a value: scheduling, slot counts, a memory cap, a hardware move with an identical parity line. Record each one with its reason.
-- *Criterion-touching* changes alter what is measured or how it is judged. They go to the auditor through the coordinator before you use them.
+Report every post-freeze change to the coordinator before you use it. The coordinator classifies it, and a doubtful one counts as criterion-touching. Deviations are of two kinds:
+
+- *Operational* changes can't move a value: scheduling, slot counts, a memory cap, a hardware move with an identical parity line. Each is recorded with its reason.
+- *Criterion-touching* changes alter what is measured or how it is judged. They go to the auditor before anyone uses them.
 
 No deviation softens a frozen label.
 
-**An instrument that fails its gate gets one diagnosed repair.** Diagnose from retained data first, keep each bar's meaning, freeze the repair as an audited addendum, and validate it on fresh seeds. If the repaired instrument fails, the verdict is `instrument-failed`, spending stops, and the failure is the result.
+**An instrument that fails its own validation gets one diagnosed repair**, before grading starts. Diagnose from retained data first, keep each bar's meaning, freeze the repair as an audited addendum, and validate it on fresh seeds. If the repaired instrument fails, the verdict is `instrument-failed`, spending stops, and the failure is the result.
 
 **A negative result about the specimen has to clear the instrument first,** at the settings the negative came from. "The effect isn't there" is something a broken instrument produces on demand.
 
-**A defect in anything you inherited triggers an impact audit.** That covers a solver, scorer, sampler or corpus. List every retained result that passed through it, and either re-run it or state why it is unaffected. The trigger is finding the defect, not proving it mattered. The blast radius often includes the result that caused your spike to exist.
+**A defect in anything you inherited triggers an impact audit.** That covers a solver, scorer, sampler or corpus. List in your record every retained result that passed through it, and report the defect and the list to the coordinator at once; the coordinator runs the audit (`research:fold-result`). The trigger is finding the defect, not proving it mattered. The blast radius often includes the result that caused your spike to exist.
 
 ## 7. Interrogate the conclusion before review
 
@@ -143,11 +149,11 @@ Ask three questions, and answer them in the record:
 
 ## 8. Review before the write-up
 
-At medium kill-risk and above, review comes before you polish anything. Headlines fully written up have been withdrawn on seven consecutive spikes, and prose built around an unattacked result makes it harder to give up.
+At medium kill-risk and above, review comes before you polish anything. In the programme this method came from, fully written-up headlines were withdrawn or corrected on seven consecutive spikes, and prose built around an unattacked result makes it harder to give up.
 
-The reviewer gets the code, the raw numbers and a one-paragraph claim. At high kill-risk, two reviewers work on different briefs. Whenever another spike will inherit your result, one reviewer takes the *consumer* brief and recomputes your headline at the consumer's operating point. The coordinator normally commissions the reviews; if no coordinator launched you, spawn `research:spike-reviewer` yourself.
+The reviewer gets the code, the raw numbers and a one-paragraph claim. At high kill-risk, two reviewers work on different briefs. Whenever another spike will inherit your result, one reviewer takes the *consumer* brief and recomputes your headline at the consumer's operating point. After grading, end your turn and wait: the coordinator commissions the reviews and resumes you with them. If no coordinator launched you, spawn `research:spike-reviewer` yourself.
 
-Apply the reviewers' replacement text word for word. Record which attacks you accepted, which you rejected and why, and which attacks failed.
+Apply word for word the replacement text the coordinator accepted. Where you dispute an attack, say why in your report; the coordinator rules. Record which attacks landed and which failed.
 
 ## 9. Write the record
 
@@ -164,7 +170,7 @@ Report back with:
 - the headline numbers;
 - what you couldn't settle;
 - the mutation tally;
-- which reviewer attacks you accepted and rejected, and which failed;
+- which reviewer attacks landed, which you dispute and why, and which failed;
 - the new questions.
 
 Keep it terse and dense with evidence. A negative result is a successful spike; making "no answer" cheap is what keeps the other verdicts meaningful.

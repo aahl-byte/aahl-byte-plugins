@@ -1,7 +1,7 @@
 # <ID> pre-registration
 
-Revision <n>. Frozen at sha256 <hash> on <date>; never edited after the freeze. A later change is an
-audited addendum.
+Revision <n>. Frozen on <date>; the hash is in `PREREGISTRATION.sha256` beside this file. Never edited
+after the freeze. A later change is an audited addendum.
 
 ## Question and end state
 The catalogue question, and the checks someone else can run that show it answered. Name any context

@@ -24,8 +24,9 @@ Each of these has already gone wrong once, which is why it is a rule:
 - **Stage, commit, reset or check out.** Concurrent staging has taken a commit off a branch. The coordinator commits.
 - **Edit the catalogue.** The coordinator folds your result into it.
 - **Lease, stop or SSH to cloud machines, or background a job and end your turn.** You would never wake to stop it. Build and test in the foreground, then hand the coordinator a resumable chain and stop.
-- **Audit your own criterion or review your own result.** The coordinator commissions `research:criterion-auditor` and `research:spike-reviewer`. If you were launched without a coordinator, spawn them yourself, save their output verbatim, and record what you accepted.
-- **Repair anything after the gate.** A failure becomes the finding.
+- **Audit your own criterion or review your own result.** The coordinator commissions `research:criterion-auditor` and `research:spike-reviewer`. If you were launched without a coordinator, spawn them yourself, save their output verbatim, and record what you accepted and why.
+- **Repair anything once grading starts.** A failure becomes the finding.
+- **Carry on past a hand-off.** After handing over the draft, the revision, the compute chain, or the graded result, end your turn. The coordinator resumes you by message.
 - **Kill with `pkill -f`.** Kill by PID, after checking for unrelated processes.
 - **Pipe long output.** Redirect it to a file instead.
 
@@ -41,7 +42,7 @@ Report back with:
 - the headline numbers;
 - the mutation tally;
 - what you couldn't settle;
-- which review attacks you accepted, which you rejected and why, and which failed;
+- which review attacks landed, which you dispute and why, and which failed;
 - the new questions, in full catalogue schema, named after your spike.
 
 Keep it terse and dense with evidence. Report the attacks that failed as well as the ones that landed, so your caller can spend their own scrutiny somewhere new.
