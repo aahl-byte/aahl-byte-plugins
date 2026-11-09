@@ -20,11 +20,34 @@ In plans and reports, write what is true. State risks, misses, and actuals plain
 ## 2. How sentences work
 
 - **Actors as subjects, actions as verbs.** e.g. "The parser rejects empty keys." When the verb has been buried in a noun (*rejection*, *implementation*, *utilization*), dig it out.
+- **Subject and verb early, and together.** The reader holds a sentence in suspense until its verb arrives, so keep the subject short and put nothing between it and its verb: e.g. "The heading shows how urgent each repair is."
 - **Familiar first, new last.** Open a sentence with what the reader already knows; put the new or complex material at the end, where the sentence's natural stress falls. This is also how paragraphs chain: the end of one sentence sets up the start of the next.
+- **Name the thing.** A bare "this", "that" or "it" sends the reader back to search for what it points at, so repeat the noun: e.g. "Nothing is emailed yet. The email goes out when you tap Send."
+- **Keep the topic string.** Open a paragraph's sentences on a few related characters, so the reader follows one thread: e.g. in a paragraph about a report, the subjects stay on the report, its findings and the person deciding them.
+- **Tell events in the order they happen.** The reader builds the sequence as they read, so what happened first comes first: e.g. "When an inspector emails you a report, you decide which repairs go ahead."
+- **Join short sentences with the connective they imply.** Two short sentences side by side leave the reader to guess how they relate; *so*, *because*, *then* or *but* says it: e.g. "Your choice saves straight away, but you can change it by tapping the other button."
+- **Match the form of list items.** Every item fills the same grammatical slot, all noun phrases or all instructions: e.g. "The report." and "A login to the staff app."
 - **One point per paragraph, stated early.** The reader should be able to skim first sentences and get the argument.
 - **Concision is deletion.** Cut metadiscourse ("it's worth noting that", "as mentioned above"), doubled words ("each and every"), and empty modifiers ("very", "quite", "essentially"). What survives, leave in full sentences — compression into fragments and arrow chains is a different vice.
 - **Clarity is structural.** Complexity belongs in the content words, placed at the stress position; grammar that carries complexity makes the reader parse twice.
 - **Vary sentence length.** A short sentence after two long ones lands hard. Uniform cadence reads as generated.
+
+**A worked example.** Help text for a staff app passed every word-level step of the edit pass one sentence at a time, and still read badly as a passage. Every fault in it was a fault of cohesion:
+
+| Fault | From the draft |
+|---|---|
+| New information opens the sentence | "A title of Inspection Report means you're looking at a read-only copy" |
+| Subject cut off from its verb | "The heading above it, Required or Recommended, shows how urgent…" |
+| Throwaway phrase in the stress position | "…sign in first, in Step 2." |
+| Abstraction as subject where a person belongs | "Every tap saves" |
+| Unclear "that" | "Nothing is emailed yet. That happens when…" |
+| Topic string wanders; events out of order | "You decide which repairs go ahead. An inspector has checked it and sent you their report." |
+| Short sentences with no link | "Your choice saves straight away. To change it, tap the other button." |
+| List items in mismatched form | "The report." / "A way to sign in." / "To be on the report." |
+
+The rewrite the reviewer approved keeps its subjects on the reader and the report, tells the events in order, and ends a sentence on the new term *finding*:
+
+> When an inspector emails you a report on a unit, you decide which of its repairs go ahead. The report lists every problem the inspector found, with the hours, parts and price to fix each one. Each of those problems is called a **finding**. You approve or deny each finding, then send your decisions back.
 
 ## 3. Machine habits to unlearn
 
@@ -86,11 +109,12 @@ The reflex: qualifying every claim to avoid being wrong. Stacked hedges ("it cou
 For cleaning existing text, in order:
 
 1. Delete every sentence that fails the cut test (§1).
-2. Find each list of three; check the facts. Merge, cut, or extend to the real count.
-3. Find every comparison — `not `, `n't just`, `isn't about`, ` — it's `, `rather than`, `instead of`, `as opposed to`, and adjacent positive/negative sentence pairs. Keep only those backed by named, observable data; rewrite the rest as a precise positive, a reasoned failure mode, or a scope clause.
-4. Delete filler-emphasis words or replace them with the earning fact.
-5. Un-bullet anything that reads top-to-bottom; keep bullets only where the reader scans.
-6. Rewrite nominalized sentences with actor-subject, action-verb.
-7. Read for cadence; break up uniform sentence lengths and em-dash chains.
-8. Cut restatements and the closing recap — sentences that add no new fact. Keep clauses that carry the reason, the what-to-do counterpart of a don't, or the principle behind an example: those are information, however repetitive their shape.
-9. Audit bold: keep it only on what a scanner must not miss.
+2. Read each paragraph's sentence openings in a row. Each should name something the previous sentence introduced or the reader already holds, and each sentence should end on its newest idea. Check the joints too: events out of order, a bare "this", "that" or "it", short sentences with no connective, list items in mismatched form. Fix the order before touching words.
+3. Find each list of three; check the facts. Merge, cut, or extend to the real count.
+4. Find every comparison — `not `, `n't just`, `isn't about`, ` — it's `, `rather than`, `instead of`, `as opposed to`, and adjacent positive/negative sentence pairs. Keep only those backed by named, observable data; rewrite the rest as a precise positive, a reasoned failure mode, or a scope clause.
+5. Delete filler-emphasis words or replace them with the earning fact.
+6. Un-bullet anything that reads top-to-bottom; keep bullets only where the reader scans.
+7. Rewrite nominalized sentences with actor-subject, action-verb.
+8. Read for cadence; break up uniform sentence lengths and em-dash chains.
+9. Cut restatements and the closing recap — sentences that add no new fact. Keep clauses that carry the reason, the what-to-do counterpart of a don't, or the principle behind an example: those are information, however repetitive their shape.
+10. Audit bold: keep it only on what a scanner must not miss.
