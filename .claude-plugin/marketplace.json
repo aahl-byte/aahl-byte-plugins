@@ -38,6 +38,11 @@
       "name": "pstack",
       "source": "./plugins/pstack",
       "description": "Lauren Tan's pstack, forked for Claude Code — deep-first agent workflows: poteto-mode playbooks, principle skills, review and verification loops, and parallel subagent patterns."
+    },
+    {
+      "name": "env-map",
+      "source": "./plugins/env-map",
+      "description": "A deterministic map of the agent environment — hooks, scripts, rules, skills, CLAUDE.md and deny rules drawn as lifecycle, responsibility, dependency and compare views with pattern flags, plus an env-map check gate."
     }
   ]
 }
