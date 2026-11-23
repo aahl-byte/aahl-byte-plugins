@@ -7,29 +7,29 @@ color: yellow
 
 # Poteto mode
 
-Bundled skills live at `../<name>/SKILL.md` from this file, so put this file's absolute path in every `poteto-agent` prompt.
+A `pstack:<name>` reference means run the `pstack:<name>` skill with the Skill tool.
 
 ## Non-negotiables
 
-The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf SKILL.md you read this session.
+The Principles section below grounds every trigger. In your reply, name each principle that shaped a decision and the specific choice it changed. Cite only principles whose leaf skill you ran this session.
 
 The remaining triggers live only here:
 
 - First message → restate the user's goal and the smallest change that meets it, then proceed. Open each subagent brief, PR `## Why`, and final report with the goal.
-- Starting any agent, whether a Task subagent or a Project worker → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's folder. The operator's rules live in skills that only load from a slash command, so they reach another agent no other way. Keep the rest of the kickoff to the goal and the task, plus this file's absolute path for a `poteto-agent`.
+- Starting any agent with the `Agent` tool → the first line of its kickoff is `Read <path>/worker.md before anything else.`, with `<path>` the absolute path of this skill's base directory. `worker.md` is not a skill, so a file read is the only way the operator's rules reach another agent. Keep the rest of the kickoff to the goal and the task.
 - A fork you could settle by running something → prototype it per `playbooks/prototype.md` instead of asking.
 - Code → name the data shape first. Across a function boundary → `pstack:architect`. Fan-out → `pstack:swarm`. Bakeoff → `pstack:arena`. Contested design → `pstack:interrogate`.
 - Prose, your reply included → `pstack:unslop`. Docs, PR descriptions, commit messages → `pstack:technical-writing`.
-- Before commit → `/deslop` from the `cursor-team-kit` plugin. Before review → `pstack:no-comments`.
-- Shipping UI / IDE / CLI → `control-ui` or `control-cli` from `cursor-team-kit`.
+- Before commit → the built-in `simplify` skill on the diff. Before review → `pstack:no-comments`.
+- Shipping UI / IDE / CLI → the project's `verify-<app>` skill. With none, run `pstack:create-verification-skill` first.
 - A number you measured → `pstack:benchmark-checklist`.
-- PR status → the **Babysit** playbook, not Cursor's built-in babysit skill. Landing a green stack → the **Shipping** playbook.
+- PR status → the **Babysit** playbook. Landing a green stack → the **Shipping** playbook.
 - Bot review comments → judge each on its merits.
 - Long or unattended work → `pstack:show-me-your-work`.
 
 ## Principles
 
-Read the leaf skill in full for any principle you apply. Each entry names when it applies. Each leaf is the **principle-<title>** skill, with the title in kebab case, hyphens kept and other punctuation dropped, unless the entry gives its name.
+Run the leaf skill for any principle you apply. Each entry names when it applies. Each leaf is the `pstack:principle-<title>` skill, with the title in kebab case, hyphens kept and other punctuation dropped, unless the entry gives its name.
 
 **Core**
 
@@ -82,19 +82,17 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 ## Subagents
 
-**Use `subagent_type: "poteto-agent"` for any subagent you spawn directly inside a playbook step.** The chat that receives `/pstack:poteto-mode` runs the playbook itself. Routed workflow skills (`interrogate`, `swarm`) set their own `subagent_type`. Respect it.
+**Use `subagent_type: "pstack:poteto-agent"` for any subagent you spawn directly inside a playbook step.** The chat that receives `/pstack:poteto-mode` runs the playbook itself. Routed workflow skills (`pstack:interrogate`, `pstack:swarm`) set their own `subagent_type`. Respect it.
 
-**Defaults for every `Task` call.** `run_in_background: true`, agent mode (readonly strips MCP), file pointers not inlined context, and an explicit model per role, Project workers included. `/pstack:setup-pstack` writes `~/.cursor/rules/pstack-models.mdc`, whose per-role lines override the defaults below and the role models in the routed skills (`arena`, `swarm`, `interrogate`). A role with no line keeps its default. A line of `inherit-parent` or `auto` runs the role on the parent model, so omit `model` and spawn `generalPurpose`, because `poteto-agent` defaults to Opus 5.5. Each code playbook reads its own line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), prose and judgment read `judgment and prose`, and trivial mechanical edits read `swarm workers`. If the rule has no `# defaults: 3` line, an older setup wrote it. Keep honoring its lines, and tell the user once per session to rerun `/pstack:setup-pstack`.
+**Defaults for every `Agent` call.** A writing agent (`pstack:poteto-agent` or `general-purpose`, never `Explore`, which strips edits and MCP), file pointers not inlined context, and an explicit `model` and `effort` per role. `/pstack:setup-pstack` writes `~/.claude/rules/pstack-models.md`, whose per-role lines override the defaults below and the role models in the routed skills (`pstack:arena`, `pstack:swarm`, `pstack:interrogate`). Claude Code loads that file into every session. If its lines are not in context, read it. A role with no line keeps its default. A role value `<model> <effort>`, such as `opus high`, means `model: "opus"` and `effort: "high"`. A line of `inherit-parent` or `auto` runs the role on the parent's model, so pass the parent's model (`opus`, `sonnet` or `haiku`) and the role's default effort. Each code playbook reads its own line (`feature, refactoring`, `bug-fix`, `perf-issue`, or `hillclimb`), prose and judgment read `judgment and prose`, and trivial mechanical edits read `swarm workers`. If the rule has no `# defaults: 4` line, an older setup wrote it. Keep honoring its lines, and tell the user once per session to rerun `/pstack:setup-pstack`.
 
-- Code, prose, and judgment: `claude-opus-5-5-xhigh-fast`.
-- Trivial mechanical edits: `claude-opus-5-5-high-fast`.
-- Diverse review and design panels: one runner each on `claude-fable-5-2-high`, `claude-opus-5-5-high-fast`, and `gemini-4-neon-xhigh`.
+- Code, prose, and judgment: `opus xhigh`.
+- Trivial mechanical edits: `opus high`.
+- Diverse review and design panels: one runner each on `opus high`, `opus high`, and `sonnet xhigh`.
 
-**Fable 5.2 is an exception.** It runs outside a panel only when the user named it for this task or two Opus 5.5 xhigh runs of the same brief failed its check. Say which. Difficulty alone never qualifies.
+**Match the model to the job.** Start from the role's line or default, keep its model, and set the effort the job needs. The `/pstack:setup-pstack` budget sets each role's starting effort. Panel seats keep their listed effort. Raise any other role one step, up to xhigh, for the hardest or subtlest work, lower it one step for judgment, and two or more steps for routine work. Efforts run `low`, `medium`, `high`, `xhigh`. No role runs above xhigh. Verification always runs on the `swarm workers` line, `opus high` by default. The Sonnet panel seat runs at xhigh unless its line names another effort. Never pass `fable`. If the Agent tool rejects a value, never pass it again. Fall back to the role's line or default, then the calling skill's fallback, then `opus` at the same effort. Say so.
 
-**Match the model to the job.** Start from the role's line or default, keep its family, and set the level the job needs. The `/pstack:setup-pstack` budget sets each role's starting level. Panel seats keep their listed level. Raise any other role one step, up to xhigh, for the hardest or subtlest work, lower it one step for judgment, and two or more steps for routine work. No role runs above xhigh. Opus 5.5 always runs its `-fast` slug. Verification always runs on the `swarm workers` model, `claude-opus-5-5-high-fast` by default. A Gemini seat runs at `gemini-4-neon-xhigh` unless its line names another level. If the Task tool rejects a slug, never pass it again. Fall back to the role's line or default, then the calling skill's fallback, then the closest valid slug of the same family, then omit `model`. Say so.
-
-You own every subagent's work. Review the diff and write your own summary. A second opinion is the same prompt on another vendor's model.
+You own every subagent's work. Review the diff and write your own summary. A second opinion is the same prompt on another model.
 
 **Fresh subagents by default.** Give a fix round, a follow-up, a retry, or the next queue item to a fresh subagent with the original brief, every later directive, and the prior agent's report and branch. Resume an existing subagent only when the work needs state that lives in it and is costly to move: its checkout, its uncommitted changes, or a process it still runs.
 
@@ -104,6 +102,6 @@ Write short declarative sentences with no long dash and no colon as a connector.
 
 ## Playbooks
 
-Match the task to a playbook and open its steps at `playbooks/<title>.md`, with the title in kebab case. Copy its steps into the todolist tool first. Large, cross-cutting, or unattended work, or a task no playbook fits, routes to the `pstack:figure-it-out` skill.
+Match the task to a playbook and open its steps at `playbooks/<title>.md`, with the title in kebab case. Copy its steps into the session's todo tool first, or keep the list in your reply when there is none. Large, cross-cutting, or unattended work, or a task no playbook fits, routes to the `pstack:figure-it-out` skill.
 
 Investigation, Bug fix, Perf issue, Hillclimb, Runtime forensics, Trace forensics, Feature, Refactoring, Prototype, Visual parity, Authoring a skill, Eval, Babysit, Shipping, Autonomous run, Autopilot-full, Autopilot-stack, Session pickup, Pause safely, Multi-phase plan, Worktree cleanup, Opening a PR.
