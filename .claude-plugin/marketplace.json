@@ -33,6 +33,11 @@
       "name": "research",
       "source": "./plugins/research",
       "description": "A research programme that makes a wrong result expensive to produce — catalogued questions ranked by kill-risk, criteria audited before they freeze, mutation-tested instruments, adversarial review by tier, results re-derived before they enter the record, a literature scout per question, standing domain experts, and leased cloud compute through the gpu CLI."
+    },
+    {
+      "name": "pstack",
+      "source": "./plugins/pstack",
+      "description": "Lauren Tan's pstack, forked for Claude Code — deep-first agent workflows: poteto-mode playbooks, principle skills, review and verification loops, and parallel subagent patterns."
     }
   ]
 }
