@@ -1,0 +1,10 @@
+{
+  "description": "Checks finished work without changing it: dev's read tools, E2E, and the Playwright browser on the worktree's port.",
+  "builtins": ["Read", "Grep", "Glob"],
+  "servers": {
+    "dev": ["Test", "Check", "Git_Status", "Git_Diff", "E2E"],
+    "todo": ["Todo_Get", "Todo_List"],
+    "request": ["RequestTool"]
+  },
+  "playwright": true
+}
