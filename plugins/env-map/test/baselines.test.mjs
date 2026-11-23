@@ -16,7 +16,11 @@ function twoCommitEnv() {
     commits: [
       {
         date: "2026-03-01T00:00:00Z",
-        files: { "scripts/a.mjs": meta("job-x"), ".claude/settings.json": JSON.stringify({ hooks: { Stop: [{ hooks: [hook("scripts/a.mjs")] }] } }) },
+        files: {
+          "scripts/a.mjs": meta("job-x"),
+          ".githooks/pre-commit": "#!/bin/sh\nexec node scripts/a.mjs\n",
+          ".claude/settings.json": JSON.stringify({ hooks: { Stop: [{ hooks: [hook("scripts/a.mjs")] }] } }),
+        },
       },
       {
         date: "2026-03-20T00:00:00Z",

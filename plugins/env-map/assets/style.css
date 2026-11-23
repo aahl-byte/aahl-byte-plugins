@@ -93,8 +93,9 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: c
 .view.active { display: block; }
 .view h2 { font-size: 15px; margin: 0 0 4px; }
 .view .lede { color: var(--muted); margin: 0 0 10px; max-width: 70ch; }
-.canvas { overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); max-height: calc(100vh - 190px); }
-.canvas.fit svg { width: 100%; height: auto; }
+.canvas { overflow: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); }
+.canvas-title { font-size: 13px; font-weight: 650; margin: 14px 0 4px; }
+.canvas.fit svg { max-width: 100%; height: auto; }
 .canvas + .canvas { margin-top: 12px; }
 aside { border-left: 1px solid var(--line); padding: 12px 16px; background: var(--panel); overflow: auto; max-height: calc(100vh - 60px); position: sticky; top: 58px; }
 aside h3 { font-size: 13px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
@@ -116,7 +117,8 @@ footer td { padding: 1px 10px 1px 0; vertical-align: top; word-break: break-all;
 .status-error { color: var(--error); font-weight: 600; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted); margin: 0 0 8px; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
-.changes li { padding: 2px 0; }
+.changes { columns: 26em; padding-left: 18px; }
+.changes li { padding: 2px 0; break-inside: avoid; }
 .added-text { color: var(--added); }
 .removed-text { color: var(--removed); }
 

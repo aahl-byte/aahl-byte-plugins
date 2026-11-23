@@ -50,6 +50,7 @@ export function gitReader(root, ref) {
     return set;
   };
   const atRef = new Set((tryGit(root, ["ls-tree", "-r", "-z", "--name-only", ref]) ?? "").split("\0").filter(Boolean));
+  const atRefPaths = withDirs(atRef);
   const known = withDirs([...(tryGit(root, ["ls-files", "-z"]) ?? "").split("\0").filter(Boolean), ...atRef]);
   const untracked = (rel) => !known.has(rel);
   return {
@@ -62,7 +63,7 @@ export function gitReader(root, ref) {
       e.code = "ENOENT";
       throw e;
     },
-    exists: (rel) => atRef.has(rel) || (untracked(rel) && disk.exists(rel)),
+    exists: (rel) => atRefPaths.has(rel) || (untracked(rel) && disk.exists(rel)),
     list(rel) {
       const prefix = rel ? `${rel.replace(/\/$/, "")}/` : "";
       const names = new Set();

@@ -37,8 +37,8 @@ export function renderPage({ graph, baselines, generatedAt, project, config = lo
 <p class="lede">${esc(lede)}</p>
 <div class="legend">${legend}<span><i style="background: var(--removed)"></i>red box: unreadable or missing</span></div>
 ${id === "compare" ? '<div id="compare-summary"></div>' : ""}
-<div class="canvas" id="canvas-${id}"></div>
-${id === "dependencies" ? '<div class="canvas" id="canvas-loose"></div>' : ""}
+<div class="canvas fit" id="canvas-${id}"></div>
+${id === "dependencies" ? '<p class="canvas-title">Skills, agents and memories that name each other</p>\n<div class="canvas fit" id="canvas-names"></div>\n<p class="canvas-title">Parts with no edges, by source</p>\n<div class="canvas fit" id="canvas-loose"></div>' : ""}
 </section>`
   ).join("\n");
   return [
@@ -56,7 +56,7 @@ ${id === "dependencies" ? '<div class="canvas" id="canvas-loose"></div>' : ""}
     `<nav>${VIEWS.map(([id, name]) => `<button type="button" data-target="${id}" aria-selected="false">${esc(name)}</button>`).join("")}</nav>`,
     '<div class="tools"><label>Compare to <select id="baseline"><option value="">nothing</option></select></label>',
     '<label>or date <input type="date" id="compare-date"></label>',
-    '<button type="button" id="fit">Fit to width</button></div>',
+    '<button type="button" id="fit">Actual size</button></div>',
     "</header>",
     "<main>",
     `<div>\n${views}\n</div>`,

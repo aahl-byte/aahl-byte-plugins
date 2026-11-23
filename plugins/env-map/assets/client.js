@@ -51,7 +51,7 @@
     return clip(`${b.kind}${extra} · ${where}`, 44);
   }
   function sizeFor(label, sub) {
-    const w = Math.max(clip(label, 34).length * 7.1, clip(sub, 44).length * 5.9) + 26;
+    const w = Math.max(clip(label, 34).length * 7.6, clip(sub, 44).length * 6) + 28;
     return { width: Math.round(Math.min(300, Math.max(96, w))), height: 40 };
   }
   function leaf(id, box, overrides = {}) {
@@ -106,7 +106,7 @@
         if (c.subtitle) el("text", { class: "subtitle", x: x + 10, y: y + 32 }, grp).textContent = c.subtitle;
         drawLayout(g, c, x, y, ctx);
       } else if (c.box) {
-        drawNode(g, c, x, y, ctx.status.get(c.box.id));
+        drawNode(g, c, x, y, c.status ?? ctx.status.get(c.box.id));
       }
     }
     drawEdges(g, node.edges, dx, dy);
@@ -122,6 +122,69 @@
     return svg;
   }
 
+  const availableWidth = () => Math.max(900, (document.querySelector("main > div")?.clientWidth ?? 1200) - 40);
+
+  /** Places laid-out blocks left to right in the given order, wrapping into rows at the available width. */
+  function flow(blocks, gap) {
+    const maxW = availableWidth();
+    let x = 0;
+    let y = 0;
+    let rowH = 0;
+    const placed = [];
+    for (const c of blocks) {
+      if (x > 0 && x + c.width > maxW) {
+        x = 0;
+        y += rowH + gap;
+        rowH = 0;
+      }
+      placed.push({ c, x, y });
+      x += c.width + gap;
+      rowH = Math.max(rowH, c.height);
+    }
+    const width = Math.max(...placed.map((p) => p.x + p.c.width), 300) + 16;
+    return { placed, width, height: y + rowH + 16 };
+  }
+
+  /** Splits boxes into connected components: those holding events first, in event order, then larger ones first. */
+  function components(boxes, edges) {
+    const parent = new Map(boxes.map((b) => [b.id, b.id]));
+    const find = (x) => {
+      while (parent.get(x) !== x) x = parent.get(x);
+      return x;
+    };
+    for (const e of edges) if (parent.has(e.from) && parent.has(e.to)) parent.set(find(e.from), find(e.to));
+    const sets = new Map();
+    for (const b of boxes) (sets.get(find(b.id)) ?? sets.set(find(b.id), []).get(find(b.id))).push(b);
+    const firstEvent = (list) => Math.min(...list.filter((b) => b.kind === "event").map((b) => b.order), Infinity);
+    return [...sets.values()].sort((a, b) => firstEvent(a) - firstEvent(b) || b.length - a.length || (a[0].id < b[0].id ? -1 : 1));
+  }
+
+  /** One ELK layered layout per connected component, flowed into rows. */
+  async function layoutComponents(boxes, edges, edgeClass) {
+    const laid = await Promise.all(
+      components(boxes, edges).map((list, i) => {
+        const ids = new Set(list.map((b) => b.id));
+        const hasEvent = list.some((b) => b.kind === "event");
+        return elk.layout({
+          id: `cc${i}`,
+          layoutOptions: { ...LAYERED, "elk.edgeRouting": hasEvent ? "ORTHOGONAL" : "POLYLINE", "elk.padding": "[top=8,left=8,bottom=8,right=8]" },
+          children: list.map((b) => leaf(b.id, b)),
+          edges: edges
+            .filter((e) => ids.has(e.from) && ids.has(e.to))
+            .map((e, j) => ({ id: `cc${i}e${j}`, sources: [e.from], targets: [e.to], kind: e.kind, cls: edgeClass(e), boxFrom: e.from, boxTo: e.to })),
+        });
+      })
+    );
+    return flow(laid, 20);
+  }
+
+  function drawFlow(container, f, m) {
+    const svg = svgFor(container, f.width, f.height);
+    const root = el("g", { transform: "translate(8,8)" }, svg);
+    for (const p of f.placed) drawLayout(root, { children: p.c.children, edges: p.c.edges }, p.x, p.y, m);
+    return svg;
+  }
+
   const LAYERED = {
     "elk.algorithm": "layered",
     "elk.direction": "RIGHT",
@@ -131,6 +194,11 @@
     "elk.layered.considerModelOrder.strategy": "NODES_AND_EDGES",
   };
   const PAD = "[top=40,left=12,bottom=12,right=12]";
+  const groupMin = (title, subtitle) => ({
+    "elk.nodeSize.constraints": "MINIMUM_SIZE",
+    "elk.nodeSize.minimum": `(${Math.ceil(Math.max(title.length * 7.6, subtitle.length * 6) + 28)}, 48)`,
+  });
+  const byKindLabel = (a, b) => (a.box.kind + a.label < b.box.kind + b.label ? -1 : 1);
 
   // ---------- view 1: lifecycle ----------
   async function lifecycle(m) {
@@ -168,7 +236,7 @@
       columns.push({
         id: `col:${ev.id}`,
         title: ev.label,
-        subtitle: `${ev.event} · ${hooks} hook${hooks === 1 ? "" : "s"}`,
+        subtitle: `${ev.event} · ${members.length} part${members.length === 1 ? "" : "s"}${hooks ? `, ${hooks} hook${hooks === 1 ? "" : "s"}` : ""}`,
         cls: flagsByBox.get(ev.id)?.some((f) => f.flag === "crowded-event") ? "crowded" : "",
         event: ev,
         layoutOptions: { ...LAYERED, "elk.padding": PAD },
@@ -177,26 +245,8 @@
       });
     }
     const laid = await Promise.all(columns.map((c) => elk.layout(c)));
-    // Columns flow left to right in event order, wrapping into rows.
-    const MAX_W = 1700;
-    const GAP = 36;
-    let x = 0;
-    let y = 0;
-    let rowH = 0;
-    const placed = [];
-    for (const c of laid) {
-      c.width = Math.max(c.width, 150);
-      if (x > 0 && x + c.width > MAX_W) {
-        x = 0;
-        y += rowH + GAP;
-        rowH = 0;
-      }
-      placed.push({ c, x, y });
-      x += c.width + GAP;
-      rowH = Math.max(rowH, c.height);
-    }
-    const width = Math.max(...placed.map((p) => p.x + p.c.width), 300) + 16;
-    const height = y + rowH + 16;
+    laid.forEach((c, i) => (c.width = Math.max(c.width, 150, Math.max(columns[i].title.length * 7.5, columns[i].subtitle.length * 6) + 24)));
+    const { placed, width, height } = flow(laid, 36);
     const svg = svgFor(document.getElementById("canvas-lifecycle"), width, height);
     const root = el("g", { transform: "translate(8,8)" }, svg);
     const tl = el("g", { class: "timeline" }, root);
@@ -241,8 +291,7 @@
         const old = m.base.boxes.find((b) => b.id === fromId);
         if (!old) continue;
         const ghost = `r|was|${fromId}|${mv.takes}`;
-        items.get(layerOf(old)).push(leaf(ghost, { ...old, ghost: true }, { label: mv.takes, sub: clip(`was held by ${old.label}`, 44) }));
-        m.status.set(old.id, m.status.get(old.id) ?? "removed");
+        items.get(layerOf(old)).push({ ...leaf(ghost, { ...old, ghost: true }, { label: mv.takes, sub: clip(`was held by ${old.label}`, 44) }), status: "removed" });
         for (const toId of mv.to) {
           const target = nodeIdFor.get(`${mv.takes}|${toId}`);
           if (target) moved.push({ from: ghost, to: target });
@@ -255,16 +304,16 @@
         id: `col:${c}`,
         title: titles[c] ?? c,
         subtitle: `${items.get(c).length} item${items.get(c).length === 1 ? "" : "s"}`,
-        layoutOptions: { "elk.algorithm": "box", "elk.aspectRatio": items.get(c).length > 14 ? "0.6" : "0.15", "elk.padding": PAD, "elk.spacing.nodeNode": "8" },
-        children: items.get(c).length ? items.get(c) : [{ id: `empty:${c}`, width: 120, height: 10 }],
+        layoutOptions: { "elk.algorithm": "box", "elk.box.packingMode": "SIMPLE", "elk.aspectRatio": items.get(c).length > 14 ? "1.2" : "0.15", "elk.padding": PAD, "elk.spacing.nodeNode": "8", ...groupMin(titles[c] ?? c, "00 items") },
+        children: items.get(c).length ? [...items.get(c)].sort(byKindLabel) : [{ id: `empty:${c}`, width: 120, height: 10 }],
       }));
-    const chain = children.slice(1).map((c, i) => ({ id: `order:${i}`, sources: [children[i].id], targets: [c.id], hidden: true }));
-    const laid = await elk.layout({ id: "resp", layoutOptions: { ...LAYERED, "elk.spacing.nodeNode": "24", "elk.layered.spacing.nodeNodeBetweenLayers": "28" }, children, edges: chain });
-    const svg = svgFor(document.getElementById("canvas-responsibilities"), laid.width + 16, laid.height + 16);
+    const laidCols = await Promise.all(children.map((c) => elk.layout(c)));
+    const f = flow(laidCols, 20);
+    const svg = svgFor(document.getElementById("canvas-responsibilities"), f.width, f.height);
     const root = el("g", { transform: "translate(8,8)" }, svg);
-    drawLayout(root, laid, 0, 0, m);
+    for (const p of f.placed) drawLayout(root, { children: [p.c], edges: [] }, p.x, p.y, m);
     const abs = new Map();
-    for (const c of laid.children) for (const n of c.children) abs.set(n.id, { x: c.x + n.x, y: c.y + n.y, w: n.width, h: n.height });
+    for (const p of f.placed) for (const n of p.c.children) abs.set(n.id, { x: p.x + n.x, y: p.y + n.y, w: n.width, h: n.height });
     for (const mv of moved) {
       const a = abs.get(mv.from);
       const b = abs.get(mv.to);
@@ -282,14 +331,15 @@
     const linked = new Set(edges.flatMap((e) => [e.from, e.to]));
     const connected = m.boxes.filter((b) => linked.has(b.id));
     const loose = m.boxes.filter((b) => !linked.has(b.id));
-    const main = await elk.layout({
-      id: "deps",
-      layoutOptions: { ...LAYERED, "elk.padding": "[top=12,left=12,bottom=12,right=12]" },
-      children: connected.map((b) => leaf(b.id, b)),
-      edges: edges.map((e, i) => ({ id: `e${i}`, sources: [e.from], targets: [e.to], kind: e.kind, cls: e.removed ? "removed" : "", boxFrom: e.from, boxTo: e.to })),
-    });
-    const svg = svgFor(document.getElementById("canvas-dependencies"), main.width, main.height);
-    drawLayout(svg, main, 0, 0, m);
+    const fired = new Set(components(connected, edges).filter((list) => list.some((b) => b.kind === "event")).flat().map((b) => b.id));
+    const cls = (e) => (e.removed ? "removed" : "");
+    const svg = drawFlow(document.getElementById("canvas-dependencies"), await layoutComponents(connected.filter((b) => fired.has(b.id)), edges, cls), m);
+    const namesBox = document.getElementById("canvas-names");
+    const named = connected.filter((b) => !fired.has(b.id));
+    namesBox.hidden = !named.length;
+    namesBox.previousElementSibling.hidden = !named.length;
+    if (named.length) drawFlow(namesBox, await layoutComponents(named, edges, cls), m);
+    else namesBox.textContent = "";
 
     const groups = new Map();
     for (const b of loose) (groups.get(b.root ?? "other") ?? groups.set(b.root ?? "other", []).get(b.root ?? "other")).push(b);
@@ -297,17 +347,19 @@
     if (!groups.size) {
       looseBox.textContent = "";
       looseBox.hidden = true;
+      looseBox.previousElementSibling.hidden = true;
       return svg;
     }
     looseBox.hidden = false;
+    looseBox.previousElementSibling.hidden = false;
     const children = [...groups.entries()]
       .sort(([a], [b]) => (a < b ? -1 : 1))
       .map(([root, list]) => ({
         id: `loose:${root}`,
         title: root,
         subtitle: `${list.length} part${list.length === 1 ? "" : "s"} with no edges`,
-        layoutOptions: { "elk.algorithm": "box", "elk.aspectRatio": "2.2", "elk.padding": PAD, "elk.spacing.nodeNode": "8" },
-        children: list.map((b) => leaf(`loose|${b.id}`, b)),
+        layoutOptions: { "elk.algorithm": "box", "elk.box.packingMode": "SIMPLE", "elk.aspectRatio": "2.2", "elk.padding": PAD, "elk.spacing.nodeNode": "8", ...groupMin(root, "00 parts with no edges") },
+        children: list.map((b) => leaf(`loose|${b.id}`, b)).sort(byKindLabel),
       }));
     const laid = await elk.layout({ id: "loose", layoutOptions: { "elk.algorithm": "box", "elk.aspectRatio": "1.6", "elk.spacing.nodeNode": "16", "elk.padding": "[top=8,left=8,bottom=8,right=8]" }, children });
     const svg2 = svgFor(looseBox, laid.width, laid.height);
@@ -366,17 +418,9 @@
     }
     const boxes = m.boxes.filter((b) => near.has(b.id));
     const ids = new Set(boxes.map((b) => b.id));
-    const laid = await elk.layout({
-      id: "cmp",
-      layoutOptions: { ...LAYERED, "elk.padding": "[top=12,left=12,bottom=12,right=12]" },
-      children: boxes.map((b) => leaf(b.id, b)),
-      edges: m.edges
-        .filter((e) => ids.has(e.from) && ids.has(e.to))
-        .map((e, i) => ({ id: `c${i}`, sources: [e.from], targets: [e.to], kind: e.kind, cls: e.removed ? "removed" : m.status.get(e.to) === "added" ? "added" : "", boxFrom: e.from, boxTo: e.to })),
-    });
-    const svg = svgFor(canvas, laid.width, laid.height);
-    drawLayout(svg, laid, 0, 0, m);
-    return svg;
+    const nearEdges = m.edges.filter((e) => ids.has(e.from) && ids.has(e.to));
+    const f = await layoutComponents(boxes, nearEdges, (e) => (e.removed ? "removed" : m.status.get(e.to) === "added" ? "added" : ""));
+    return drawFlow(canvas, f, m);
   }
 
   // ---------- selection ----------
@@ -439,8 +483,16 @@
     if (box.git) fact("git", `${box.git.changes} changes, last ${box.git.last}, ${box.git.inWindow} in ${config.flags.churn.windowDays} days`);
     if (box.reach) fact("reached from", box.reach.map((r) => byId.get(r)?.label ?? r).join(", "));
     if (box.blast) fact("blast radius", `${box.blast.length}: ${box.blast.map((r) => byId.get(r)?.label ?? r).join(", ")}`);
-    for (const f of flagsByBox.get(box.id) ?? []) fact(FLAG_INFO[f.flag]?.title ?? f.flag, f.detail);
+    for (const f of flagsByBox.get(box.id) ?? []) fact(FLAG_INFO[f.flag]?.title ?? f.flag, readable(f.detail));
     panel.appendChild(dl);
+  }
+
+  /** A flag detail with box ids swapped for their labels. */
+  function readable(text) {
+    return text.replace(/\b(?:deny|rule|script|hook|skill|agent|row|githook|claude-md|memory):\S+/g, (id) => {
+      const trimmed = id.replace(/[,.;]$/, "");
+      return byId.get(trimmed) ? `${byId.get(trimmed).label}${id.slice(trimmed.length)}` : id;
+    });
   }
 
   function flagPanel() {
@@ -467,7 +519,7 @@
         name.textContent = byId.get(f.box)?.label ?? f.box;
         const d = document.createElement("div");
         d.className = "detail";
-        d.textContent = f.detail;
+        d.textContent = readable(f.detail);
         btn.append(name, d);
         btn.addEventListener("click", () => select(f.box));
         li.appendChild(btn);
