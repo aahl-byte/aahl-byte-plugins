@@ -314,9 +314,15 @@ export async function runRound(opts, io = realIo()) {
       const said = clean.structured ?? {};
       o.clean = { ...pick(clean), outcome: said.outcome ?? null, subject: said.subject ?? null, changes: said.changes ?? [], behavior: said.behavior ?? null, flags: said.flags ?? [], notes: said.notes ?? null };
 
+      if (!clean.structured) {
+        o.outcome = "clean-failed";
+        keepTree = true;
+        return o;
+      }
       const status = await io.run("git", ["status", "--porcelain"], { cwd: wt });
-      if (!status.stdout.trim()) {
+      if (said.outcome === "no-change" || !status.stdout.trim()) {
         o.outcome = "no-change";
+        keepTree = Boolean(status.stdout.trim());
         return o;
       }
 

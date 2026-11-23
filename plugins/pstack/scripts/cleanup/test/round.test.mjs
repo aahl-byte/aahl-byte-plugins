@@ -191,6 +191,18 @@ test("no diff means no PR; a failing gate keeps the worktree and opens nothing",
   assert.ok(!red.calls.some((c) => c.args[1] === "rm" && c.args[2] === "cleanup-raw-components-screen"), "the failing worktree is kept to look at");
 });
 
+test("a cleaner session that ends with no answer is not committed: no gate, no PR, the worktree kept", async () => {
+  const w = world();
+  const session = w.io.session;
+  w.io.session = async (s) => (s.kind === "clean" ? { exit: 1, structured: null, costUsd: 0.2, durationMs: 1000, turns: 3, sessionId: "c", subtype: "error_max_turns" } : session(s));
+  const out = tmpDir();
+  await runRound({ repo: w.repo, round: "round-1", out, items: ["raw-components-screen"] }, w.io);
+  const line = JSON.parse(fs.readFileSync(path.join(out, "runs", "round-1.jsonl"), "utf8"));
+  assert.equal(line.outcome, "clean-failed");
+  assert.ok(!w.calls.some((c) => c.program === "npm" || c.program === "gh"));
+  assert.ok(!w.calls.some((c) => c.args[1] === "rm" && c.args[2] === "cleanup-raw-components-screen"));
+});
+
 test("a rerun of an item gets a fresh worktree and branch name, never the old one", async () => {
   const w = world();
   fs.mkdirSync(path.join(w.repo, ".claude/worktrees/cleanup-raw-components-screen"), { recursive: true });
