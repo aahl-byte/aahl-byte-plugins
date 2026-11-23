@@ -87,7 +87,7 @@ nav button, .tools button {
 nav button[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-left: auto; }
 .tools select, .tools input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; max-width: 100%; }
-main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: calc(100vh - 120px); }
+main { display: grid; grid-template-columns: minmax(0, 1fr) var(--aside-w, 320px); min-height: calc(100vh - 120px); }
 @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
 .view { display: none; padding: 12px 16px; overflow: auto; }
 .view.active { display: block; }
@@ -97,7 +97,8 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; min-height: c
 .canvas-title { font-size: 13px; font-weight: 650; margin: 14px 0 4px; }
 .canvas.fit svg { max-width: 100%; height: auto; }
 .canvas + .canvas { margin-top: 12px; }
-aside { border-left: 1px solid var(--line); padding: 12px 16px; background: var(--panel); overflow: auto; max-height: calc(100vh - 60px); position: sticky; top: 58px; }
+aside { border-left: 1px solid var(--line); background: var(--panel); max-height: calc(100vh - 60px); position: sticky; top: 58px; display: flex; min-width: 0; }
+.aside-body { flex: 1; min-width: 0; overflow: auto; padding: 12px 16px; }
 aside h3 { font-size: 13px; margin: 14px 0 6px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
 aside ul { list-style: none; padding: 0; margin: 0; }
 aside li { padding: 3px 0; border-bottom: 1px solid var(--line); }
@@ -155,3 +156,10 @@ svg.selecting .node.hl-sel, svg.selecting .node.hl-blast, svg.selecting .node.hl
 .node.hl-blast rect.box { stroke: var(--removed); stroke-width: 3; }
 .node.hl-reach rect.box { stroke: var(--reach); stroke-width: 3; }
 svg.selecting .edge.hl { opacity: 1; }
+
+.resizer { position: absolute; left: -5px; top: 0; bottom: 0; width: 10px; cursor: col-resize; z-index: 2; touch-action: none; }
+.resizer::after { content: ""; position: absolute; left: 4px; top: 0; bottom: 0; width: 2px; background: transparent; transition: background 0.1s; }
+.resizer:hover::after, .resizer:focus-visible::after, body.resizing .resizer::after { background: var(--accent, #2763a8); }
+.resizer:focus-visible { outline: none; }
+body.resizing { cursor: col-resize; user-select: none; }
+@media (max-width: 900px) { .resizer { display: none; } }

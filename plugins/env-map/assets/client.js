@@ -588,6 +588,54 @@
     ev.target.textContent = on ? "Actual size" : "Fit to width";
   });
 
+  const mainEl = document.querySelector("main");
+  const resizer = document.querySelector(".resizer");
+  const ASIDE_MIN = 220;
+  const ASIDE_DEFAULT = 320;
+  function setAsideWidth(px, remember) {
+    const max = Math.max(ASIDE_MIN, Math.round(mainEl.getBoundingClientRect().width * 0.7));
+    const w = Math.min(max, Math.max(ASIDE_MIN, Math.round(px)));
+    mainEl.style.setProperty("--aside-w", w + "px");
+    resizer.setAttribute("aria-valuenow", String(w));
+    if (remember) {
+      try {
+        localStorage.setItem("env-map-aside-w", String(w));
+      } catch {
+        // Remembering the width is a convenience only.
+      }
+    }
+  }
+  try {
+    const saved = Number(localStorage.getItem("env-map-aside-w"));
+    if (saved) setAsideWidth(saved, false);
+  } catch {
+    // No stored width.
+  }
+  resizer.addEventListener("pointerdown", (ev) => {
+    ev.preventDefault();
+    resizer.setPointerCapture(ev.pointerId);
+    document.body.classList.add("resizing");
+    const right = mainEl.getBoundingClientRect().right;
+    const move = (e) => setAsideWidth(right - e.clientX, false);
+    const up = (e) => {
+      setAsideWidth(right - e.clientX, true);
+      document.body.classList.remove("resizing");
+      resizer.removeEventListener("pointermove", move);
+      resizer.removeEventListener("pointerup", up);
+    };
+    resizer.addEventListener("pointermove", move);
+    resizer.addEventListener("pointerup", up);
+  });
+  resizer.addEventListener("dblclick", () => setAsideWidth(ASIDE_DEFAULT, true));
+  resizer.addEventListener("keydown", (ev) => {
+    const now = parseFloat(getComputedStyle(mainEl).getPropertyValue("--aside-w")) || ASIDE_DEFAULT;
+    if (ev.key === "ArrowLeft") setAsideWidth(now + 24, true);
+    else if (ev.key === "ArrowRight") setAsideWidth(now - 24, true);
+    else if (ev.key === "Home") setAsideWidth(ASIDE_DEFAULT, true);
+    else return;
+    ev.preventDefault();
+  });
+
   const params = new URLSearchParams(location.hash.slice(1));
   let initial = params.get("view");
   try {

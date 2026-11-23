@@ -60,7 +60,7 @@ ${id === "dependencies" ? '<p class="canvas-title">Skills, agents and memories t
     "</header>",
     "<main>",
     `<div>\n${views}\n</div>`,
-    '<aside><h3>Selected</h3><div id="details"></div><div id="flags"></div></aside>',
+    '<aside><div class="resizer" role="separator" aria-orientation="vertical" aria-label="Resize panel" tabindex="0"></div><div class="aside-body"><h3>Selected</h3><div id="details"></div><div id="flags"></div></div></aside>',
     "</main>",
     "<footer>",
     `<p class="generated">Generated ${esc(generatedAt)}</p>`,

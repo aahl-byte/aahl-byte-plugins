@@ -40,3 +40,10 @@ test("two renders of the same graph differ only on the generated line", () => {
   assert.equal(differing.length, 1);
   assert.match(differing[0][0], GENERATED_LINE);
 });
+
+test("the side panel has a keyboard-reachable handle for resizing it", () => {
+  const { html } = page("2026-11-23T08:00:00.000Z");
+  const aside = /<aside>([\s\S]*?)<\/aside>/.exec(html);
+  assert.ok(aside, "aside present");
+  assert.match(aside[1], /<div class="resizer" role="separator" aria-orientation="vertical" aria-label="Resize panel" tabindex="0"><\/div>/);
+});
