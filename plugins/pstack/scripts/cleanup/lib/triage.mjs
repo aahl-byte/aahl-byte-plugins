@@ -26,6 +26,36 @@ export const TRIAGE_SCHEMA = {
   additionalProperties: false,
 };
 
+/**
+ * The base schema narrowed to one report: ids from the report, one entry per item, and the one-line limits.
+ * Claude checks structured output against it inside the session, so the session fixes a violation itself.
+ */
+export function triageSchema(report) {
+  const base = TRIAGE_SCHEMA.properties.items;
+  const props = base.items.properties;
+  const line = (max) => ({ maxLength: max, pattern: "^[^\\n]+$" });
+  return {
+    ...TRIAGE_SCHEMA,
+    properties: {
+      items: {
+        ...base,
+        minItems: report.items.length,
+        maxItems: report.items.length,
+        items: {
+          ...base.items,
+          properties: {
+            ...props,
+            id: { ...props.id, enum: report.items.map((i) => i.id) },
+            reason: { ...props.reason, ...line(ONE_LINE) },
+            plan: { ...props.plan, ...line(2 * ONE_LINE) },
+            question: { ...props.question, ...line(2 * ONE_LINE) },
+          },
+        },
+      },
+    },
+  };
+}
+
 const oneLine = (s, max = ONE_LINE) => typeof s === "string" && s.trim().length > 0 && !s.includes("\n") && s.length <= max;
 
 /** Every problem with a triage against its report, as messages; empty when valid. */

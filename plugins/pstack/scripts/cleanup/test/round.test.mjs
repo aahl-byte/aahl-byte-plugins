@@ -3,8 +3,8 @@ import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
-import { runRound } from "../round.mjs";
-import { TRIAGE_SCHEMA, validateTriage } from "../lib/triage.mjs";
+import { CLEANER_SCHEMA, runRound, VERDICT_SCHEMA } from "../round.mjs";
+import { triageSchema, validateTriage } from "../lib/triage.mjs";
 import { CLEANUP_DIR, tmpDir } from "./helpers.mjs";
 
 const FIXTURE = path.join(CLEANUP_DIR, "test", "fixture");
@@ -104,7 +104,8 @@ test("the triage session is read-only, on the configured model, and asked for th
   assert.equal(s.model, "opus");
   assert.equal(s.effort, "high");
   assert.deepEqual(s.tools, ["Read", "Grep", "Glob"]);
-  assert.deepEqual(s.schema, TRIAGE_SCHEMA);
+  const report = JSON.parse(fs.readFileSync(path.join(s.addDirs[0], "report.json"), "utf8"));
+  assert.deepEqual(s.schema, triageSchema(report));
   assert.equal(s.cwd, path.join(w.repo, ".claude/worktrees/cleanup-round-0"));
   assert.match(s.prompt, /report\.md/);
 });
@@ -201,6 +202,14 @@ test("a cleaner session that ends with no answer is not committed: no gate, no P
   assert.equal(line.outcome, "clean-failed");
   assert.ok(!w.calls.some((c) => c.program === "npm" || c.program === "gh"));
   assert.ok(!w.calls.some((c) => c.args[1] === "rm" && c.args[2] === "cleanup-raw-components-screen"));
+});
+
+test("the cleaner's and evaluator's schemas hold the rules the runner checks, so a session fixes a violation in-session", () => {
+  assert.equal(CLEANER_SCHEMA.properties.subject.pattern, "^[a-z]+(\\([^)]+\\))?!?: \\S");
+  assert.equal(CLEANER_SCHEMA.properties.subject.maxLength, 100);
+  assert.deepEqual(VERDICT_SCHEMA.if, { properties: { verdict: { const: "FAIL" } } });
+  assert.deepEqual(VERDICT_SCHEMA.then, { properties: { findings: { minItems: 1 } } });
+  assert.equal(VERDICT_SCHEMA.properties.findings.items.properties.evidence.properties.detail.minLength, 1);
 });
 
 test("a rerun of an item gets a fresh worktree and branch name, never the old one", async () => {

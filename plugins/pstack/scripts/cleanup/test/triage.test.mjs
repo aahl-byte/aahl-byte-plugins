@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cleaningList, TRIAGE_SCHEMA, validateTriage } from "../lib/triage.mjs";
+import { cleaningList, TRIAGE_SCHEMA, triageSchema, validateTriage } from "../lib/triage.mjs";
 
 const report = { items: [{ id: "dup-1", size: { files: 2, lines: 20 } }, { id: "raw-x", size: { files: 1, lines: 3 } }, { id: "seed-logging", size: { files: 0, lines: 0 } }] };
 const good = () => ({
@@ -50,6 +50,18 @@ test("--items narrows the cleaning list and keeps the order asked for", () => {
   t.items[1] = { id: "dup-1", verdict: "real", reason: "the same parse in two routes", plan: "fold into one helper" };
   assert.deepEqual(cleaningList(t, report, ["dup-1", "raw-x"]).map((i) => i.id), ["dup-1", "raw-x"]);
   assert.throws(() => cleaningList(t, report, ["seed-logging"]), /seed-logging is not on the cleaning list/);
+});
+
+test("the round's schema pins the report's ids, the item count and the one-line limits, so the session sees a violation while it can fix it", () => {
+  const schema = triageSchema(report);
+  const items = schema.properties.items;
+  assert.deepEqual(items.items.properties.id.enum, ["dup-1", "raw-x", "seed-logging"]);
+  assert.equal(items.minItems, 3);
+  assert.equal(items.maxItems, 3);
+  assert.equal(items.items.properties.reason.maxLength, 240);
+  assert.equal(items.items.properties.reason.pattern, "^[^\\n]+$");
+  assert.equal(items.items.properties.plan.maxLength, 480);
+  assert.deepEqual(TRIAGE_SCHEMA.properties.items.items.properties.id, { type: "string", description: "the report item's id" }, "the base schema is left alone");
 });
 
 test("the schema handed to claude --json-schema asks for the same fields the validator checks", () => {

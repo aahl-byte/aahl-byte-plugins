@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { cleaningList, TRIAGE_SCHEMA, validateTriage } from "./lib/triage.mjs";
+import { cleaningList, triageSchema, validateTriage } from "./lib/triage.mjs";
 import { killActive, runProgram, runSession } from "./lib/sessions.mjs";
 
 export const meta = {
@@ -40,7 +40,12 @@ export const CLEANER_SCHEMA = {
   type: "object",
   properties: {
     outcome: { type: "string", enum: ["changed", "no-change"] },
-    subject: { type: "string", description: "a conventional commit subject, e.g. refactor(findings): fold parseId copies into lib/api/ids" },
+    subject: {
+      type: "string",
+      pattern: "^[a-z]+(\\([^)]+\\))?!?: \\S",
+      maxLength: 100,
+      description: "a conventional commit subject, e.g. refactor(findings): fold parseId copies into lib/api/ids",
+    },
     changes: { type: "array", items: { type: "string" }, description: "one bullet per concept, each opening on the operation" },
     behavior: { type: "string", description: "the tests and checks that show behavior is unchanged, with results" },
     flags: { type: "array", items: { type: "string" }, description: "ids of flags added or tuned in doors/flags.json" },
@@ -63,7 +68,7 @@ export const VERDICT_SCHEMA = {
           claim: { type: "string" },
           evidence: {
             type: "object",
-            properties: { kind: { type: "string", enum: ["command", "screenshot", "behavior"] }, detail: { type: "string" } },
+            properties: { kind: { type: "string", enum: ["command", "screenshot", "behavior"] }, detail: { type: "string", minLength: 1 } },
             required: ["kind", "detail"],
             additionalProperties: false,
           },
@@ -76,6 +81,8 @@ export const VERDICT_SCHEMA = {
   },
   required: ["verdict", "summary", "findings", "checked"],
   additionalProperties: false,
+  if: { properties: { verdict: { const: "FAIL" } } },
+  then: { properties: { findings: { minItems: 1 } } },
 };
 
 /** PASS, FAIL with evidenced findings, or INVALID: a FAIL with no evidence is not a verdict. */
@@ -232,7 +239,7 @@ export async function runRound(opts, io = realIo()) {
           model: t.model,
           effort: t.effort,
           tools: t.tools,
-          schema: TRIAGE_SCHEMA,
+          schema: triageSchema(report),
           addDirs: [roundDir],
           prompt,
           logFile: path.join(roundDir, "sessions", `triage-${attempt}.jsonl`),
