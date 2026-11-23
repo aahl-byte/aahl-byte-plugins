@@ -1,0 +1,18 @@
+{
+  "base": "origin/cleanup",
+  "prBase": "cleanup",
+  "worktree": {
+    "new": ["git", "worktree", "add", "-b", "{name}", ".claude/worktrees/{name}", "{base}"],
+    "newDetached": ["git", "worktree", "add", "--detach", ".claude/worktrees/{name}", "{base}"],
+    "rm": ["git", "worktree", "remove", ".claude/worktrees/{name}"]
+  },
+  "gate": { "run": ["npm", "run", "check"], "env": { "CHECK_BASE": "{base}" } },
+  "duplicates": {
+    "paths": ["src"],
+    "formats": ["typescript", "tsx", "javascript", "jsx", "scss", "css"],
+    "ignore": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
+    "minTokens": 50
+  },
+  "requests": { "ignore": [] },
+  "seeds": "cleanup/seeds.json"
+}

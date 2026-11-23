@@ -1,0 +1,19 @@
+{
+  "seeds": [
+    {
+      "id": "alert-dialog-unstyled",
+      "title": "Three dialogs import Radix directly because AlertDialogAction forces buttonVariants()",
+      "files": ["src/components/LeaveDialog.tsx"],
+      "evidence": ["src/components/LeaveDialog.tsx:1 imports @radix-ui/react-alert-dialog"],
+      "fix": "Give the alert-dialog door an unstyled option and move the dialogs onto it.",
+      "size": { "files": 4, "lines": 40 }
+    },
+    {
+      "id": "logging",
+      "title": "console.* calls with no logger",
+      "files": [],
+      "evidence": ["44 console.* calls in 23 files"],
+      "decision": "Adopt a logger, or keep console?"
+    }
+  ]
+}

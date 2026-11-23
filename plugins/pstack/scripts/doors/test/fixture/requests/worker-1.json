@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "requests": [
+    { "method": "POST", "path": "/api/findings", "door": null, "spec": "e2e/quick-add.spec.ts", "test": "adds a finding from the toolbar", "count": 2 },
+    { "method": "POST", "path": "/api/findings", "door": "NewFindingForm", "spec": "e2e/findings.spec.ts", "test": "creates a finding", "count": 1 },
+    { "method": "PATCH", "path": "/api/inspections/:id", "door": null, "spec": "e2e/review.spec.ts", "test": "saves the review", "count": 3 }
+  ]
+}

@@ -16,3 +16,6 @@ message-sessions: Ask an expert session or message a running one.
 query-db: Run read-only SQL and browse the schema of a configured database environment.
 queue-migration: Queue, lint and annotate database migration scripts with db-request.
 run-plugin-script: Run a plugin's helper script with typed arguments.
+check-door-flags: Find unsigned code using a flagged pattern and list the doors that own it, with the flag's probing questions.
+report-cleanup: Collect duplicates, flag findings, raw interactive elements, unsigned requests and seed items into one cleanup report.
+run-cleanup-round: Run a cleanup round: report, triage, one fresh cleaner per item, the gate, a PR and an independent evaluation.

@@ -1,0 +1,14 @@
+{
+  "name": "pstack-doors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Door signing helper template, flag registry checker and e2e request recorder.",
+  "scripts": {
+    "test": "node --test 'test/*.test.mjs'"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "8.59.2",
+    "eslint": "9.39.4"
+  }
+}

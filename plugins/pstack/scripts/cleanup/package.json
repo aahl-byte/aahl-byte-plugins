@@ -1,0 +1,13 @@
+{
+  "name": "pstack-cleanup",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The cleanup report and the round runner.",
+  "scripts": {
+    "test": "node --test 'test/*.test.mjs'"
+  },
+  "dependencies": {
+    "jscpd": "5.4.3"
+  }
+}

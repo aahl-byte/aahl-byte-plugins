@@ -1,0 +1,18 @@
+{
+  "flags": [
+    {
+      "id": "raw-select",
+      "kind": "element",
+      "pattern": "select",
+      "why": "A choice list has a door per context.",
+      "questions": ["Is this inside a form?"]
+    },
+    {
+      "id": "post-findings",
+      "kind": "endpoint",
+      "pattern": "POST /api/findings",
+      "why": "Findings are created through one form.",
+      "questions": ["Does a form already post this?"]
+    }
+  ]
+}

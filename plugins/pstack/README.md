@@ -273,6 +273,20 @@ when a default changes, a rule written before the change still pins the old defa
 
 upstream pstack ships a dormant [benny automation pack](./automations/benny/) that triages slack issue reports and reproduces confirmed bugs. it runs only on the upstream editor's automations service, so it does nothing here, and its files are not registered as skills. [`TRIAGE.md`](./TRIAGE.md) proposes dropping it.
 
+## ours: doors, flags and cleanup
+
+these parts are this fork's own, under paths upstream doesn't use, so [`scripts/upstream-diff.sh`](./scripts/upstream-diff.sh) still shows only upstream's changes:
+
+| path | what it is |
+|---|---|
+| [`skills/cleanup/`](./skills/cleanup/SKILL.md) | `/pstack:cleanup`: one round of report, triage, clean, evaluate and tune. `references/` holds the triage, cleaner and evaluator briefs the runner hands each session. |
+| [`scripts/doors/`](./scripts/doors/) | `check.mjs`, the flag checker: computes each flag's observed authorities and prints the discovery message for unsigned code. `install.mjs` scaffolds the signing helper (`signOutput`, `signRequest`, `signAction`), the Playwright request recorder, an empty `doors/flags.json` and the cleanup config into a repo. |
+| [`scripts/cleanup/`](./scripts/cleanup/) | `report.mjs`, the deterministic cleanup report (jscpd duplicates with identifiers ignored, flag findings, raw interactive JSX, unsigned e2e requests, seed items), and `round.mjs`, the runner that does every git step of a round. |
+
+each folder has its own `package.json`: `npm test` runs its `node --test` suite. jscpd and the fallback ESLint install from the lockfiles on first use; the checker prefers the target repo's own ESLint and TypeScript parser.
+
+the agent-tools plugin's `cleanup` role and its `Pstack_DoorsCheck` and `Pstack_CleanupReport` tools are the shell-free way a cleaner session uses these.
+
 ## license
 
 MIT
