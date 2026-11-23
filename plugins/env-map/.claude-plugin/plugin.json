@@ -1,0 +1,5 @@
+{
+  "name": "env-map",
+  "description": "A deterministic map of the agent environment — every hook, script, rule, skill, CLAUDE.md and deny rule that acts on a session, drawn as lifecycle, responsibility, dependency and compare views with pattern flags, plus an env-map check gate for missing why, layer and takes.",
+  "version": "0.1.0"
+}

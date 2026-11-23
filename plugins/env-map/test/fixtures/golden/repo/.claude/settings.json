@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "SessionStart": [
+      { "hooks": [{ "type": "command", "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/wt.mjs\"; [ -f \"$f\" ] || exit 0; node \"$f\" gc" }] }
+    ],
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/guard.mjs\"" }] }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check.mjs\" --hook" },
+          { "type": "command", "command": "echo stopped" }
+        ]
+      }
+    ]
+  }
+}

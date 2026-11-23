@@ -1,0 +1,14 @@
+{
+  "name": "env-map",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "env-map": "node bin/env-map.mjs",
+    "test": "node --test 'test/*.test.mjs'",
+    "vendor": "cp node_modules/elkjs/lib/elk.bundled.js vendor/elk.bundled.js"
+  },
+  "devDependencies": {
+    "elkjs": "0.12.1"
+  }
+}
