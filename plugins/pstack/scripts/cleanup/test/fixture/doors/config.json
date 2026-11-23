@@ -1,0 +1,6 @@
+{
+  "helper": "src/lib/doors.ts",
+  "doorFolders": [{ "path": "src/components/ui", "why": "vendored primitives" }],
+  "sources": ["src"],
+  "requestLog": "requests"
+}

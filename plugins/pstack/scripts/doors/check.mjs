@@ -112,6 +112,7 @@ export function checkFlags(repo, { files } = {}) {
     doors,
     errors,
     parseErrors: scan.files.filter((f) => f.error).map((f) => ({ file: f.file, error: f.error })),
+    raw: scan.files.filter((f) => f.raw.length).map((f) => ({ file: f.file, raw: f.raw })),
     summary: { findings, forged: forged.length, flags: results.length, flagsFiring: results.filter((f) => f.findings.length).length, doors: doors.length },
     tools: scan.tools,
   };

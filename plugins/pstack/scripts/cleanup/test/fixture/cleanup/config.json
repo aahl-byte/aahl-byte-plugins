@@ -1,0 +1,5 @@
+{
+  "duplicates": { "paths": ["src"], "formats": ["typescript", "tsx", "scss"], "ignore": ["**/*.test.ts"], "minTokens": 30 },
+  "requests": { "ignore": ["/api/auth/*"] },
+  "seeds": "cleanup/seeds.json"
+}
