@@ -1,0 +1,9 @@
+{
+  "description": "Writes code in a worktree: file tools, Test, Check, git reads, todo reads and notes.",
+  "builtins": ["Read", "Edit", "Write", "Grep", "Glob"],
+  "servers": {
+    "dev": ["Test", "Check", "Git_Status", "Git_Diff"],
+    "todo": ["Todo_Get", "Todo_List", "Todo_Note", "Todo_Log"],
+    "request": ["RequestTool"]
+  }
+}

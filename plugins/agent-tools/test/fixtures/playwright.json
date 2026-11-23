@@ -1,0 +1,59 @@
+{
+  "config": { "rootDir": "/repo/e2e" },
+  "suites": [
+    {
+      "title": "access.spec.ts",
+      "file": "access.spec.ts",
+      "specs": [
+        {
+          "title": "admin sees the QA pages",
+          "ok": true,
+          "file": "access.spec.ts",
+          "line": 12,
+          "tests": [{ "projectName": "phone", "status": "expected", "results": [{ "status": "passed", "errors": [] }] }]
+        }
+      ],
+      "suites": [
+        {
+          "title": "report buttons",
+          "file": "access.spec.ts",
+          "specs": [
+            {
+              "title": "Send moves status forward",
+              "ok": false,
+              "file": "access.spec.ts",
+              "line": 40,
+              "tests": [
+                {
+                  "projectName": "phone",
+                  "status": "unexpected",
+                  "results": [
+                    {
+                      "status": "failed",
+                      "error": {
+                        "message": "Error: expect(locator).toHaveText(expected) failed\n\nLocator: getByRole('status')\nExpected: \"Sent\"\nReceived: \"Draft\"",
+                        "stack": "Error: expect(locator).toHaveText(expected) failed\n    at /repo/e2e/access.spec.ts:47:31",
+                        "location": { "file": "/repo/e2e/access.spec.ts", "line": 47, "column": 31 }
+                      },
+                      "errors": []
+                    }
+                  ]
+                },
+                {
+                  "projectName": "tablet",
+                  "status": "flaky",
+                  "results": [
+                    { "status": "failed", "error": { "message": "Timeout 5000ms exceeded." }, "errors": [] },
+                    { "status": "passed", "errors": [] }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": { "startTime": "2026-11-23T10:00:00.000Z", "duration": 41234.5, "expected": 1, "skipped": 0, "unexpected": 1, "flaky": 1 }
+}

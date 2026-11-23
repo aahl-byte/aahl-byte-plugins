@@ -1,0 +1,10 @@
+{
+  "description": "Moves work along outside the code: todo writes, Jira, and messages to other sessions. No file writes.",
+  "builtins": ["Read", "Grep", "Glob"],
+  "servers": {
+    "todo": ["Todo_Get", "Todo_List", "Todo_Note", "Todo_Log", "Todo_Task", "Todo_Url", "Todo_Doc", "Todo_Request", "Todo_Status", "Todo_Ask"],
+    "jira": ["Jira_Read", "Jira_Comments", "Jira_Search", "Jira_Comment", "Jira_Link", "Jira_Transition"],
+    "wt-session": ["Session_List", "Session_Read", "Session_Ask", "Session_Send"],
+    "request": ["RequestTool"]
+  }
+}

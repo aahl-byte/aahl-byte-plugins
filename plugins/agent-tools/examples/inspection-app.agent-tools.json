@@ -1,0 +1,14 @@
+{
+  "gate": ["npm", "run", "check"],
+  "test": {
+    "run": ["npx", "vitest", "run"],
+    "related": ["npx", "vitest", "related", "--run"]
+  },
+  "e2e": {
+    "run": ["npx", "playwright", "test", "-c", "e2e/playwright.config.ts"],
+    "specDir": "e2e",
+    "projects": ["phone", "tablet", "sso", "mail-fail"],
+    "portEnv": "E2E_PORT",
+    "port": ["node", "scripts/wt.mjs", "port", "{worktree}"]
+  }
+}
