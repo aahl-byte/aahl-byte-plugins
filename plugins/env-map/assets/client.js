@@ -244,6 +244,17 @@
         edges: colEdges,
       });
     }
+    const unreadable = m.boxes.filter((b) => b.kind === "unreadable");
+    if (unreadable.length) {
+      columns.push({
+        id: "col:unreadable",
+        title: "unreadable sources",
+        subtitle: `${unreadable.length} source${unreadable.length === 1 ? "" : "s"} the map could not read`,
+        layoutOptions: { ...LAYERED, "elk.direction": "DOWN", "elk.padding": PAD },
+        children: unreadable.map((b) => leaf(`unreadable|${b.id}`, b)),
+        edges: [],
+      });
+    }
     const laid = await Promise.all(columns.map((c) => elk.layout(c)));
     laid.forEach((c, i) => (c.width = Math.max(c.width, 150, Math.max(columns[i].title.length * 7.5, columns[i].subtitle.length * 6) + 24)));
     const { placed, width, height } = flow(laid, 36);
