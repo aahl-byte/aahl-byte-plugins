@@ -19,7 +19,8 @@ const byKey = (...keys) => (a, b) => {
 function resolveEnforcers(row, boxes, repoFiles) {
   const found = new Set();
   let files = 0;
-  for (const token of row.tokens ?? []) {
+  for (const raw of row.tokens ?? []) {
+    const token = raw.trim().split(/\s+/)[0];
     const rule = boxes.find((b) => b.kind === "rule" && b.root === "repo" && b.id.endsWith(`#${token}`));
     const script = boxes.find((b) => b.kind === "script" && b.root === "repo" && (b.source === `repo:${token}` || b.label === token));
     const githook = boxes.find((b) => b.kind === "githook" && b.label === token);

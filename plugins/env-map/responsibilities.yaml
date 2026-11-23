@@ -1,0 +1,3 @@
+# The controlled list of jobs a part can take. One `id: description` per line.
+# A part's `takes` must name ids from this list; adding a job means adding a line here, in review.
+environment-map: Draw every part that acts on a session and flag shapes of growing complexity.
