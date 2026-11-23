@@ -1,0 +1,35 @@
+{
+  "ourMarketplaces": ["aahl-byte"],
+  "layers": ["design", "type", "check", "test", "verify", "prose"],
+  "flags": {
+    "crowdedEvent": { "maxHooks": 3 },
+    "churn": { "maxChanges": 5, "windowDays": 30 },
+    "unenforcedProse": { "recentDays": 14 }
+  },
+  "compareDaysBack": [7, 30],
+  "events": [
+    ["SessionStart", "session start"],
+    ["UserPromptSubmit", "prompt"],
+    ["WorktreeCreate", "worktree create"],
+    ["PreToolUse", "before tool"],
+    ["PermissionRequest", "permission"],
+    ["PostToolUse", "after tool"],
+    ["PostToolUseFailure", "tool failed"],
+    ["Notification", "notification"],
+    ["SubagentStart", "subagent start"],
+    ["SubagentStop", "subagent stop"],
+    ["Stop", "stop"],
+    ["PreCompact", "compact"],
+    ["SessionEnd", "session end"],
+    ["WorktreeRemove", "worktree remove"],
+    ["git:pre-commit", "commit"],
+    ["git:prepare-commit-msg", "commit message"],
+    ["git:commit-msg", "commit message"],
+    ["git:post-commit", "after commit"],
+    ["git:pre-push", "push"],
+    ["git:post-checkout", "checkout"],
+    ["git:post-merge", "merge"]
+  ],
+  "toolEvents": ["PreToolUse", "PermissionRequest", "PostToolUse", "PostToolUseFailure"],
+  "scriptExtensions": [".mjs", ".cjs", ".js", ".ts", ".py", ".sh", ".bash"]
+}

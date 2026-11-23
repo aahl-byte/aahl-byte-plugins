@@ -1,0 +1,750 @@
+{
+  "asOf": null,
+  "boxes": [
+    {
+      "file": "<T>/home/.claude/CLAUDE.md",
+      "id": "claude-md:global:~/.claude:CLAUDE.md",
+      "kind": "claude-md",
+      "label": "~/.claude/CLAUDE.md",
+      "origin": "global",
+      "owner": "external",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:CLAUDE.md"
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#1",
+        "row:repo:CLAUDE.md#2",
+        "row:repo:CLAUDE.md#3"
+      ],
+      "file": "<T>/repo/CLAUDE.md",
+      "id": "claude-md:repo:CLAUDE.md",
+      "kind": "claude-md",
+      "label": "CLAUDE.md",
+      "layer": "prose",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:CLAUDE.md",
+      "takes": [
+        "repo-loop"
+      ],
+      "why": "Tells every agent the repo loop."
+    },
+    {
+      "event": "PreToolUse",
+      "file": "<T>/home/.claude/settings.json",
+      "flags": [
+        "overlap"
+      ],
+      "id": "deny:global:~/.claude:settings.json:Bash(git clean *)",
+      "kind": "deny",
+      "label": "deny Bash(git clean *)",
+      "origin": "global",
+      "owner": "external",
+      "pattern": {
+        "flags": "",
+        "sample": "git clean x",
+        "source": "^git clean .*$",
+        "tool": "Bash"
+      },
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:settings.json"
+    },
+    {
+      "event": "PreToolUse",
+      "id": "event:PreToolUse",
+      "kind": "event",
+      "label": "before tool",
+      "order": 3
+    },
+    {
+      "event": "SessionStart",
+      "id": "event:SessionStart",
+      "kind": "event",
+      "label": "session start",
+      "order": 0
+    },
+    {
+      "event": "Stop",
+      "id": "event:Stop",
+      "kind": "event",
+      "label": "stop",
+      "order": 10
+    },
+    {
+      "event": "git:pre-commit",
+      "id": "event:git:pre-commit",
+      "kind": "event",
+      "label": "commit",
+      "order": 14
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#2",
+        "rule:repo:scripts/check.mjs#no-only",
+        "script:repo:scripts/check.mjs"
+      ],
+      "event": "git:pre-commit",
+      "file": "<T>/repo/.githooks/pre-commit",
+      "id": "githook:repo:.githooks/pre-commit",
+      "kind": "githook",
+      "label": "pre-commit",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:git:pre-commit"
+      ],
+      "root": "repo",
+      "source": "repo:.githooks/pre-commit"
+    },
+    {
+      "blast": [
+        "script:global:~/.claude:hooks/guard.py"
+      ],
+      "command": "python3 ~/.claude/hooks/guard.py",
+      "event": "PreToolUse",
+      "file": "<T>/home/.claude/settings.json",
+      "flags": [
+        "cross-boundary"
+      ],
+      "id": "hook:global:~/.claude:settings.json:PreToolUse:0.0",
+      "inline": false,
+      "kind": "hook",
+      "label": "guard.py",
+      "matcher": "Bash",
+      "origin": "global",
+      "owner": "external",
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:settings.json"
+    },
+    {
+      "blast": [
+        "script:plugin:tools@aahl-byte:hooks/start.mjs"
+      ],
+      "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/start.mjs\"",
+      "event": "SessionStart",
+      "file": "<T>/plugin-cache/tools/1.0.0/hooks/hooks.json",
+      "id": "hook:plugin:tools@aahl-byte:hooks/hooks.json:SessionStart:0.0",
+      "inline": false,
+      "kind": "hook",
+      "label": "start.mjs",
+      "matcher": "",
+      "origin": "plugin",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "plugin:tools@aahl-byte",
+      "source": "plugin:tools@aahl-byte:hooks/hooks.json",
+      "version": "1.0.0"
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#1",
+        "rule:repo:scripts/guard.mjs#rule-1",
+        "script:repo:scripts/guard.mjs"
+      ],
+      "command": "node \"$CLAUDE_PROJECT_DIR/scripts/guard.mjs\"",
+      "event": "PreToolUse",
+      "file": "<T>/repo/.claude/settings.json",
+      "id": "hook:repo:.claude/settings.json:PreToolUse:0.0",
+      "inline": false,
+      "kind": "hook",
+      "label": "guard.mjs",
+      "matcher": "Bash",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "repo",
+      "source": "repo:.claude/settings.json"
+    },
+    {
+      "blast": [
+        "script:repo:scripts/wt.mjs"
+      ],
+      "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/wt.mjs\"; [ -f \"$f\" ] || exit 0; node \"$f\" gc",
+      "event": "SessionStart",
+      "file": "<T>/repo/.claude/settings.json",
+      "id": "hook:repo:.claude/settings.json:SessionStart:0.0",
+      "inline": false,
+      "kind": "hook",
+      "label": "wt.mjs gc",
+      "matcher": "",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:.claude/settings.json"
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#2",
+        "rule:repo:scripts/check.mjs#no-only",
+        "script:repo:scripts/check.mjs"
+      ],
+      "command": "node \"$CLAUDE_PROJECT_DIR/scripts/check.mjs\" --hook",
+      "event": "Stop",
+      "file": "<T>/repo/.claude/settings.json",
+      "id": "hook:repo:.claude/settings.json:Stop:0.0",
+      "inline": false,
+      "kind": "hook",
+      "label": "check.mjs --hook",
+      "matcher": "",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:Stop"
+      ],
+      "root": "repo",
+      "source": "repo:.claude/settings.json"
+    },
+    {
+      "command": "echo stopped",
+      "event": "Stop",
+      "file": "<T>/repo/.claude/settings.json",
+      "id": "hook:repo:.claude/settings.json:Stop:0.1",
+      "inline": true,
+      "kind": "hook",
+      "label": "echo stopped",
+      "matcher": "",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:Stop"
+      ],
+      "root": "repo",
+      "source": "repo:.claude/settings.json"
+    },
+    {
+      "file": "<T>/home/.claude/projects/<TSLUG>-repo/memory/note.md",
+      "id": "memory:global:~/.claude:projects/<TSLUG>-repo/memory/note",
+      "kind": "memory",
+      "label": "note",
+      "origin": "global",
+      "owner": "external",
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:projects/<TSLUG>-repo/memory/note.md",
+      "triggerable": true
+    },
+    {
+      "enforced": true,
+      "enforcedBy": "scripts/guard.mjs",
+      "file": "<T>/repo/CLAUDE.md",
+      "id": "row:repo:CLAUDE.md#1",
+      "kind": "row",
+      "label": "No git clean",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:CLAUDE.md"
+    },
+    {
+      "enforced": true,
+      "enforcedBy": "scripts/check.mjs rule no-only; pre-commit hook",
+      "file": "<T>/repo/CLAUDE.md",
+      "id": "row:repo:CLAUDE.md#2",
+      "kind": "row",
+      "label": "No .only in tests",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:CLAUDE.md"
+    },
+    {
+      "enforced": false,
+      "enforcedBy": "prose only",
+      "file": "<T>/repo/CLAUDE.md",
+      "flags": [
+        "unenforced-prose"
+      ],
+      "id": "row:repo:CLAUDE.md#3",
+      "kind": "row",
+      "label": "Findings need evidence",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:CLAUDE.md"
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#2"
+      ],
+      "file": "<T>/repo/scripts/check.mjs",
+      "id": "rule:repo:scripts/check.mjs#no-only",
+      "kind": "rule",
+      "label": "no-only",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:Stop",
+        "event:git:pre-commit"
+      ],
+      "root": "repo",
+      "source": "repo:scripts/check.mjs",
+      "why": "A focused test skips the rest."
+    },
+    {
+      "file": "<T>/repo/scripts/guard.mjs",
+      "flags": [
+        "overlap"
+      ],
+      "id": "rule:repo:scripts/guard.mjs#rule-1",
+      "kind": "rule",
+      "label": "git clean",
+      "origin": "repo",
+      "owner": "ours",
+      "pattern": {
+        "flags": "",
+        "sample": "git clean",
+        "source": "\\bgit\\s+clean\\b"
+      },
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "repo",
+      "source": "repo:scripts/guard.mjs"
+    },
+    {
+      "file": "<T>/home/.claude/hooks/guard.py",
+      "id": "script:global:~/.claude:hooks/guard.py",
+      "kind": "script",
+      "label": "guard.py",
+      "origin": "global",
+      "owner": "external",
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:hooks/guard.py"
+    },
+    {
+      "file": "<T>/home/.claude/hooks/unused.py",
+      "flags": [
+        "orphan"
+      ],
+      "id": "script:global:~/.claude:hooks/unused.py",
+      "kind": "script",
+      "label": "unused.py",
+      "origin": "global",
+      "owner": "external",
+      "root": "global:~/.claude",
+      "source": "global:~/.claude:hooks/unused.py"
+    },
+    {
+      "file": "<T>/plugin-cache/tools/1.0.0/hooks/start.mjs",
+      "id": "script:plugin:tools@aahl-byte:hooks/start.mjs",
+      "kind": "script",
+      "label": "start.mjs",
+      "layer": "verify",
+      "origin": "plugin",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "plugin:tools@aahl-byte",
+      "source": "plugin:tools@aahl-byte:hooks/start.mjs",
+      "takes": [
+        "cache-warm"
+      ],
+      "version": "1.0.0",
+      "why": "Warms the cache."
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#2",
+        "rule:repo:scripts/check.mjs#no-only"
+      ],
+      "file": "<T>/repo/scripts/check.mjs",
+      "id": "script:repo:scripts/check.mjs",
+      "kind": "script",
+      "label": "check.mjs",
+      "layer": "check",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:Stop",
+        "event:git:pre-commit"
+      ],
+      "root": "repo",
+      "source": "repo:scripts/check.mjs",
+      "takes": [
+        "repo-rules"
+      ],
+      "why": "One gate for every change."
+    },
+    {
+      "blast": [
+        "row:repo:CLAUDE.md#1",
+        "rule:repo:scripts/guard.mjs#rule-1"
+      ],
+      "file": "<T>/repo/scripts/guard.mjs",
+      "id": "script:repo:scripts/guard.mjs",
+      "kind": "script",
+      "label": "guard.mjs",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:PreToolUse"
+      ],
+      "root": "repo",
+      "source": "repo:scripts/guard.mjs"
+    },
+    {
+      "file": "<T>/repo/scripts/wt.mjs",
+      "id": "script:repo:scripts/wt.mjs",
+      "kind": "script",
+      "label": "wt.mjs",
+      "layer": "design",
+      "origin": "repo",
+      "owner": "ours",
+      "reach": [
+        "event:SessionStart"
+      ],
+      "root": "repo",
+      "source": "repo:scripts/wt.mjs",
+      "takes": [
+        "worktree-lifecycle"
+      ],
+      "why": "Worktrees in one place."
+    },
+    {
+      "blast": [
+        "skill:repo:.claude/skills/helper"
+      ],
+      "file": "<T>/plugin-cache/tools/1.0.0/skills/lint/SKILL.md",
+      "id": "skill:plugin:tools@aahl-byte:skills/lint",
+      "kind": "skill",
+      "label": "tools:lint",
+      "origin": "plugin",
+      "owner": "ours",
+      "root": "plugin:tools@aahl-byte",
+      "source": "plugin:tools@aahl-byte:skills/lint/SKILL.md",
+      "triggerable": true,
+      "version": "1.0.0"
+    },
+    {
+      "file": "<T>/repo/.claude/skills/helper/SKILL.md",
+      "id": "skill:repo:.claude/skills/helper",
+      "kind": "skill",
+      "label": "helper",
+      "origin": "repo",
+      "owner": "ours",
+      "root": "repo",
+      "source": "repo:.claude/skills/helper/SKILL.md",
+      "triggerable": true
+    },
+    {
+      "error": "invalid JSON: Unexpected end of JSON input",
+      "file": "<T>/repo/.claude/settings.local.json",
+      "id": "unreadable:repo:.claude/settings.local.json",
+      "kind": "unreadable",
+      "label": "settings.local.json",
+      "origin": "repo",
+      "owner": "ours",
+      "root": "repo",
+      "source": "repo:.claude/settings.local.json"
+    }
+  ],
+  "configDirs": [
+    "~/.claude"
+  ],
+  "edges": [
+    {
+      "from": "claude-md:repo:CLAUDE.md",
+      "kind": "contains",
+      "to": "row:repo:CLAUDE.md#1"
+    },
+    {
+      "from": "claude-md:repo:CLAUDE.md",
+      "kind": "contains",
+      "to": "row:repo:CLAUDE.md#2"
+    },
+    {
+      "from": "claude-md:repo:CLAUDE.md",
+      "kind": "contains",
+      "to": "row:repo:CLAUDE.md#3"
+    },
+    {
+      "from": "event:PreToolUse",
+      "kind": "fires",
+      "to": "deny:global:~/.claude:settings.json:Bash(git clean *)"
+    },
+    {
+      "from": "event:PreToolUse",
+      "kind": "fires",
+      "to": "hook:global:~/.claude:settings.json:PreToolUse:0.0"
+    },
+    {
+      "from": "event:PreToolUse",
+      "kind": "fires",
+      "to": "hook:repo:.claude/settings.json:PreToolUse:0.0"
+    },
+    {
+      "from": "event:SessionStart",
+      "kind": "fires",
+      "to": "claude-md:global:~/.claude:CLAUDE.md"
+    },
+    {
+      "from": "event:SessionStart",
+      "kind": "fires",
+      "to": "claude-md:repo:CLAUDE.md"
+    },
+    {
+      "from": "event:SessionStart",
+      "kind": "fires",
+      "to": "hook:plugin:tools@aahl-byte:hooks/hooks.json:SessionStart:0.0"
+    },
+    {
+      "from": "event:SessionStart",
+      "kind": "fires",
+      "to": "hook:repo:.claude/settings.json:SessionStart:0.0"
+    },
+    {
+      "from": "event:Stop",
+      "kind": "fires",
+      "to": "hook:repo:.claude/settings.json:Stop:0.0"
+    },
+    {
+      "from": "event:Stop",
+      "kind": "fires",
+      "to": "hook:repo:.claude/settings.json:Stop:0.1"
+    },
+    {
+      "from": "event:git:pre-commit",
+      "kind": "fires",
+      "to": "githook:repo:.githooks/pre-commit"
+    },
+    {
+      "from": "githook:repo:.githooks/pre-commit",
+      "kind": "enforces",
+      "to": "row:repo:CLAUDE.md#2"
+    },
+    {
+      "from": "githook:repo:.githooks/pre-commit",
+      "kind": "calls",
+      "to": "script:repo:scripts/check.mjs"
+    },
+    {
+      "from": "hook:global:~/.claude:settings.json:PreToolUse:0.0",
+      "kind": "calls",
+      "to": "script:global:~/.claude:hooks/guard.py"
+    },
+    {
+      "from": "hook:plugin:tools@aahl-byte:hooks/hooks.json:SessionStart:0.0",
+      "kind": "calls",
+      "to": "script:plugin:tools@aahl-byte:hooks/start.mjs"
+    },
+    {
+      "from": "hook:repo:.claude/settings.json:PreToolUse:0.0",
+      "kind": "calls",
+      "to": "script:repo:scripts/guard.mjs"
+    },
+    {
+      "from": "hook:repo:.claude/settings.json:SessionStart:0.0",
+      "kind": "calls",
+      "to": "script:repo:scripts/wt.mjs"
+    },
+    {
+      "from": "hook:repo:.claude/settings.json:Stop:0.0",
+      "kind": "calls",
+      "to": "script:repo:scripts/check.mjs"
+    },
+    {
+      "from": "rule:repo:scripts/check.mjs#no-only",
+      "kind": "enforces",
+      "to": "row:repo:CLAUDE.md#2"
+    },
+    {
+      "from": "script:repo:scripts/check.mjs",
+      "kind": "contains",
+      "to": "rule:repo:scripts/check.mjs#no-only"
+    },
+    {
+      "from": "script:repo:scripts/guard.mjs",
+      "kind": "enforces",
+      "to": "row:repo:CLAUDE.md#1"
+    },
+    {
+      "from": "script:repo:scripts/guard.mjs",
+      "kind": "contains",
+      "to": "rule:repo:scripts/guard.mjs#rule-1"
+    },
+    {
+      "from": "skill:repo:.claude/skills/helper",
+      "kind": "names",
+      "to": "skill:plugin:tools@aahl-byte:skills/lint"
+    }
+  ],
+  "flags": [
+    {
+      "box": "hook:global:~/.claude:settings.json:PreToolUse:0.0",
+      "detail": "external PreToolUse hook on Bash acts on repo commands",
+      "flag": "cross-boundary"
+    },
+    {
+      "box": "script:global:~/.claude:hooks/unused.py",
+      "detail": "nothing calls this script",
+      "flag": "orphan"
+    },
+    {
+      "box": "deny:global:~/.claude:settings.json:Bash(git clean *)",
+      "detail": "overlaps rule:repo:scripts/guard.mjs#rule-1 on \"git clean x\"",
+      "flag": "overlap"
+    },
+    {
+      "box": "rule:repo:scripts/guard.mjs#rule-1",
+      "detail": "overlaps deny:global:~/.claude:settings.json:Bash(git clean *) on \"git clean x\"",
+      "flag": "overlap"
+    },
+    {
+      "box": "row:repo:CLAUDE.md#3",
+      "detail": "CLAUDE.md row with no enforcer",
+      "flag": "unenforced-prose"
+    }
+  ],
+  "roots": [
+    {
+      "label": "global:~/.claude",
+      "origin": "global",
+      "owner": "external",
+      "path": "<T>/home/.claude",
+      "source": "~/.claude"
+    },
+    {
+      "label": "plugin:tools@aahl-byte",
+      "origin": "plugin",
+      "owner": "ours",
+      "path": "<T>/plugin-cache/tools/1.0.0",
+      "source": "tools@aahl-byte",
+      "version": "1.0.0"
+    },
+    {
+      "label": "repo",
+      "origin": "repo",
+      "owner": "ours",
+      "path": "<T>/repo",
+      "source": "project repo"
+    }
+  ],
+  "sources": [
+    {
+      "id": "global:~/.claude:CLAUDE.md",
+      "path": "<T>/home/.claude/CLAUDE.md",
+      "status": "ok"
+    },
+    {
+      "id": "global:~/.claude:hooks/guard.py",
+      "path": "<T>/home/.claude/hooks/guard.py",
+      "status": "ok"
+    },
+    {
+      "id": "global:~/.claude:hooks/unused.py",
+      "path": "<T>/home/.claude/hooks/unused.py",
+      "status": "ok"
+    },
+    {
+      "id": "global:~/.claude:plugins/installed_plugins.json",
+      "path": "<T>/home/.claude/plugins/installed_plugins.json",
+      "status": "ok"
+    },
+    {
+      "id": "global:~/.claude:projects/<TSLUG>-repo/memory/note.md",
+      "path": "<T>/home/.claude/projects/<TSLUG>-repo/memory/note.md",
+      "status": "ok"
+    },
+    {
+      "id": "global:~/.claude:settings.json",
+      "path": "<T>/home/.claude/settings.json",
+      "status": "ok"
+    },
+    {
+      "id": "plugin:other@elsewhere",
+      "note": "disabled",
+      "path": "<T>/plugin-cache/other/2.0.0",
+      "status": "skipped"
+    },
+    {
+      "id": "plugin:tools@aahl-byte:hooks/hooks.json",
+      "path": "<T>/plugin-cache/tools/1.0.0/hooks/hooks.json",
+      "status": "ok"
+    },
+    {
+      "id": "plugin:tools@aahl-byte:hooks/start.mjs",
+      "path": "<T>/plugin-cache/tools/1.0.0/hooks/start.mjs",
+      "status": "ok"
+    },
+    {
+      "id": "plugin:tools@aahl-byte:skills/lint/SKILL.md",
+      "path": "<T>/plugin-cache/tools/1.0.0/skills/lint/SKILL.md",
+      "status": "ok"
+    },
+    {
+      "id": "repo:.claude/settings.json",
+      "path": "<T>/repo/.claude/settings.json",
+      "status": "ok"
+    },
+    {
+      "error": "invalid JSON: Unexpected end of JSON input",
+      "id": "repo:.claude/settings.local.json",
+      "path": "<T>/repo/.claude/settings.local.json",
+      "status": "error"
+    },
+    {
+      "id": "repo:.claude/skills/helper/SKILL.md",
+      "path": "<T>/repo/.claude/skills/helper/SKILL.md",
+      "status": "ok"
+    },
+    {
+      "id": "repo:.githooks/pre-commit",
+      "path": "<T>/repo/.githooks/pre-commit",
+      "status": "ok"
+    },
+    {
+      "id": "repo:CLAUDE.md",
+      "path": "<T>/repo/CLAUDE.md",
+      "status": "ok"
+    },
+    {
+      "id": "repo:scripts/check.mjs",
+      "path": "<T>/repo/scripts/check.mjs",
+      "status": "ok"
+    },
+    {
+      "id": "repo:scripts/guard.mjs",
+      "path": "<T>/repo/scripts/guard.mjs",
+      "status": "ok"
+    },
+    {
+      "id": "repo:scripts/wt.mjs",
+      "path": "<T>/repo/scripts/wt.mjs",
+      "status": "ok"
+    }
+  ],
+  "version": 1
+}

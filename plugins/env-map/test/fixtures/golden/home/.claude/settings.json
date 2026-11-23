@@ -1,0 +1,9 @@
+{
+  "permissions": { "deny": ["Bash(git clean *)"] },
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [{ "type": "command", "command": "python3 ~/.claude/hooks/guard.py" }] }
+    ]
+  },
+  "enabledPlugins": { "tools@aahl-byte": true }
+}
