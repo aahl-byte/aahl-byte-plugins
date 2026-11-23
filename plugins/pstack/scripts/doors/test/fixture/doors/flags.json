@@ -1,0 +1,34 @@
+{
+  "flags": [
+    {
+      "id": "raw-input",
+      "kind": "element",
+      "pattern": "input",
+      "why": "A text value has several right homes; the authorities list them.",
+      "questions": ["Does this value save on its own, or with other fields?", "Is it inside a table row?"],
+      "authorities": [{ "door": "NoteComposer", "file": "src/components/NoteComposer.tsx" }]
+    },
+    {
+      "id": "radix",
+      "kind": "import",
+      "pattern": "@radix-ui/*",
+      "why": "Primitives are styled once, in the ui folder.",
+      "questions": ["Which ui component already wraps this primitive?"]
+    },
+    {
+      "id": "create-finding",
+      "kind": "action",
+      "pattern": "createFinding",
+      "why": "A finding is created with its photos and status in one place.",
+      "questions": ["Is this a new finding, or an edit to one?"],
+      "authorities": [{ "door": "NewFindingForm", "why": "the form that creates a finding with its photos" }]
+    },
+    {
+      "id": "post-findings",
+      "kind": "endpoint",
+      "pattern": "POST /api/findings",
+      "why": "Findings are created through one form.",
+      "questions": ["Does a form already post this?"]
+    }
+  ]
+}
