@@ -73,7 +73,7 @@ export function recordRequest(
   if (origin && url.origin !== new URL(origin).origin) return false;
   const headers = lowerKeys(request.headers);
   const action = headers["next-action"];
-  let door = headers["x-door"] ?? null;
+  let door: string | null = headers["x-door"] ?? null;
   if (!door && action) door = BOUND_DOOR.exec(request.postData ?? "")?.[1] ?? null;
   const method = request.method.toUpperCase();
   const route = templatePath(url.pathname) + (action ? ` [action ${action}]` : "");

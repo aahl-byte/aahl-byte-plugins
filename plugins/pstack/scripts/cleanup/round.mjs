@@ -470,6 +470,8 @@ async function main(argv) {
     return 0;
   }
   opts.repo = mainCheckout(opts.repo ?? process.cwd());
+  // The repo's gate finds the flag checker through PSTACK_DIR; sessions and their hooks inherit it.
+  process.env.PSTACK_DIR ??= PSTACK;
   opts.out ??= path.join(opts.repo, "tmp", "cleanup");
   opts.round ??= nextRound(opts.out);
   for (const sig of ["SIGINT", "SIGTERM"]) {
