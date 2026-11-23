@@ -1,7 +1,7 @@
 {
   "name": "pstack",
   "description": "if you want to go fast, go deep first. pstack helps you write less, but higher quality code. rigorous agent workflows you can parallelize with confidence. Forked from Lauren Tan's Cursor plugin.",
-  "version": "0.15.46-aahl.1",
+  "version": "0.15.46-aahl.2",
   "author": {
     "name": "Lauren Tan"
   },

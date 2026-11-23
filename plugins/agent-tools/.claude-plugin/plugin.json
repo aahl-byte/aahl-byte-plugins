@@ -1,5 +1,5 @@
 {
   "name": "agent-tools",
   "description": "Typed MCP tools for agent sessions with no shell: a small framework where each tool is one file with zod input, env-map metadata and a fixed program, servers for tests, git reads, e2e, todo, Jira, Watchtower sessions, explore-db, db-request and plugin scripts, role presets, and a launcher that builds the restricted claude command line.",
-  "version": "0.1.0"
+  "version": "0.2.0"
 }

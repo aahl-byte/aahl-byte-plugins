@@ -1,0 +1,9 @@
+{
+  "description": "Cleans one triaged item in a worktree with no behavior change: dev's file tools, Test, Check, E2E, git reads, the doors flag checker and the cleanup report.",
+  "builtins": ["Read", "Edit", "Write", "Grep", "Glob"],
+  "servers": {
+    "dev": ["Test", "Check", "E2E", "Git_Status", "Git_Diff"],
+    "plugin-scripts": ["Pstack_DoorsCheck", "Pstack_CleanupReport"],
+    "request": ["RequestTool"]
+  }
+}

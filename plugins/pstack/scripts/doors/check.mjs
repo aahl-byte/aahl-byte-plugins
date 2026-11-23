@@ -83,7 +83,7 @@ export function checkFlags(repo, { files } = {}) {
           if (r.door) {
             const d = doorByName.get(r.door);
             observed.set(r.door, { door: r.door, file: d?.file ?? null, why: d?.why ?? null });
-          } else findings.push({ file: r.spec, line: null, column: null, test: r.test, count: r.count, text: `${r.method} ${r.path}` });
+          } else if (!only || only.has(r.spec)) findings.push({ file: r.spec, line: null, column: null, test: r.test, count: r.count, text: `${r.method} ${r.path}` });
         }
       } else {
         for (const f of scan.files) {
@@ -161,6 +161,7 @@ function parseArgs(argv) {
     if (a === "--repo") out.repo = path.resolve(next());
     else if (a === "--json") out.json = path.resolve(next());
     else if (a === "--files") out.files.push(...next().split(",").filter(Boolean));
+    else if (a.startsWith("--files=")) out.files.push(...a.slice("--files=".length).split(",").filter(Boolean));
     else if (a === "--report-only") out.reportOnly = true;
     else if (a === "--help" || a === "-h") out.help = true;
     else throw new Error(`unknown argument ${a}`);

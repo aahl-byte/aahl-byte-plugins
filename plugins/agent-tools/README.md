@@ -29,6 +29,9 @@ On first use the launcher installs the MCP SDK and zod from the pinned lockfile 
 |---|---|---|
 | `dev` | Read, Edit, Write, Grep, Glob | Test, Check, Git_Status, Git_Diff, Todo_Get, Todo_List, Todo_Note, Todo_Log, RequestTool |
 | `verify` | Read, Grep, Glob | Test, Check, Git_Status, Git_Diff, E2E, Todo_Get, Todo_List, RequestTool, the Playwright browser tools |
+| `cleanup` | Read, Edit, Write, Grep, Glob | Test, Check, E2E, Git_Status, Git_Diff, Pstack_DoorsCheck, Pstack_CleanupReport, RequestTool |
+
+`cleanup` is the role pstack's cleanup round gives each cleaner session: one triaged item, no shell, and the doors flag checker and cleanup report as typed tools.
 | `ops` | Read, Grep, Glob | every todo tool, every jira tool, every wt-session tool, RequestTool |
 
 A role is a JSON file in `roles/`. Each MCP server starts with `--only <its tools>`, so a tool the role lacks is never listed to the model.

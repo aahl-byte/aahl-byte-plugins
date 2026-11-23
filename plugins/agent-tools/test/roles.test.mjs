@@ -13,8 +13,29 @@ function fakePlaywrightPlugin() {
   return dir;
 }
 
-test("the presets are dev, ops and verify", () => {
-  assert.deepEqual(roleNames(), ["dev", "ops", "verify"]);
+test("the presets are cleanup, dev, ops and verify", () => {
+  assert.deepEqual(roleNames(), ["cleanup", "dev", "ops", "verify"]);
+});
+
+test("cleanup gets dev's file tools, Test, Check, E2E, git reads, RequestTool, and the doors check and cleanup report", async () => {
+  const r = await resolveRole(loadRole("cleanup"), { cwd: CWD });
+  assert.deepEqual(r.builtins, ["Read", "Edit", "Write", "Grep", "Glob"]);
+  assert.deepEqual(r.allowedTools, [
+    "Read",
+    "Edit",
+    "Write",
+    "Grep",
+    "Glob",
+    "mcp__dev__Test",
+    "mcp__dev__Check",
+    "mcp__dev__E2E",
+    "mcp__dev__Git_Status",
+    "mcp__dev__Git_Diff",
+    "mcp__plugin-scripts__Pstack_DoorsCheck",
+    "mcp__plugin-scripts__Pstack_CleanupReport",
+    "mcp__request__RequestTool",
+  ]);
+  assert.equal(r.mcpServers.playwright, undefined);
 });
 
 test("dev resolves to file tools, Test, Check, git reads, todo reads and notes, RequestTool", async () => {

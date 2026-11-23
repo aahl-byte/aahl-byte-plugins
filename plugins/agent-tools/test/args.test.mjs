@@ -78,6 +78,14 @@ const CASES = [
   ["plugin-scripts", "PlanClarity_Init", { name: "auth-redesign" }, { program: "bash", args: [`${P("plan-clarity")}/scripts/review/init.sh`, "auth-redesign"], env: { CLAUDE_PLUGIN_ROOT: P("plan-clarity") } }],
   ["plugin-scripts", "PlanClarity_Validate", { name: "auth-redesign", configs: ["risk.config.yaml"] }, { program: "node", args: ["scripts/validate.js", "risk.config.yaml"], cwd: `${WT}/docs/review/auth-redesign` }],
   ["plugin-scripts", "Pstack_UpstreamDiff", { stat: true, paths: ["skills/arena"] }, { program: "bash", args: [`${P("pstack")}/scripts/upstream-diff.sh`, "--stat", "--", "skills/arena"] }],
+  ["plugin-scripts", "Pstack_DoorsCheck", {}, { program: "node", args: [`${P("pstack")}/scripts/doors/check.mjs`, "--repo", WT, "--report-only"] }],
+  [
+    "plugin-scripts",
+    "Pstack_DoorsCheck",
+    { files: ["src/components/A.tsx", "src/b.ts"] },
+    { program: "node", args: [`${P("pstack")}/scripts/doors/check.mjs`, "--repo", WT, "--report-only", "--files=src/components/A.tsx,src/b.ts"] },
+  ],
+  ["plugin-scripts", "Pstack_CleanupReport", {}, { program: "node", args: [`${P("pstack")}/scripts/cleanup/report.mjs`, "--repo", WT, "--out", "/tmp/T/report"] }],
   [
     "plugin-scripts",
     "Research_PdfToText",
