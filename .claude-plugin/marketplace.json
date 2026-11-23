@@ -43,6 +43,11 @@
       "name": "env-map",
       "source": "./plugins/env-map",
       "description": "A deterministic map of the agent environment — hooks, scripts, rules, skills, CLAUDE.md and deny rules drawn as lifecycle, responsibility, dependency and compare views with pattern flags, plus an env-map check gate."
+    },
+    {
+      "name": "agent-tools",
+      "source": "./plugins/agent-tools",
+      "description": "Typed MCP tools so agent sessions run with no shell — one file per tool with zod input and a fixed program, servers for tests, git reads, e2e, todo, Jira, Watchtower sessions, explore-db, db-request and plugin scripts, dev/verify/ops roles, a launcher for the restricted claude command line, and a ledger of every call and every missing-tool request."
     }
   ]
 }
