@@ -1,3 +1,18 @@
 # The controlled list of jobs a part can take. One `id: description` per line.
 # A part's `takes` must name ids from this list; adding a job means adding a line here, in review.
 environment-map: Draw every part that acts on a session and flag shapes of growing complexity.
+typed-tools: Give agent sessions typed tools whose limits live in code, in place of a shell.
+run-unit-tests: Run the unit tests and return only the failures, each with file:line.
+run-gate: Run the project's gate command and return what fails.
+read-git-state: Show the working tree's status and diff without changing anything.
+run-e2e: Run one end-to-end spec on the worktree's own port and return the failures.
+request-missing-tool: Record each tool an agent needed and lacked, as a ledger line.
+read-todo: Read todo items and lists.
+write-todo: Change todo items: notes, log entries, tasks, links, docs, requests, status and questions.
+read-jira: Read and search Jira tickets.
+write-jira: Comment on, link and transition Jira tickets.
+read-sessions: List Watchtower sessions and read their last message.
+message-sessions: Ask an expert session or message a running one.
+query-db: Run read-only SQL and browse the schema of a configured database environment.
+queue-migration: Queue, lint and annotate database migration scripts with db-request.
+run-plugin-script: Run a plugin's helper script with typed arguments.
