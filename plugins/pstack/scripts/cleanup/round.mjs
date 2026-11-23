@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import { cleaningList, triageSchema, validateTriage } from "./lib/triage.mjs";
+import { cleaningList, fromAnswer, triageSchema, validateTriage } from "./lib/triage.mjs";
 import { killActive, runProgram, runSession } from "./lib/sessions.mjs";
 
 export const meta = {
@@ -245,7 +245,7 @@ export async function runRound(opts, io = realIo()) {
           logFile: path.join(roundDir, "sessions", `triage-${attempt}.jsonl`),
           timeoutMs: t.timeoutMin * MINUTE,
         });
-        const candidate = s.structured ?? { items: null };
+        const candidate = fromAnswer(s.structured, report);
         rejected = validateTriage(candidate, report);
         if (rejected.length === 0) {
           triage = { round, head: report.head, items: candidate.items, session: { sessionId: s.sessionId, costUsd: s.costUsd, durationMs: s.durationMs, turns: s.turns } };

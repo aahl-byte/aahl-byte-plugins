@@ -21,4 +21,4 @@ The report has five sections:
 - No cleaning may change behavior. When an item needs a behavior change or a product call first, mark it real, write the decision as `question`, and the round skips it until a person answers.
 - An item another real item covers is pedantic, with `covered by <id>` as the reason.
 - The plan for a real item is reachable in one session with no behavior change. Split nothing; the cleaner may touch any files the plan needs.
-- Return every report item exactly once, real items in the order to clean them, most leverage first: folding a pattern into a door or teaching the flags something beats tidying one file.
+- Answer every report item under its id. Give each real item a `rank`, 1 cleaned first, most leverage first: folding a pattern into a door or teaching the flags something beats tidying one file.

@@ -59,14 +59,17 @@ function world({ status = " M src/routes/findings.ts\n", gateExit = 0, verdict, 
       const structured = triage
         ? triage(report)
         : {
-            items: report.items.map((i) =>
-              i.id === "raw-components-screen"
-                ? { id: i.id, verdict: "real", reason: "five raw controls with hand-rolled styles", plan: "render the ui doors" }
-                : i.id === "seed-alert-dialog-unstyled"
-                  ? { id: i.id, verdict: "real", reason: "three dialogs work around the door", plan: "add an unstyled option to the door" }
-                  : i.id === "seed-logging"
-                    ? { id: i.id, verdict: "real", reason: "console output has no levels", plan: "adopt a logger", question: "Which logger?" }
-                    : { id: i.id, verdict: "pedantic", reason: "boilerplate that reads better inline" }
+            items: Object.fromEntries(
+              report.items.map((i) => [
+                i.id,
+                i.id === "raw-components-screen"
+                  ? { verdict: "real", reason: "five raw controls with hand-rolled styles", plan: "render the ui doors" }
+                  : i.id === "seed-alert-dialog-unstyled"
+                    ? { verdict: "real", reason: "three dialogs work around the door", plan: "add an unstyled option to the door" }
+                    : i.id === "seed-logging"
+                      ? { verdict: "real", reason: "console output has no levels", plan: "adopt a logger", question: "Which logger?" }
+                      : { verdict: "pedantic", reason: "boilerplate that reads better inline" },
+              ])
             ),
           };
       return { ...base, structured };

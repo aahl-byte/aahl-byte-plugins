@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cleaningList, TRIAGE_SCHEMA, triageSchema, validateTriage } from "../lib/triage.mjs";
+import { cleaningList, fromAnswer, triageSchema, validateTriage } from "../lib/triage.mjs";
 
 const report = { items: [{ id: "dup-1", size: { files: 2, lines: 20 } }, { id: "raw-x", size: { files: 1, lines: 3 } }, { id: "seed-logging", size: { files: 0, lines: 0 } }] };
 const good = () => ({
@@ -45,6 +45,15 @@ test("the cleaning list is the real items with no open question, in triage order
   assert.deepEqual(list.map((i) => [i.id, i.item.size.lines]), [["raw-x", 3]]);
 });
 
+test("a rank orders the cleaning list, 1 first; unranked real items follow in triage order", () => {
+  const t = good();
+  t.items[1] = { id: "dup-1", verdict: "real", reason: "the same parse in two routes", plan: "fold into one helper", rank: 1 };
+  t.items[0].rank = 2;
+  assert.deepEqual(cleaningList(t, report).map((i) => i.id), ["dup-1", "raw-x"]);
+  t.items[0].rank = 0;
+  assert.deepEqual(validateTriage(t, report), ["items[0] (raw-x): rank must be a whole number from 1"]);
+});
+
 test("--items narrows the cleaning list and keeps the order asked for", () => {
   const t = good();
   t.items[1] = { id: "dup-1", verdict: "real", reason: "the same parse in two routes", plan: "fold into one helper" };
@@ -52,23 +61,34 @@ test("--items narrows the cleaning list and keeps the order asked for", () => {
   assert.throws(() => cleaningList(t, report, ["seed-logging"]), /seed-logging is not on the cleaning list/);
 });
 
-test("the round's schema pins the report's ids, the item count and the one-line limits, so the session sees a violation while it can fix it", () => {
+test("the session answers one entry per report id, so no id can be repeated or left out, with the one-line limits in the schema", () => {
   const schema = triageSchema(report);
   const items = schema.properties.items;
-  assert.deepEqual(items.items.properties.id.enum, ["dup-1", "raw-x", "seed-logging"]);
-  assert.equal(items.minItems, 3);
-  assert.equal(items.maxItems, 3);
-  assert.equal(items.items.properties.reason.maxLength, 240);
-  assert.equal(items.items.properties.reason.pattern, "^[^\\n]+$");
-  assert.equal(items.items.properties.plan.maxLength, 480);
-  assert.deepEqual(TRIAGE_SCHEMA.properties.items.items.properties.id, { type: "string", description: "the report item's id" }, "the base schema is left alone");
+  assert.deepEqual(Object.keys(items.properties), ["dup-1", "raw-x", "seed-logging"]);
+  assert.deepEqual(items.required, ["dup-1", "raw-x", "seed-logging"]);
+  assert.equal(items.additionalProperties, false);
+  for (const id of items.required) assert.deepEqual(items.properties[id], { $ref: "#/$defs/verdict" });
+  const verdict = schema.$defs.verdict;
+  assert.deepEqual(verdict.required, ["verdict", "reason"]);
+  assert.deepEqual(verdict.properties.verdict.enum, ["real", "pedantic"]);
+  assert.deepEqual(Object.keys(verdict.properties).sort(), ["plan", "question", "rank", "reason", "verdict"]);
+  assert.equal(verdict.properties.reason.maxLength, 240);
+  assert.equal(verdict.properties.reason.pattern, "^[^\\n]+$");
+  assert.equal(verdict.properties.plan.maxLength, 480);
+  assert.equal(verdict.additionalProperties, false);
 });
 
-test("the schema handed to claude --json-schema asks for the same fields the validator checks", () => {
-  const item = TRIAGE_SCHEMA.properties.items.items;
-  assert.deepEqual(TRIAGE_SCHEMA.required, ["items"]);
-  assert.deepEqual(item.required, ["id", "verdict", "reason"]);
-  assert.deepEqual(item.properties.verdict.enum, ["real", "pedantic"]);
-  assert.deepEqual(Object.keys(item.properties).sort(), ["id", "plan", "question", "reason", "verdict"]);
-  assert.equal(item.additionalProperties, false);
+test("the session's answer becomes the triage file: one entry per item, ranked real items first", () => {
+  const answer = {
+    items: {
+      "seed-logging": { verdict: "pedantic", reason: "no logger is needed yet" },
+      "raw-x": { verdict: "real", reason: "raw buttons copy the door's styles", plan: "render the Button door", rank: 2 },
+      "dup-1": { verdict: "real", reason: "the same parse in two routes", plan: "fold into one helper", rank: 1 },
+    },
+  };
+  const t = fromAnswer(answer, report);
+  assert.deepEqual(t.items.map((i) => i.id), ["dup-1", "raw-x", "seed-logging"]);
+  assert.deepEqual(t.items[0], { id: "dup-1", verdict: "real", reason: "the same parse in two routes", plan: "fold into one helper", rank: 1 });
+  assert.deepEqual(validateTriage(t, report), []);
+  assert.deepEqual(fromAnswer(null, report), { items: null });
 });
